@@ -1,0 +1,21 @@
+digraph G {
+	graph [bb="0,0,234,300"];
+	node [label="\N"];
+	8	 [height=0.8171,
+		label="y()\nexecution time 1.0",
+		pos="117,270",
+		root=8,
+		width=2.3433];
+	14	 [height=1.1471,
+		label="omp parallel@14\nexecution time: 1.0\nvariance: 0.0",
+		pos="117,162",
+		root=8,
+		width=2.4231];
+	8 -> 14	 [pos="e,117,203.65 117,240.31 117,232.12 117,222.93 117,213.83"];
+	19	 [height=1.1471,
+		label="omp parallel for@19\nfor( j = 124; j < 125; j ++ )\nnot executed",
+		pos="117,42",
+		root=8,
+		width=3.257];
+	14 -> 19	 [pos="e,117,83.684 117,120.39 117,111.86 117,102.76 117,93.912"];
+}
