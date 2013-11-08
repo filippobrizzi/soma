@@ -3,27 +3,22 @@ File modificati:
 ***clang/include/clang/AST/StmtOpenMP.h : line 314
 
 class OMPPeriodClause : public OMPClause {
-  int Period;
-  SourceLocation ValueLoc;
+  Expr *Period;
 
-  void setPeriodValue(int val) { Period = val; }
-  void setPeriodValueLoc(SourceLocation VLoc) {ValueLoc = VLoc}
+  void setPeriodValue(Expr *val) { Period = val; }
 
 public:
-  OMPPeriodClause(int P, SourceLocation PLoc,
-                   SourceLocation StartLoc, SourceLocation EndLoc)
-    : OMPClause(OMPC_period, StartLoc, EndLoc), Period(P), ValueLoc(PLoc) { }
+  OMPPeriodClause(Expr *P, SourceLocation StartLoc, SourceLocation EndLoc)
+    : OMPClause(OMPC_period, StartLoc, EndLoc), Period(P) { }
 
   explicit OMPPeriodClause()
     :  OMPClause(OMPC_period, SourceLocation(), SourceLocation()),
-      Period(-1), ValueLoc(SourceLocation()) { }
+      Period(-1) { }
 
-  int getPeriodValue() const { return Period; }
+  Expr *getPeriodValue() const { return Period; }
 
   /// \brief Fetches location of clause kind.
   ///
-  SourceLocation getPeriodValueLoc() const { return ValueLoc; }
-
   static bool classof(const OMPClause *T) {
     return T->getClauseKind() == OMPC_period;
   }
@@ -45,22 +40,18 @@ public:
 template<typename Derived>
 OMPClause *
 TreeTransform<Derived>::TransformOMPPeriodClause(OMPPeriodClause *C) {
-  return getDerived().RebuildOMPPeriodClause(C->getDefaultKind(),
-                                              C->getDefaultKindLoc(),
+  return getDerived().RebuildOMPPeriodClause(C->getPeriodValue(),
                                               C->getLocStart(),
                                               C->getLocEnd());
 }
-
 -------------------------------------------------------------------------------------------------
 
 *** clang/lib/Sema/TreeTransoform.h : line 1335
 
-OMPClause *RebuildOMPPeriodClause(int Period,
-                                     SourceLocation KindLoc,
+OMPClause *RebuildOMPPeriodClause(Expr *Period,
                                      SourceLocation StartLoc,
                                      SourceLocation EndLoc) {
-    return getSema().ActOnOpenMPPeriodClause(Period, KindLoc,
-                                              StartLoc, EndLoc);
+    return getSema().ActOnOpenMPPeriodClause(Period, StartLoc, EndLoc);
   }
 
 ---------------------------------------------------------------------------------
@@ -68,19 +59,135 @@ OMPClause *RebuildOMPPeriodClause(int Period,
 
 *** clang/include/clang/Sema/Sema.h : line 6840
 
-  OMPClause *ActOnOpenMPPeriodClause(int Period,
-                                        SourceLocation KindLoc,
-                                        SourceLocation StartLoc,
-                                        SourceLocation EndLoc);
+  OMPOMPClause *ActOnOpenMPPeriodClause(Expr *Period,
+                                             SourceLocation StartLoc,
+                                             SourceLocation EndLoc);
+
 
 ---------------------------------------------------------------------------------
 
-*** clang/lib/Sema/SemaOpenMP.cpp
+*** clang/lib/Sema/SemaOpenMP.cpp : line 6880
 
-OMPClause *Sema::ActOnOpenMPPeriodClause(int Period,
-                                          SourceLocation KindLoc,
-                                          SourceLocation StartLoc,
-                                          SourceLocation EndLoc) {
-  return new (Context) OMPPeriodClause(Period, KindLoc, StartLoc, EndLoc);
+OMPClause *Sema::ActOnOpenMPPeriodClause(Expr *Period,
+                                             SourceLocation StartLoc,
+                                             SourceLocation EndLoc) {
+  class CConvertDiagnoser : public ICEConvertDiagnoser {
+  public:
+    CConvertDiagnoser() : ICEConvertDiagnoser(false, true) { }
+    virtual DiagnosticBuilder diagnoseNotInt(Sema &S, SourceLocation Loc,
+                                             QualType T) {
+      return S.Diag(Loc, diag::err_typecheck_statement_requires_integer) << T;
+    }
+    virtual DiagnosticBuilder diagnoseIncomplete(Sema &S,
+                                                 SourceLocation Loc,
+                                                 QualType T) {
+      return S.Diag(Loc, diag::err_incomplete_class_type) << T;
+    }
+    virtual DiagnosticBuilder diagnoseExplicitConv(Sema &S,
+                                                   SourceLocation Loc,
+                                                   QualType T,
+                                                   QualType ConvTy) {
+      return S.Diag(Loc, diag::err_explicit_conversion) << T << ConvTy;
+    }
 
+    virtual DiagnosticBuilder noteExplicitConv(Sema &S,
+                                               CXXConversionDecl *Conv,
+                                               QualType ConvTy) {
+      return S.Diag(Conv->getLocation(), diag::note_conversion) <<
+        ConvTy->isEnumeralType() << ConvTy;
+    }
+    virtual DiagnosticBuilder diagnoseAmbiguous(Sema &S, SourceLocation Loc,
+                                                QualType T) {
+      return S.Diag(Loc, diag::err_multiple_conversions) << T;
+    }
+
+    virtual DiagnosticBuilder noteAmbiguous(Sema &S,
+                                            CXXConversionDecl *Conv,
+                                            QualType ConvTy) {
+      return S.Diag(Conv->getLocation(), diag::note_conversion) <<
+        ConvTy->isEnumeralType() << ConvTy;
+    }
+
+    virtual DiagnosticBuilder diagnoseConversion(Sema &S,
+                                                 SourceLocation Loc,
+                                                 QualType T,
+                                                 QualType ConvTy) {
+      return DiagnosticBuilder::getEmpty();
+    }
+  } ConvertDiagnoser;
+
+  if (!Period)
+    return 0;
+
+  QualType Type = Period->getType();
+  Expr *ValExpr = Period;
+  if (!Type->isDependentType() && !Type->isInstantiationDependentType()) {
+    SourceLocation Loc = Period->getExprLoc();
+    ExprResult Value = ConvertToIntegralOrEnumerationType(Loc,
+                                                          Period,
+                                                          ConvertDiagnoser,
+                                                          true);
+    if (Value.isInvalid() ||
+        !Value.get()->getType()->isIntegralOrUnscopedEnumerationType())
+      return 0;
+
+    llvm::APSInt Result;
+    if (Value.get()->isIntegerConstantExpr(Result, Context) &&
+        !Result.isStrictlyPositive()) {
+      Diag(Loc, diag::err_negative_expression_in_clause)
+        << Period->getSourceRange();
+      return 0;
+    }
+    Value = DefaultLvalueConversion(Value.take());
+    if (Value.isInvalid())
+      return 0;
+    CastKind CK = PrepareScalarCast(Value, Context.IntTy);
+    if (CK != CK_NoOp)
+      Value = ImpCastExprToType(Value.take(), Context.IntTy, CK);
+    if (Value.isInvalid())
+      return 0;
+    ValExpr = Value.take();
+  }
+
+  return new (Context) OMPPeriodClause(ValExpr, StartLoc, EndLoc);
 }
+
+
+-----------------------------------------------------------------------------------
+
+*** clang/lib/AST/StmtPrinter.cpp : line 628
+
+void OMPClausePrinter::VisitOMPPeriodClause(OMPPeriodClause *Node) {
+
+  OS << "period("
+     << Node->getPeriodValue()
+     << ")";
+}
+
+----------------------------------------------------------------------------------------
+
+*** clang/lib/Parse/ParseOpenMP.cpp : line 459
+  
+  case OMPC_period:
+
+
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+*** clang/lib/CodeGen/CGStmtOpenMP.cpp : 
+
+line 1577
+line 1605
+line 1636
+line 1682
+line 1722
+     1757
+
+  case OMPC_period:
+
+-----------------------------------------------------------------------------------------
+
+*** clang/lib/CodeGen/CGStmtOpenMP.cpp : line 1605
+
+  case OMPC_period:
+
