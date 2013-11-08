@@ -1,0 +1,40 @@
+make[5]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools/clang/lib/StaticAnalyzer/Core'
+make[4]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools/clang/lib/StaticAnalyzer'
+make[3]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools/clang/lib'
+make[3]: Entering directory `/home/pippo/Documents/Library/llvm_build/tools/clang/tools'
+make[4]: Entering directory `/home/pippo/Documents/Library/llvm_build/tools/clang/tools/driver'
+llvm[4]: Linking Release+Asserts executable clang (without symbols)
+
+/home/pippo/Documents/Library/llvm_build/Release+Asserts/lib/libclangSema.a(SemaExpr.o): In function 
+
+`clang::TreeTransform<(anonymous namespace)::TransformToPE>::TransformOMPExecutableDirective(clang::OMPExecutableDirective*)':
+
+SemaExpr.cpp:(.text+0x4f580): undefined reference to `
+clang::TreeTransform<(anonymous namespace)::TransformToPE>::TransformOMPPeriodClause(clang::OMPPeriodClause*)'
+
+/home/pippo/Documents/Library/llvm_build/Release+Asserts/lib/libclangSema.a(SemaTemplate.o): In function `clang::TreeTransform<(anonymous namespace)::CurrentInstantiationRebuilder>::TransformOMPExecutableDirective(clang::OMPExecutableDirective*)':
+
+SemaTemplate.cpp:(.text+0x3b520): undefined reference to 
+`clang::TreeTransform<(anonymous namespace)::CurrentInstantiationRebuilder>::TransformOMPPeriodClause(		   clang::OMPPeriodClause*)'
+
+/home/pippo/Documents/Library/llvm_build/Release+Asserts/lib/libclangSema.a(SemaTemplateDeduction.o): In function `clang::TreeTransform<(anonymous namespace)::SubstituteAutoTransform>::TransformOMPExecutableDirective(clang::OMPExecutableDirective*)':
+
+SemaTemplateDeduction.cpp:(.text+0x25c20): undefined reference to `clang::TreeTransform<(anonymous namespace)::SubstituteAutoTransform>::TransformOMPPeriodClause(clang::OMPPeriodClause*)'
+
+/home/pippo/Documents/Library/llvm_build/Release+Asserts/lib/libclangSema.a(SemaTemplateInstantiate.o): In function `clang::TreeTransform<(anonymous namespace)::TemplateInstantiator>::TransformOMPExecutableDirective(clang::OMPExecutableDirective*)':
+
+SemaTemplateInstantiate.cpp:(.text+0x238b0): undefined reference to `clang::TreeTransform<(anonymous namespace)::TemplateInstantiator>::TransformOMPPeriodClause(clang::OMPPeriodClause*)'
+
+/home/pippo/Documents/Library/llvm_build/Release+Asserts/lib/libclangAST.a(StmtPrinter.o): In function `(anonymous namespace)::StmtPrinter::VisitOMPExecutableDirective(clang::OMPExecutableDirective*)':
+StmtPrinter.cpp:(.text.unlikely+0x6eeb): undefined reference to `(anonymous namespace)::OMPClausePrinter::VisitOMPPeriodClause(clang::OMPPeriodClause*)'
+
+collect2: error: ld returned 1 exit status
+make[4]: *** [/home/pippo/Documents/Library/llvm_build/Release+Asserts/bin/clang] Error 1
+make[4]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools/clang/tools/driver'
+make[3]: *** [all] Error 1
+make[3]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools/clang/tools'
+make[2]: *** [all] Error 1
+make[2]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools/clang'
+make[1]: *** [clang/.makeall] Error 2
+make[1]: Leaving directory `/home/pippo/Documents/Library/llvm_build/tools'
+make: *** [all] Error 1

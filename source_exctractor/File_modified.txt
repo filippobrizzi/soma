@@ -1,0 +1,86 @@
+File modificati:
+
+***clang/include/clang/AST/StmtOpenMP.h : line 314
+
+class OMPPeriodClause : public OMPClause {
+  int Period;
+  SourceLocation ValueLoc;
+
+  void setPeriodValue(int val) { Period = val; }
+  void setPeriodValueLoc(SourceLocation VLoc) {ValueLoc = VLoc}
+
+public:
+  OMPPeriodClause(int P, SourceLocation PLoc,
+                   SourceLocation StartLoc, SourceLocation EndLoc)
+    : OMPClause(OMPC_period, StartLoc, EndLoc), Period(P), ValueLoc(PLoc) { }
+
+  explicit OMPPeriodClause()
+    :  OMPClause(OMPC_period, SourceLocation(), SourceLocation()),
+      Period(-1), ValueLoc(SourceLocation()) { }
+
+  int getPeriodValue() const { return Period; }
+
+  /// \brief Fetches location of clause kind.
+  ///
+  SourceLocation getPeriodValueLoc() const { return ValueLoc; }
+
+  static bool classof(const OMPClause *T) {
+    return T->getClauseKind() == OMPC_period;
+  }
+
+  StmtRange children() {
+    return StmtRange();
+  }
+};
+
+
+--------------------------------------------------------------------------------------------------
+
+***clang/include/clang/Basic/OpenMPKinds.def
+
+---------------------------------------------------------------------------------------------------
+
+*** clang/lib/Sema/TreeTransoform.h : line 6713
+
+template<typename Derived>
+OMPClause *
+TreeTransform<Derived>::TransformOMPPeriodClause(OMPPeriodClause *C) {
+  return getDerived().RebuildOMPPeriodClause(C->getDefaultKind(),
+                                              C->getDefaultKindLoc(),
+                                              C->getLocStart(),
+                                              C->getLocEnd());
+}
+
+-------------------------------------------------------------------------------------------------
+
+*** clang/lib/Sema/TreeTransoform.h : line 1335
+
+OMPClause *RebuildOMPPeriodClause(int Period,
+                                     SourceLocation KindLoc,
+                                     SourceLocation StartLoc,
+                                     SourceLocation EndLoc) {
+    return getSema().ActOnOpenMPPeriodClause(Period, KindLoc,
+                                              StartLoc, EndLoc);
+  }
+
+---------------------------------------------------------------------------------
+
+
+*** clang/include/clang/Sema/Sema.h : line 6840
+
+  OMPClause *ActOnOpenMPPeriodClause(int Period,
+                                        SourceLocation KindLoc,
+                                        SourceLocation StartLoc,
+                                        SourceLocation EndLoc);
+
+---------------------------------------------------------------------------------
+
+*** clang/lib/Sema/SemaOpenMP.cpp
+
+OMPClause *Sema::ActOnOpenMPPeriodClause(int Period,
+                                          SourceLocation KindLoc,
+                                          SourceLocation StartLoc,
+                                          SourceLocation EndLoc) {
+  return new (Context) OMPPeriodClause(Period, KindLoc, StartLoc, EndLoc);
+
+}
