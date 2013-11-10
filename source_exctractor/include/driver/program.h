@@ -12,25 +12,27 @@
 #include "llvm/Support/raw_ostream.h"
 
 #include <string>
+#include <iostream>
 
 class Program {
 
 //ClangCompiler ccompiler;
-std::vector<clang::OMPExecutableDirective *> pragmaList;
-std::vector<clang::FunctionDecl *> functionList;
+std::vector<clang::OMPExecutableDirective *> *pragmaList;
+std::vector<clang::FunctionDecl *> *functionList;
 
 
 void ParseSourceCode(std::string fileName);
 
 public:
-	Program(int argc, char **argv) : ccompiler(argc, argv) {
+	Program(int argc, char **argv) : ccompiler(argc, argv), pragmaList(NULL), functionList(NULL) {
 		ParseSourceCode(argv[argc - 1]);
 	}
 	
-	std::vector<clang::OMPExecutableDirective *> getPragmaList() { return pragmaList; }
-	std::vector<clang::FunctionDecl *> getFunctionList() { return functionList; }
+	std::vector<clang::OMPExecutableDirective *> *getPragmaList() { return pragmaList; }
+	std::vector<clang::FunctionDecl *> *getFunctionList() { return functionList; }
 
 	ClangCompiler ccompiler;
+	//clang::CompilerInstance ccompiler;
 };
 
 

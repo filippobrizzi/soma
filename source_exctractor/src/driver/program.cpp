@@ -8,59 +8,57 @@
 */
 
 void Program::ParseSourceCode(std::string fileName) {
-  	
-  const clang::FileEntry *pFile = ccompiler.getFileManager().getFile(fileName);
-  ccompiler.getSourceManager().createMainFileID(pFile);
-  ccompiler.getDiagnosticClient().BeginSourceFile(ccompiler.getLangOpts(), &ccompiler.getPreprocessor());
+		
+  	const clang::FileEntry *pFile = ccompiler.getFileManager().getFile(fileName);
+  	ccompiler.getSourceManager().createMainFileID(pFile);
+  	ccompiler.getDiagnosticClient().BeginSourceFile(ccompiler.getLangOpts(), &ccompiler.getPreprocessor());
 
   // Convert <file>.c to <file_profile>.c
-  std::string outNameProfile (fileName);
-  size_t ext = outNameProfile.rfind(".");
-  if (ext == std::string::npos)
-      ext = outNameProfile.length();
-  outNameProfile.insert(ext, "_profile");
+  	std::string outNameProfile (fileName);
+  	size_t ext = outNameProfile.rfind(".");
+  	if (ext == std::string::npos)
+    	ext = outNameProfile.length();
+  	outNameProfile.insert(ext, "_profile");
 
-  llvm::errs() << "Output to: " << outNameProfile << "\n";
-  std::string OutErrorInfo;
-  llvm::raw_fd_ostream outFileProfile(outNameProfile.c_str(), OutErrorInfo, 0);
+  	llvm::errs() << "Output to: " << outNameProfile << "\n";
+  	std::string OutErrorInfo;
+  	llvm::raw_fd_ostream outFileProfile(outNameProfile.c_str(), OutErrorInfo, 0);
 
   // Convert <file>.c to <file_pragma>.c
-  std::string outNamePragma (fileName);
-  ext = outNamePragma.rfind(".");
-  if (ext == std::string::npos)
-      ext = outNamePragma.length();
-  outNamePragma.insert(ext, "pragma");
+  	std::string outNamePragma (fileName);
+  	ext = outNamePragma.rfind(".");
+  	if (ext == std::string::npos)
+   		ext = outNamePragma.length();
+  	outNamePragma.insert(ext, "_pragma");
 
-  llvm::errs() << "Output to: " << outNamePragma << "\n";
-  llvm::raw_fd_ostream outFilePragma(outNamePragma.c_str(), OutErrorInfo, 0);  
-
-
-  clang::Rewriter rewriteProfiling;
-  rewriteProfiling.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
-
-  clang::Rewriter rewritePragma;
-  rewritePragma.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
+  	llvm::errs() << "Output to: " << outNamePragma << "\n";
+  	llvm::raw_fd_ostream outFilePragma(outNamePragma.c_str(), OutErrorInfo, 0);  
 
 
-  ProfilingASTConsumer astConsumer(rewriteProfiling, rewritePragma, ccompiler.getSourceManager());
-  
+  	clang::Rewriter rewriteProfiling;
+  	rewriteProfiling.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
+
+  	clang::Rewriter rewritePragma;
+  	rewritePragma.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
+
+  	ProfilingASTConsumer astConsumer(rewriteProfiling, rewritePragma, ccompiler.getSourceManager());
   // Parse the AST
-  clang::ParseAST(ccompiler.getPreprocessor(), &astConsumer, ccompiler.getASTContext());
+  	clang::ParseAST(ccompiler.getPreprocessor(), &astConsumer, ccompiler.getASTContext());
+	ccompiler.getDiagnosticClient().EndSourceFile();
 
-  ccompiler.getDiagnosticClient().EndSourceFile();
-
-	this->pragmaList = astConsumer.rv.pragmaList;
-	this->functionList = astConsumer.rv.functionList;
+	this->pragmaList = new std::vector<clang::OMPExecutableDirective *>(astConsumer.rv.pragmaList);
+	this->functionList = new std::vector<clang::FunctionDecl *>(astConsumer.rv.functionList);
 
 
     // Now output rewritten source code
-  const clang::RewriteBuffer *RewriteBufProfiling = rewriteProfiling.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
-  outFileProfile << std::string(RewriteBufProfiling->begin(), RewriteBufProfiling->end());
-  outFileProfile.close();
+  	const clang::RewriteBuffer *RewriteBufProfiling = rewriteProfiling.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
+  	outFileProfile << std::string(RewriteBufProfiling->begin(), RewriteBufProfiling->end());
+  	outFileProfile.close();
+/*
+  	const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
+  	outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
+*/  	outFilePragma.close();
 
-  const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
-  outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
-  outFilePragma.close();
 }
 
 
@@ -115,11 +113,12 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
 
 /*
  * ---- In the case of #omp parallel for we have to go down two level befor finding the ForStmt ----
- */  			
-  			if(strcmp(cs->getStmtClassName(), "OMPForDirective") == 0) {
-          		cs = static_cast<clang::CapturedStmt *>(static_cast<clang::OMPExecutableDirective *>(cs)->getAssociatedStmt())->getCapturedStmt();
+ */
+  			if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0) {
+          		//cs = static_cast<clang::CapturedStmt *>(static_cast<clang::OMPExecutableDirective *>(cs)->getAssociatedStmt())->getCapturedStmt();
+        		RewriteProfile(cs);
         	}
-			RewriteProfile(cs);
+			//RewriteProfile(cs);
   		}
   	}
   	
