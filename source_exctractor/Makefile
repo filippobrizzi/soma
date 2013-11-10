@@ -3,15 +3,20 @@ LLVMCOMPONENTS := #cppbackend
 RTTIFLAG := #-fno-rtti
 LLVMCONFIG := llvm-config
 
+INCLUDEPATH := -I./include/
 CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) \
-			--obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(RTTIFLAG)
+			--obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(INCLUDEPATH)
 LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags )
 #--libs $(LLVMCOMPONENTS))
 
-SOURCES = parser_test.cpp
-
+SOURCES = src/main.cpp src/driver/compiler.cpp src/driver/program.cpp src/utils/source_locations.cpp
+#SOURCES = $(wildcard src/*.cpp) $(wildcard src/driver/*.cpp) $(wildcard src/utils/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
+#@echo $(OBJECTS)
 EXES = $(OBJECTS:.o=)
+#@echo $(EXES)
+
+
 CLANGLIBS = \
 				-lclangTooling\
 				-lclangFrontendTool\
@@ -34,11 +39,20 @@ CLANGLIBS = \
 				-lclangBasic\
 				$(shell $(LLVMCONFIG) --libs)\
                # -lcurses
+all: $(OBJECTS) 
+	$(CXX)  $(LLVMLDFLAGS) $(CLANGLIBS)$(CXXFLAGS) -o pragma_exctractor.exec
 
-all: $(OBJECTS) $(EXES)
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-%: %.o
-	$(CXX) -o $@.exec $< $(CLANGLIBS) $(LLVMLDFLAGS)
+
+
+#main.exe: $(OBJ_FILES)
+#   g++ $(LD_FLAGS) -o $@ $^
+
+#obj/%.o: src/%.cpp
+#   g++ $(CC_FLAGS) -c -o $@ $<
+
 
 clean:
 	-rm -f $(EXES) $(OBJECTS) *~
