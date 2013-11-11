@@ -19,7 +19,7 @@ if( ProfileTracker x = ProfileTrackParams(7, 0)) {
 			x = 1;
 		}
 
-//	#pragma omp parallel period(1001)
+//	#pragma omp parallel shared(d) period(1001)
 	if( ProfileTracker x = ProfileTrackParams(7, 20))
 	{
 		int a = 0;

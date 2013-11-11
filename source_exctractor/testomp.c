@@ -16,7 +16,7 @@ int main() {
 			x = 1;
 		}
 
-	#pragma omp parallel period(1001)
+	#pragma omp parallel shared(d) period(1001)
 	{
 		int a = 0;
 		z();
