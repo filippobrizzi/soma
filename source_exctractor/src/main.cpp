@@ -1,6 +1,7 @@
 
 #include "driver/program.h"
-#include "pragma_handler/create_tree.h"
+//#include "pragma_handler/create_tree.h"
+#include "xml_creator/XMLcreator.h"
 
 
 int main(int argc, char **argv) { 
@@ -18,6 +19,10 @@ int main(int argc, char **argv) {
 
 	for(std::vector<Root *>::iterator itr = rootVect->begin(); itr != rootVect->end(); ++itr) 
 		(*itr)->visitTree();
+	
+	createXML(rootVect, argv[argc - 1]);
+
+	return 0;
 }
 
 

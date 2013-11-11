@@ -17,6 +17,16 @@ void createXML(std::vector<Root *> *rootVect, char *fileName) {
   for(std::vector<Root *>::iterator itr = rootVect->begin(); itr != rootVect->end(); ++ itr)     
     (*itr)->createXMLFunction(doc);
   
-  doc->SaveFile("XMLtree.xml");
+
+  std::string outXML (fileName);
+  size_t ext = outXML.find_last_of(".");
+  if (ext == std::string::npos)
+    ext = outXML.length();
+  outXML = outXML.substr(0, ext);
+  std::cout << outXML << std::endl;
+  outXML.insert(ext, "_pragmas.xml");
+  std::cout << outXML << std::endl;
+
+  doc->SaveFile(outXML.c_str());
 }
 

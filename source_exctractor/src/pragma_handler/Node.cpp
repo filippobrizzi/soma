@@ -12,14 +12,10 @@ Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang
 
 	this->pragma = pragma;
 
-	//SourceLocationStruct sL;
-	//sL = toLocationStruct(sm);
   toLocationStruct(sm);
-	//this->startLine = sL.startLine;
-	//this->endLine = sL.endLine;
 
-	setParentFunction(fd);	
-	
+	setParentFunction(fd, sm);	
+
   this->optionVect = new std::map<std::string, varList>();
 	setPragmaName(sm);
 
@@ -30,6 +26,7 @@ Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang
 		this->forNode = new ForNode(fs);
   } else
 		this->forNode = NULL;
+
 }
 
 
@@ -58,10 +55,10 @@ void Node::toLocationStruct(const clang::SourceManager& sm) {
 }
 
 
-void Node::setParentFunction(clang::FunctionDecl *functD) {
+void Node::setParentFunction(clang::FunctionDecl *functD, const clang::SourceManager& sm) {
   
-  this->fI.fD = functD;
-
+  fI.fD = functD;
+  fI.parentFunctionLine =  utils::Line(functD->getLocStart(), sm);
 /*
  * ---- Name of the function containing the pragma ----
  */
@@ -91,12 +88,17 @@ void Node::setParentFunction(clang::FunctionDecl *functD) {
 /*
  * ---- If the parent function is declared in a class return the name of the class ----
  */
-  if (clang::CXXMethodDecl *cxxMethodD = dynamic_cast<clang::CXXMethodDecl *>(functD)){
+/*  if (clang::CXXMethodDecl *cxxMethodD = dynamic_cast<clang::CXXMethodDecl *>(functD)){
+    std::cout << "CIAO -3" << std::endl;
 
     const clang::NamedDecl *nD = static_cast<const clang::NamedDecl *>(cxxMethodD->getParent());            
     fI.parentFunctionClassName = nD->getQualifiedNameAsString();
-  }else 
+  }else {
+    std::cout << "CIAO -2" << std::endl;
+*/
     fI.parentFunctionClassName = "";
+//  }
+
 }
 
 
@@ -231,12 +233,12 @@ void Node::createXMLPragmaOptions(tinyxml2::XMLDocument *doc, tinyxml2::XMLEleme
             tinyxml2::XMLElement *typeElement = doc->NewElement("Type");
             tinyxml2::XMLText* typeText = doc->NewText((*itv).first.c_str());
             typeElement->InsertEndChild(typeText);
-            parameterElement->InsertEndChild(typeText);
+            parameterElement->InsertEndChild(typeElement);
           }
           tinyxml2::XMLElement *nameElement = doc->NewElement("Var");
           tinyxml2::XMLText* nameText = doc->NewText((*itv).second.c_str());
           nameElement->InsertEndChild(nameText);
-          parameterElement->InsertEndChild(nameText);
+          parameterElement->InsertEndChild(nameElement);
 
         }
       }

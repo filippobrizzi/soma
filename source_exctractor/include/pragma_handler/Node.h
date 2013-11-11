@@ -63,17 +63,17 @@ public:
 /*
  * ---- Set the line, name, return type and parameters of the function containig the pragma ----
  */
-	void setParentFunction(clang::FunctionDecl *functD);	
+	void setParentFunction(clang::FunctionDecl *functD, const clang::SourceManager& sm);
 
-	FunctionInfo getParentFunctionInfo() { return this->fI; };
+	FunctionInfo getParentFunctionInfo() { return this->fI; }
 
-	void addChildNode(Node *n) { this->childrenVect->insert(this->childrenVect->end(), n); };
+	void addChildNode(Node *n) { this->childrenVect->insert(this->childrenVect->end(), n); }
 
-	void setParentNode(Node *n) { this->parentNode = n; };
-	Node* getParentNode() { return this->parentNode; };
+	void setParentNode(Node *n) { this->parentNode = n; }
+	Node* getParentNode() { return this->parentNode; }
 
-	int getEndLine() { return this->endLine; };
-
+	int getEndLine() { return this->endLine; }
+	int getStartLine() { return this->startLine; }
 
 	void createXMLPragma(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *pragmasElement);
 	void createXMLPragmaOptions(tinyxml2::XMLDocument *doc,tinyxml2:: XMLElement *optionsElement);

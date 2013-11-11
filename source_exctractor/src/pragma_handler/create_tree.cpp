@@ -12,23 +12,25 @@ std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pr
 	std::vector<clang::OMPExecutableDirective *>::iterator itr;
 	for(itr = pragmaList->begin(); itr != pragmaList->end(); ++ itr) {
 
-		clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
-		Node * n = new Node(*itr, fd, sm);
-		
-		if(fd != functionDecl) {
-			functionDecl = fd;
-			Root *root = new Root(n, n->getParentFunctionInfo());
-      		n->setParentNode(NULL);
-      		root->setLastNode(n);
-      		rootVect->insert(rootVect->end(), root);
+    if(strcmp((*itr)->getStmtClassName(), "OMPParallelDirective") != 0 || utils::Line((*itr)->getAssociatedStmt()->getLocStart(), sm) != utils::Line((*itr)->getAssociatedStmt()->getLocEnd(), sm)) {
+  		clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
 
-    	}else {
-     		buildTree(rootVect->back(), n);
-      		rootVect->back()->setLastNode(n);
-    	}  
-		
+  		Node * n = new Node(*itr, fd, sm);
+  				
+      if(fd != functionDecl) {
+  			functionDecl = fd;
+  			Root *root = new Root(n, n->getParentFunctionInfo());
+        		n->setParentNode(NULL);
+        		root->setLastNode(n);
+        		rootVect->insert(rootVect->end(), root);
+
+      	}else {
+       		buildTree(rootVect->back(), n);
+        		rootVect->back()->setLastNode(n);
+      	}  
+  		
+      }
     }
-
     return rootVect;
 }
 
