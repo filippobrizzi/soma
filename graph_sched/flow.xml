@@ -1,9 +1,8 @@
 <File>
-  <Name>test/inputs/omp_test.cpp</Name>
+  <Name>test_cases/omp_test.cpp</Name>
   <GraphType>flow</GraphType>
-  <Function>
+  <Function id="90">
     <Name>y</Name>
-    <id>80</id>
     <ReturnType>float *</ReturnType>
     <Parameters>
       <Parameter>
@@ -15,305 +14,300 @@
         <Name>c</Name>
       </Parameter>
     </Parameters>
-    <Line>8</Line>
-    <Time>1.0</Time>
+    <Line>9</Line>
+    <Time>2.0</Time>
     <Variance>0.0</Variance>
     <Callerids>
-      <Callerid>60</Callerid>
+      <Callerid>66</Callerid>
     </Callerids>
     <Nodes>
-      <Pragma>
-        <Name>omp parallel</Name>
-        <id>1416</id>
+      <Pragma id="1517">
+        <Name>OMPParallelDirective</Name>
         <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.1</Parameter>
-          </Option>
-          <Option>
-            <Name>firstprivate</Name>
-            <Parameter>n</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>14</StartLine>
-          <EndLine>16</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp parallel for</Name>
-        <id>1920</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.53</Parameter>
-          </Option>
-          <Option>
-            <Name>firstprivate</Name>
-            <Parameter>n</Parameter>
-          </Option>
           <Option>
             <Name>shared</Name>
-            <Parameter>b</Parameter>
-            <Parameter>a</Parameter>
+            <Parameter>
+              <Var>n</Var>
+              <Type>int</Type>
+            </Parameter>
           </Option>
         </Options>
         <Position>
-          <StartLine>19</StartLine>
-          <EndLine>20</EndLine>
+          <StartLine>15</StartLine>
+          <EndLine>17</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="2122">
+        <Name>OMPForDirective</Name>
+        <Position>
+          <StartLine>21</StartLine>
+          <EndLine>22</EndLine>
         </Position>
       </Pragma>
     </Nodes>
     <Nodes>
       <Edge>
-        <Source>80</Source>
-        <Dest>1416</Dest>
+        <Source>90</Source>
+        <Dest>1517</Dest>
       </Edge>
       <Edge>
-        <Source>1416</Source>
-        <Dest>1920</Dest>
+        <Source>1517</Source>
+        <Dest>2122</Dest>
       </Edge>
     </Nodes>
   </Function>
-  <Function>
+  <Function id="280">
     <Name>main</Name>
-    <id>260</id>
     <ReturnType>int</ReturnType>
-    <Line>26</Line>
-    <Time>9.0</Time>
+    <Line>28</Line>
+    <Time>11.0</Time>
     <Variance>0.0</Variance>
     <Callerids />
     <Nodes>
-      <Pragma>
-        <Name>omp parallel for</Name>
-        <id>3335</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>1</Parameter>
-          </Option>
-        </Options>
+      <Pragma id="3537">
+        <Name>OMPForDirective</Name>
         <Position>
-          <StartLine>33</StartLine>
-          <EndLine>35</EndLine>
+          <StartLine>35</StartLine>
+          <EndLine>37</EndLine>
         </Position>
       </Pragma>
-      <Pragma>
-        <Name>omp parallel</Name>
-        <id>3874</id>
+      <Pragma id="4080">
+        <Name>OMPParallelDirective</Name>
         <Options>
           <Option>
-            <Name>deadline</Name>
-            <Parameter>0.1</Parameter>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>a</Var>
+              <Type>int</Type>
+            </Parameter>
           </Option>
         </Options>
         <Position>
-          <StartLine>38</StartLine>
+          <StartLine>40</StartLine>
+          <EndLine>80</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="4245">
+        <Name>OMPTaskDirective</Name>
+        <Options>
+          <Option>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
+          </Option>
+        </Options>
+        <Position>
+          <StartLine>42</StartLine>
+          <EndLine>45</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="400">
+        <Name>BARRIER</Name>
+        <Position>
+          <StartLine>40</StartLine>
+        </Position>
+      </Pragma>
+      <Pragma id="8388">
+        <Name>OMPParallelDirective</Name>
+        <Options>
+          <Option>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
+          </Option>
+        </Options>
+        <Position>
+          <StartLine>83</StartLine>
+          <EndLine>88</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="8587">
+        <Name>OMPForDirective</Name>
+        <Position>
+          <StartLine>85</StartLine>
+          <EndLine>87</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="830">
+        <Name>BARRIER</Name>
+        <Position>
+          <StartLine>83</StartLine>
+        </Position>
+      </Pragma>
+      <Pragma id="4851">
+        <Name>OMPTaskDirective</Name>
+        <Options>
+          <Option>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
+          </Option>
+        </Options>
+        <Position>
+          <StartLine>48</StartLine>
+          <EndLine>51</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="5456">
+        <Name>OMPForDirective</Name>
+        <Position>
+          <StartLine>54</StartLine>
+          <EndLine>56</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="5974">
+        <Name>OMPTaskDirective</Name>
+        <Options>
+          <Option>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
+          </Option>
+        </Options>
+        <Position>
+          <StartLine>59</StartLine>
           <EndLine>74</EndLine>
         </Position>
       </Pragma>
-      <Pragma>
-        <Name>omp task</Name>
-        <id>4144</id>
+      <Pragma id="6163">
+        <Name>OMPTaskDirective</Name>
         <Options>
           <Option>
-            <Name>deadline</Name>
-            <Parameter>0.111</Parameter>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
           </Option>
         </Options>
         <Position>
-          <StartLine>41</StartLine>
-          <EndLine>44</EndLine>
+          <StartLine>61</StartLine>
+          <EndLine>63</EndLine>
         </Position>
       </Pragma>
-      <Pragma>
+      <Pragma id="590">
         <Name>BARRIER</Name>
-        <id>380</id>
         <Position>
-          <StartLine>38</StartLine>
+          <StartLine>59</StartLine>
         </Position>
       </Pragma>
-      <Pragma>
-        <Name>omp parallel</Name>
-        <id>7782</id>
+      <Pragma id="6672">
+        <Name>OMPTaskDirective</Name>
         <Options>
           <Option>
-            <Name>deadline</Name>
-            <Parameter>0.35</Parameter>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
           </Option>
         </Options>
         <Position>
-          <StartLine>77</StartLine>
-          <EndLine>82</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp for</Name>
-        <id>7981</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.25</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>79</StartLine>
-          <EndLine>81</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>BARRIER</Name>
-        <id>770</id>
-        <Position>
-          <StartLine>77</StartLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp task</Name>
-        <id>4750</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.15</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>47</StartLine>
-          <EndLine>50</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp task</Name>
-        <id>5368</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.15</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>53</StartLine>
-          <EndLine>68</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp task</Name>
-        <id>5557</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.25</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>55</StartLine>
-          <EndLine>57</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>BARRIER</Name>
-        <id>530</id>
-        <Position>
-          <StartLine>53</StartLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp task</Name>
-        <id>6066</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.25</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>60</StartLine>
-          <EndLine>66</EndLine>
-        </Position>
-      </Pragma>
-      <Pragma>
-        <Name>omp task</Name>
-        <id>7072</id>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.25</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>70</StartLine>
+          <StartLine>66</StartLine>
           <EndLine>72</EndLine>
+        </Position>
+      </Pragma>
+      <Pragma id="7678">
+        <Name>OMPTaskDirective</Name>
+        <Options>
+          <Option>
+            <Name>shared</Name>
+            <Parameter>
+              <Var>b</Var>
+              <Type>int</Type>
+            </Parameter>
+          </Option>
+        </Options>
+        <Position>
+          <StartLine>76</StartLine>
+          <EndLine>78</EndLine>
         </Position>
       </Pragma>
     </Nodes>
     <Nodes>
       <Edge>
-        <Source>260</Source>
-        <Dest>3335</Dest>
+        <Source>280</Source>
+        <Dest>3537</Dest>
       </Edge>
       <Edge>
-        <Source>3335</Source>
-        <Dest>3874</Dest>
+        <Source>3537</Source>
+        <Dest>4080</Dest>
       </Edge>
       <Edge>
-        <Source>3874</Source>
-        <Dest>4144</Dest>
+        <Source>4080</Source>
+        <Dest>4245</Dest>
       </Edge>
       <Edge>
-        <Source>4144</Source>
-        <Dest>380</Dest>
+        <Source>4245</Source>
+        <Dest>400</Dest>
       </Edge>
       <Edge>
-        <Source>380</Source>
-        <Dest>7782</Dest>
+        <Source>400</Source>
+        <Dest>8388</Dest>
       </Edge>
       <Edge>
-        <Source>7782</Source>
-        <Dest>7981</Dest>
+        <Source>8388</Source>
+        <Dest>8587</Dest>
       </Edge>
       <Edge>
-        <Source>7981</Source>
-        <Dest>770</Dest>
+        <Source>8587</Source>
+        <Dest>830</Dest>
       </Edge>
       <Edge>
-        <Source>3874</Source>
-        <Dest>4750</Dest>
+        <Source>4080</Source>
+        <Dest>4851</Dest>
       </Edge>
       <Edge>
-        <Source>4750</Source>
-        <Dest>380</Dest>
+        <Source>4851</Source>
+        <Dest>400</Dest>
       </Edge>
       <Edge>
-        <Source>3874</Source>
-        <Dest>5368</Dest>
+        <Source>4080</Source>
+        <Dest>5456</Dest>
       </Edge>
       <Edge>
-        <Source>5368</Source>
-        <Dest>5557</Dest>
+        <Source>5456</Source>
+        <Dest>400</Dest>
       </Edge>
       <Edge>
-        <Source>5557</Source>
-        <Dest>530</Dest>
+        <Source>4080</Source>
+        <Dest>5974</Dest>
       </Edge>
       <Edge>
-        <Source>530</Source>
-        <Dest>380</Dest>
+        <Source>5974</Source>
+        <Dest>6163</Dest>
       </Edge>
       <Edge>
-        <Source>5368</Source>
-        <Dest>6066</Dest>
+        <Source>6163</Source>
+        <Dest>590</Dest>
       </Edge>
       <Edge>
-        <Source>6066</Source>
-        <Dest>530</Dest>
+        <Source>590</Source>
+        <Dest>400</Dest>
       </Edge>
       <Edge>
-        <Source>3874</Source>
-        <Dest>7072</Dest>
+        <Source>5974</Source>
+        <Dest>6672</Dest>
       </Edge>
       <Edge>
-        <Source>7072</Source>
-        <Dest>380</Dest>
+        <Source>6672</Source>
+        <Dest>590</Dest>
+      </Edge>
+      <Edge>
+        <Source>4080</Source>
+        <Dest>7678</Dest>
+      </Edge>
+      <Edge>
+        <Source>7678</Source>
+        <Dest>400</Dest>
       </Edge>
     </Nodes>
   </Function>

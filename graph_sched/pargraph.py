@@ -196,7 +196,7 @@ def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 		tmp_name = d.find('Name').text.replace("::", " ")
 		visual_name = tmp_name + "@%s" % key
 
-		if (tmp_name == 'omp parallel for' or tmp_name == 'omp for'):
+		if ("For" in tmp_name ):
 			loops = func_pragmas[key][2]
 			if (d.find('For/Declaration/InitValue') != None):
 				init_value = d.find('For/Declaration/InitValue').text
@@ -218,7 +218,7 @@ def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 		deadline = None
 		if(d.find('Options')):
 			for op in d.find('Options').findall('Option'):
-				Objchild.options.append( (op.find('Name').text,[i.text for i in op.findall('Parameter')]) )
+				Objchild.options.append( (op.find('Name').text,[get_parameter(i) for i in op.findall('Parameter')]) )
 				if op.find('Name').text == 'deadline':
 					deadline = op.find('Parameter').text
 
@@ -290,7 +290,7 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 		tmp_name = d.find('Name').text.replace("::", " ")
 		visual_name = tmp_name+"@%s"%key
 
-		if (tmp_name == 'omp parallel for' or tmp_name == 'omp for'):
+		if ("For" in tmp_name ):
 			if (d.find('For/Declaration/InitValue') != None):
 				init_value = d.find('For/Declaration/InitValue').text
 			else:
@@ -311,7 +311,7 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 		deadline = None
 		if(d.find('Options')):
 			for op in d.findall('Options/Option'):
-				Objchild.options.append( (op.find('Name').text,[i.text for i in op.findall('Parameter')]) )
+				Objchild.options.append( (op.find('Name').text,[get_parameter(i) for i in op.findall('Parameter')]) )
 				if op.find('Name').text == 'deadline':
 					deadline = op.find('Parameter').text
 		Objchild.end_line = end_line
@@ -644,9 +644,8 @@ def dump_graphs(flow_graphs):
 	graph_type.text = "flow"
 	for func in flow_graphs:
 		function = ET.SubElement(root, 'Function')
+		function.attrib['id'] = str(func.start_line) + str(func.end_line)
 		func_name = ET.SubElement(function, 'Name')
-		id = ET.SubElement(function, 'id')
-		id.text = str(func.start_line) + str(func.end_line)
 		func_name.text = func.type
 		returnType = ET.SubElement(function, 'ReturnType')
 		returnType.text = func.returnType
@@ -687,13 +686,12 @@ def dump_pragmas(pragma_node, pragmas_element, pragma_list):
 		if str(pragma.start_line) + str(pragma.end_line) not in pragma_list:
 			pragma_list.append(str(pragma.start_line) + str(pragma.end_line))
 			pragma_ = ET.SubElement(pragmas_element, 'Pragma')
+			pragma_.attrib['id'] = str(pragma.start_line) + str(pragma.end_line)
 			name = ET.SubElement(pragma_, 'Name')
 			if not "_end" in pragma.type:
 				name.text = pragma.type
 			else:
 				name.text = "BARRIER"
-			id = ET.SubElement(pragma_, 'id')
-			id.text = str(pragma.start_line) + str(pragma.end_line)
 			if(len(pragma.options) != 0):
 				options = ET.SubElement(pragma_, 'Options')
 				for op in pragma.options:
@@ -702,7 +700,10 @@ def dump_pragmas(pragma_node, pragmas_element, pragma_list):
 					op_name.text = op[0]
 					for par in op[1]:
 						op_parameter = ET.SubElement(option, 'Parameter')
-						op_parameter.text = par
+						op_var = ET.SubElement(op_parameter, 'Var')
+						op_var.text = par[1]
+						op_type = ET.SubElement(op_parameter, 'Type')
+						op_type.text = par[0]
 			position = ET.SubElement(pragma_, 'Position')
 			start = ET.SubElement(position, 'StartLine')
 			start.text = pragma.start_line
@@ -757,6 +758,57 @@ def explode_graph(flow_graphs):
 				last_node.children = children_list
 				for child in children_list:
 					child.parent.append(last_node)
+
+
+def get_parameter(parameter):
+	if parameter.find('Type') != None:
+		type_ = parameter.find('Type').text
+	else:
+		type_ = 'None'
+	return (type_, parameter.find('Var').text)
+
+def get_flow(flow_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
+	task_i = get_task(level)
+	if task_i == None or len(flow_list) > MAX_FLOWS:
+		break
+	new_flow = []
+	for flow in flow_list :
+		flow.append(task_i)
+		if get_bandwidth(flow) <= 1:
+			if level == NUM_TASKS:
+				if get_tot_bandwidth(flow_list) < get_tot_bandwidth(optimal_flow):
+					optimal_flow = deepcopy(flow_list)
+			else:
+				get_flow(copy.deepcopy(flow_list), level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
+		else:
+			flow.remove(task_i)
+	new_flow.append(task_i)
+	flow_list.append(new_flow)
+	get_flow(copy.deepcopy(flow_list), level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
+
+
+
+def get_task(node, node_list, pre = ""):
+	#print pre, node.type
+	if (node.type+node.start_line) not in node_list:
+		node_list.append(node.type+node.start_line)
+		yield node
+		for n in node.children:
+			scanGraph(n, node_list, pre + "  ")
+
+
+
+
+	
+	
+
+
+
+
+
+
+
+
 
 
 

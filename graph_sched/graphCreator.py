@@ -51,7 +51,7 @@ if __name__ == "__main__":
 	exp_flows = copy.deepcopy(flow_graphs)
 	par.explode_graph(exp_flows)
 	node_list = []
-	#par.scanGraph(exp_flows[1], node_list)
+	par.scanGraph(exp_flows[1], node_list)
 
 	#prints the object flow graphs
 	l = []

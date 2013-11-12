@@ -1,8 +1,7 @@
 <File>
-  <Name>test/inputs/omp_test.cpp</Name>
+  <Name>test_cases/omp_test.cpp</Name>
   <Function>
     <Name>y</Name>
-    <ClassName>X</ClassName>
     <ReturnType>float *</ReturnType>
     <Parameters>
       <Parameter>
@@ -14,48 +13,32 @@
         <Name>c</Name>
       </Parameter>
     </Parameters>
-    <Line>8</Line>
+    <Line>9</Line>
     <Pragmas>
       <Pragma>
-        <Name>omp::parallel</Name>
+        <Name>OMPParallelDirective</Name>
         <Options>
           <Option>
-            <Name>deadline</Name>
-            <Parameter>0.1</Parameter>
-          </Option>
-          <Option>
-            <Name>firstprivate</Name>
-            <Parameter>n</Parameter>
+            <Name>shared</Name>
+            <Parameter>
+              <Type>int</Type>
+              <Var>n</Var>
+            </Parameter>
           </Option>
         </Options>
         <Position>
-          <StartLine>14</StartLine>
-          <EndLine>16</EndLine>
+          <StartLine>15</StartLine>
+          <EndLine>17</EndLine>
         </Position>
         <Time>1.0</Time>
         <Variance>0.0</Variance>
-        <Callerid>8</Callerid>
+        <Callerid>9</Callerid>
       </Pragma>
       <Pragma>
-        <Name>omp::parallel for</Name>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.53</Parameter>
-          </Option>
-          <Option>
-            <Name>firstprivate</Name>
-            <Parameter>n</Parameter>
-          </Option>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>b</Parameter>
-            <Parameter>a</Parameter>
-          </Option>
-        </Options>
+        <Name>OMPForDirective</Name>
         <Position>
-          <StartLine>19</StartLine>
-          <EndLine>20</EndLine>
+          <StartLine>21</StartLine>
+          <EndLine>22</EndLine>
         </Position>
         <For>
           <Declaration>
@@ -71,30 +54,28 @@
             <Op>++</Op>
           </Increment>
         </For>
+        <Time>1.0</Time>
+        <Variance>0.0</Variance>
+        <Loops>125.0</Loops>
+        <Callerid>9</Callerid>
       </Pragma>
     </Pragmas>
-    <Time>1.0</Time>
+    <Time>2.0</Time>
     <Variance>0.0</Variance>
     <Callerids>
-      <Callerid>60</Callerid>
+      <Callerid>66</Callerid>
     </Callerids>
   </Function>
   <Function>
     <Name>main</Name>
     <ReturnType>int</ReturnType>
-    <Line>26</Line>
+    <Line>28</Line>
     <Pragmas>
       <Pragma>
-        <Name>omp::parallel for</Name>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>1</Parameter>
-          </Option>
-        </Options>
+        <Name>OMPForDirective</Name>
         <Position>
-          <StartLine>33</StartLine>
-          <EndLine>35</EndLine>
+          <StartLine>35</StartLine>
+          <EndLine>37</EndLine>
         </Position>
         <For>
           <Declaration>
@@ -114,159 +95,202 @@
         <Time>1.0</Time>
         <Variance>0.0</Variance>
         <Loops>1.0</Loops>
-        <Callerid>26</Callerid>
+        <Callerid>28</Callerid>
       </Pragma>
       <Pragma>
-        <Name>omp::parallel</Name>
+        <Name>OMPParallelDirective</Name>
         <Options>
           <Option>
-            <Name>deadline</Name>
-            <Parameter>0.1</Parameter>
+            <Name>shared</Name>
+            <Parameter>
+              <Type>int</Type>
+              <Var>a</Var>
+            </Parameter>
           </Option>
         </Options>
         <Position>
-          <StartLine>38</StartLine>
-          <EndLine>74</EndLine>
+          <StartLine>40</StartLine>
+          <EndLine>80</EndLine>
         </Position>
         <Children>
           <Pragmas>
             <Pragma>
-              <Name>omp::task</Name>
+              <Name>OMPTaskDirective</Name>
               <Options>
                 <Option>
-                  <Name>deadline</Name>
-                  <Parameter>0.111</Parameter>
+                  <Name>shared</Name>
+                  <Parameter>
+                    <Type>int</Type>
+                    <Var>b</Var>
+                  </Parameter>
                 </Option>
               </Options>
               <Position>
-                <StartLine>41</StartLine>
-                <EndLine>44</EndLine>
+                <StartLine>42</StartLine>
+                <EndLine>45</EndLine>
               </Position>
               <Time>1.0</Time>
               <Variance>0.0</Variance>
-              <Callerid>38</Callerid>
+              <Callerid>40</Callerid>
             </Pragma>
             <Pragma>
-              <Name>omp::task</Name>
+              <Name>OMPTaskDirective</Name>
               <Options>
                 <Option>
-                  <Name>deadline</Name>
-                  <Parameter>0.15</Parameter>
+                  <Name>shared</Name>
+                  <Parameter>
+                    <Type>int</Type>
+                    <Var>b</Var>
+                  </Parameter>
                 </Option>
               </Options>
               <Position>
-                <StartLine>47</StartLine>
-                <EndLine>50</EndLine>
+                <StartLine>48</StartLine>
+                <EndLine>51</EndLine>
               </Position>
               <Time>1.0</Time>
               <Variance>0.0</Variance>
-              <Callerid>38</Callerid>
+              <Callerid>40</Callerid>
             </Pragma>
             <Pragma>
-              <Name>omp::task</Name>
-              <Options>
-                <Option>
-                  <Name>deadline</Name>
-                  <Parameter>0.15</Parameter>
-                </Option>
-              </Options>
+              <Name>OMPForDirective</Name>
               <Position>
-                <StartLine>53</StartLine>
-                <EndLine>68</EndLine>
-              </Position>
-              <Children>
-                <Pragmas>
-                  <Pragma>
-                    <Name>omp::task</Name>
-                    <Options>
-                      <Option>
-                        <Name>deadline</Name>
-                        <Parameter>0.25</Parameter>
-                      </Option>
-                    </Options>
-                    <Position>
-                      <StartLine>55</StartLine>
-                      <EndLine>57</EndLine>
-                    </Position>
-                    <Time>1.0</Time>
-                    <Variance>0.0</Variance>
-                    <Callerid>53</Callerid>
-                  </Pragma>
-                  <Pragma>
-                    <Name>omp::task</Name>
-                    <Options>
-                      <Option>
-                        <Name>deadline</Name>
-                        <Parameter>0.25</Parameter>
-                      </Option>
-                    </Options>
-                    <Position>
-                      <StartLine>60</StartLine>
-                      <EndLine>66</EndLine>
-                    </Position>
-                    <Time>2.0</Time>
-                    <Variance>0.0</Variance>
-                    <Callerid>53</Callerid>
-                  </Pragma>
-                </Pragmas>
-              </Children>
-              <Time>4.0</Time>
-              <Variance>0.0</Variance>
-              <Callerid>38</Callerid>
-            </Pragma>
-            <Pragma>
-              <Name>omp::task</Name>
-              <Options>
-                <Option>
-                  <Name>deadline</Name>
-                  <Parameter>0.25</Parameter>
-                </Option>
-              </Options>
-              <Position>
-                <StartLine>70</StartLine>
-                <EndLine>72</EndLine>
-              </Position>
-              <Time>1.0</Time>
-              <Variance>0.0</Variance>
-              <Callerid>38</Callerid>
-            </Pragma>
-          </Pragmas>
-        </Children>
-        <Time>7.0</Time>
-        <Variance>0.0</Variance>
-        <Callerid>26</Callerid>
-      </Pragma>
-      <Pragma>
-        <Name>omp::parallel</Name>
-        <Options>
-          <Option>
-            <Name>deadline</Name>
-            <Parameter>0.35</Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>77</StartLine>
-          <EndLine>82</EndLine>
-        </Position>
-        <Children>
-          <Pragmas>
-            <Pragma>
-              <Name>omp::for</Name>
-              <Options>
-                <Option>
-                  <Name>deadline</Name>
-                  <Parameter>0.25</Parameter>
-                </Option>
-              </Options>
-              <Position>
-                <StartLine>79</StartLine>
-                <EndLine>81</EndLine>
+                <StartLine>54</StartLine>
+                <EndLine>56</EndLine>
               </Position>
               <For>
                 <Declaration>
                   <Type>int</Type>
                   <LoopVariable>i</LoopVariable>
-                  <InitValue>99</InitValue>
+                  <InitValue>1</InitValue>
+                </Declaration>
+                <Condition>
+                  <Op>&lt;</Op>
+                  <ConditionValue>2</ConditionValue>
+                </Condition>
+                <Increment>
+                  <Op>++</Op>
+                </Increment>
+              </For>
+              <Time>1.0</Time>
+              <Variance>0.0</Variance>
+              <Loops>2.0</Loops>
+              <Callerid>40</Callerid>
+            </Pragma>
+            <Pragma>
+              <Name>OMPTaskDirective</Name>
+              <Options>
+                <Option>
+                  <Name>shared</Name>
+                  <Parameter>
+                    <Type>int</Type>
+                    <Var>b</Var>
+                  </Parameter>
+                </Option>
+              </Options>
+              <Position>
+                <StartLine>59</StartLine>
+                <EndLine>74</EndLine>
+              </Position>
+              <Children>
+                <Pragmas>
+                  <Pragma>
+                    <Name>OMPTaskDirective</Name>
+                    <Options>
+                      <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                          <Type>int</Type>
+                          <Var>b</Var>
+                        </Parameter>
+                      </Option>
+                    </Options>
+                    <Position>
+                      <StartLine>61</StartLine>
+                      <EndLine>63</EndLine>
+                    </Position>
+                    <Time>1.0</Time>
+                    <Variance>0.0</Variance>
+                    <Callerid>59</Callerid>
+                  </Pragma>
+                  <Pragma>
+                    <Name>OMPTaskDirective</Name>
+                    <Options>
+                      <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                          <Type>int</Type>
+                          <Var>b</Var>
+                        </Parameter>
+                      </Option>
+                    </Options>
+                    <Position>
+                      <StartLine>66</StartLine>
+                      <EndLine>72</EndLine>
+                    </Position>
+                    <Time>3.0</Time>
+                    <Variance>0.0</Variance>
+                    <Callerid>59</Callerid>
+                  </Pragma>
+                </Pragmas>
+              </Children>
+              <Time>5.0</Time>
+              <Variance>0.0</Variance>
+              <Callerid>40</Callerid>
+            </Pragma>
+            <Pragma>
+              <Name>OMPTaskDirective</Name>
+              <Options>
+                <Option>
+                  <Name>shared</Name>
+                  <Parameter>
+                    <Type>int</Type>
+                    <Var>b</Var>
+                  </Parameter>
+                </Option>
+              </Options>
+              <Position>
+                <StartLine>76</StartLine>
+                <EndLine>78</EndLine>
+              </Position>
+              <Time>1.0</Time>
+              <Variance>0.0</Variance>
+              <Callerid>40</Callerid>
+            </Pragma>
+          </Pragmas>
+        </Children>
+        <Time>9.0</Time>
+        <Variance>0.0</Variance>
+        <Callerid>28</Callerid>
+      </Pragma>
+      <Pragma>
+        <Name>OMPParallelDirective</Name>
+        <Options>
+          <Option>
+            <Name>shared</Name>
+            <Parameter>
+              <Type>int</Type>
+              <Var>b</Var>
+            </Parameter>
+          </Option>
+        </Options>
+        <Position>
+          <StartLine>83</StartLine>
+          <EndLine>88</EndLine>
+        </Position>
+        <Children>
+          <Pragmas>
+            <Pragma>
+              <Name>OMPForDirective</Name>
+              <Position>
+                <StartLine>85</StartLine>
+                <EndLine>87</EndLine>
+              </Position>
+              <For>
+                <Declaration>
+                  <Type>int</Type>
+                  <LoopVariable>i</LoopVariable>
+                  <InitValue>1</InitValue>
                 </Declaration>
                 <Condition>
                   <Op>&lt;</Op>
@@ -279,17 +303,17 @@
               </For>
               <Time>1.0</Time>
               <Variance>0.0</Variance>
-              <Loops>100.0</Loops>
-              <Callerid>77</Callerid>
+              <Loops>2.0</Loops>
+              <Callerid>83</Callerid>
             </Pragma>
           </Pragmas>
         </Children>
         <Time>1.0</Time>
         <Variance>0.0</Variance>
-        <Callerid>26</Callerid>
+        <Callerid>28</Callerid>
       </Pragma>
     </Pragmas>
-    <Time>9.0</Time>
+    <Time>11.0</Time>
     <Variance>0.0</Variance>
   </Function>
   <GraphType>Code</GraphType>
