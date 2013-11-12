@@ -5,7 +5,9 @@ LLVMCONFIG := llvm-config
 
 INCLUDEPATH := -I./include/
 CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(LLVMCONFIG) \
-			--obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(INCLUDEPATH) $(RTTIFLAG)
+			--obj-root)/tools/clang/include $(shell $(LLVMCONFIG) --cxxflags) $(INCLUDEPATH) \
+			$(RTTIFLAG) -std=c++11
+
 LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
 #SOURCES = src/main.cpp src/driver/compiler.cpp src/driver/program.cpp src/utils/source_locations.cpp

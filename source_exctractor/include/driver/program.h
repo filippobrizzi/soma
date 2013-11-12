@@ -10,7 +10,6 @@
 #include "clang/Parse/ParseAST.h"
 #include "clang/Rewrite/Core/Rewriter.h"
 #include "llvm/Support/raw_ostream.h"
-
 #include <string>
 #include <iostream>
 

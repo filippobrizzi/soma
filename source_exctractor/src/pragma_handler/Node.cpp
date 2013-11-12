@@ -23,7 +23,7 @@ Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang
 
 	if(strcmp(pragma->getStmtClassName(), "OMPForDirective") == 0) {
     clang::ForStmt *fs = static_cast<clang::ForStmt *>(static_cast<clang::CapturedStmt *>(pragma->getAssociatedStmt())->getCapturedStmt());
-		this->forNode = new ForNode(fs);
+    this->forNode = new ForNode(fs);
   } else
 		this->forNode = NULL;
 
@@ -33,7 +33,9 @@ Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang
 void Node::toLocationStruct(const clang::SourceManager& sm) {
   
   SourceLocationStruct sL;
-  clang::Stmt *s = static_cast<clang::CapturedStmt *>(pragma->getAssociatedStmt())->getCapturedStmt();
+  clang::Stmt *s = pragma;
+  if(pragma->getAssociatedStmt())
+    s = static_cast<clang::CapturedStmt *>(pragma->getAssociatedStmt())->getCapturedStmt();
 
   if(s != NULL) {
     fileName = utils::FileName(s->getLocStart(), sm);
@@ -272,7 +274,7 @@ void Node::visitNodeChildren() {
 void Node::getPragmaInfo() {
 
 	std::cout << this->pragmaName << std::endl;
-
+  std::cout << "Num clauses = " << this->pragma->getNumClauses() << std::endl;
 	for(std::map<std::string, varList>:: iterator itm = optionVect->begin(); itm != optionVect->end(); ++itm) {
 		std::cout << (*itm).first << ": ";
 		for(varList::iterator itv = (*itm).second.begin(); itv != (*itm).second.end(); ++ itv)

@@ -1,0 +1,5 @@
+
+Check the problem of the clauses for the #omp parallel for:
+	the clauses are associated with the #omp parallel instead of the #omp for.
+
+Check why myprogram doesn't work with Cloth.cpp
