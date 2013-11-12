@@ -14,8 +14,10 @@ int main(int argc, char **argv) {
 	Program program(argc, argv);
 
 	
-
 	std::vector<Root *> *rootVect = CreateTree(program.getPragmaList(), program.getFunctionList(), program.ccompiler.getSourceManager());
+
+
+	std::cout << "CIAO uuuu" << std::endl;
 
 	for(std::vector<Root *>::iterator itr = rootVect->begin(); itr != rootVect->end(); ++itr) 
 		(*itr)->visitTree();

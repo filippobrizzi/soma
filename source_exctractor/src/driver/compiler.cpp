@@ -48,6 +48,17 @@ ClangCompiler::ClangCompiler(int argc, char **argv) {
 	          false,
 	          false);
 
+/*  headerSearchOptions.AddPath("/usr/include/c++/4.8/",
+            clang::frontend::Angled,
+            false,
+            false);
+
+  headerSearchOptions.AddPath("/usr/include/x86_64-linux-gnu/c++/4.8/",
+            clang::frontend::Angled,
+            false,
+            false);
+*/
+
  // Allow C++ code to get rewritten
   clang::LangOptions langOpts;
   langOpts.GNUMode = 1; 
@@ -64,11 +75,10 @@ ClangCompiler::ClangCompiler(int argc, char **argv) {
 
   compiler.createASTContext();
 
-/*  	// Get filename
-  	std::string fileName(argv[1]);  
-  	const FileEntry *pFile = compiler.getFileManager().getFile(fileName);
-  	compiler.getSourceManager().createMainFileID(pFile);
-  	compiler.getDiagnosticClient().BeginSourceFile(compiler.getLangOpts(), &compiler.getPreprocessor());
-*/
+  	// Get filename
+  std::string fileName(argv[argc - 1]);  
+  const FileEntry *pFile = compiler.getFileManager().getFile(fileName);
+  compiler.getSourceManager().createMainFileID(pFile);
+  compiler.getDiagnosticClient().BeginSourceFile(compiler.getLangOpts(), &compiler.getPreprocessor());
 
 }

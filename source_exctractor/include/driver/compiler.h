@@ -11,6 +11,7 @@
 #include "clang/Basic/Diagnostic.h"
 #include "clang/AST/ASTContext.h"
 
+
 //TODO make the class non copiable
 class ClangCompiler {
 
@@ -27,9 +28,6 @@ public:
 	clang::Preprocessor &getPreprocessor() { return compiler.getPreprocessor(); }
 	clang::ASTContext &getASTContext() { return compiler.getASTContext(); }
 	clang::FileManager &getFileManager() { return compiler.getFileManager(); }
+
+	//ProfilingASTConsumer astConsumer2;
 };
-
-
-
-
-

@@ -20,7 +20,7 @@ ForNode::ForNode(clang::ForStmt *fors) {
 
 
 void ForNode::forSetParameters(clang::ForStmt *fs) {
-
+  
   this->forInitialization(fs);
   this->forCondition(fs);
   this->forIncrement(fs);
@@ -112,6 +112,7 @@ void ForNode::forCondition(clang::ForStmt *fs) {
  *  Conditional value
  */
   const clang::Expr *rEx = bO->getRHS();
+
   if(strcmp(rEx->getStmtClassName(), "IntegerLiteral") == 0) {
     const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(rEx);
     this->conditionVal = iL->getValue().getZExtValue();
@@ -120,9 +121,18 @@ void ForNode::forCondition(clang::ForStmt *fs) {
   } else if(strcmp(rEx->getStmtClassName(), "ImplicitCastExpr") == 0) {
     const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(rEx->child_begin()));
     const clang::NamedDecl *nD = dRE->getFoundDecl();
-    this->conditionVar = nD->getNameAsString(); 
+/*
+ * ---- PROBLEM: If the variable is not definedi inside the block (which block?)
+ * ----          the NameDecl * is != NULL, but when you try to exctract the name -> segmentation fault!!
+ */
+    this->conditionVar = nD->getNameAsString();
+  
+ 
   }
 }
+
+
+
 
 void ForNode::forIncrement(clang::ForStmt *fs) {
   
