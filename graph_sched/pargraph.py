@@ -143,6 +143,20 @@ class Time_Node():
 		self.caller_list = []
 		self.children_time = []
 
+class Flow():
+	def __init__(self):
+		self.tasks = []
+		self.bandwidth = 0
+	def add_task(self, task):
+		self.tasks.append(task)
+		self.update()
+	def update(self):
+		pass
+	def dump(self):
+		print "flow:"
+		for task in self.tasks:
+			print task.type," "
+
 def scanGraph(node):
 	#print pre, node.type
 	if node.color != 'black':
@@ -344,7 +358,6 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 			node = child
 			treeNode = Objchild
 
-
 def getNesGraph(xml, profile_xml):
 	tree = ET.ElementTree(file = xml) 
 	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
@@ -369,7 +382,6 @@ def getNesGraph(xml, profile_xml):
 		count += 1
 
 	return graphs
-
 
 def getProfilesMap(profile_xml):
 	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
@@ -431,7 +443,6 @@ def getParalGraph(pragma_xml, profile_xml):
 		scan(n, graphs[count], pragma_graph_root, objGraph[count], functions[n.find('Line').text].pragmas, root)
 		count = count + 1
 	return (graphs, objGraph)
-
 
 def profileCreator(cycle, executable):
 	pragma_times = {}
@@ -604,7 +615,6 @@ def create_complete_graph(visual_flow_graphs, profile_xml):
 
 	return func_graph
 
-
 def get_last(node):
 	if not node.children:
 		return node	
@@ -740,7 +750,6 @@ def find_sub_node(node, function):
 			return tmp_node
 	return None
 
-
 def explode_graph(flow_graphs):
 	for function in flow_graphs:
 		caller_list = function.callerid
@@ -760,7 +769,6 @@ def explode_graph(flow_graphs):
 				for child in children_list:
 					child.parent.append(last_node)
 
-
 def get_parameter(parameter):
 	if parameter.find('Type') != None:
 		type_ = parameter.find('Type').text
@@ -768,25 +776,39 @@ def get_parameter(parameter):
 		type_ = 'None'
 	return (type_, parameter.find('Var').text)
 
-def get_flow(flow_list, task_gen, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
-	task_i = task_gen.next()
-	if task_i != None and len(flow_list) <= MAX_FLOWS:	
-		new_flow = []
-		for flow in flow_list :
-			flow.append(task_i)
-			if get_bandwidth(flow) <= 1:
-				if level == NUM_TASKS:
-					if get_tot_bandwidth(flow_list) < get_tot_bandwidth(optimal_flow):
-						optimal_flow = deepcopy(flow_list)
+def get_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
+	if len(flow_list) <= MAX_FLOWS and level < NUM_TASKS:
+		task_i = task_list[level]	
+		new_flow = Flow()
+		flow_list_2 = copy.deepcopy(flow_list)
+		for flow in flow_list_2 :
+			flow.add_task(task_i)
+			if flow.bandwidth <= 1:
+				if level == NUM_TASKS-1:
+					print
+					print "solution:"
+					for flow in flow_list_2:
+						flow.dump()
+					#if get_tot_bandwidth(flow_list_2) < get_tot_bandwidth(optimal_flow):
+						#optimal_flow = deepcopy(flow_list_2)
 				else:
-					get_flow(copy.deepcopy(flow_list), level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
+					get_flow(copy.deepcopy(flow_list_2), task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
 			else:
-				flow.remove(task_i)
-		new_flow.append(task_i)
+				flow.tasks.remove(task_i)
+		new_flow.add_task(task_i)
 		flow_list.append(new_flow)
-		get_flow(copy.deepcopy(flow_list), task_gen, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
-
-
+		if new_flow.bandwidth <= 1:
+				if level == NUM_TASKS - 1:
+					print
+					print "solution:"
+					for flow in flow_list:
+						flow.dump()
+					#if get_tot_bandwidth(flow_list) < get_tot_bandwidth(optimal_flow):
+						#optimal_flow = deepcopy(flow_list)
+				else:
+					get_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
+		else:
+			new_flow.tasks.remove(task_i)
 
 def generate_task(node):
 	if node.color != 'black':
@@ -810,6 +832,10 @@ def get_main(exp_flows):
 	for i in range(len(exp_flows)):
 		if exp_flows[i].type == 'main':
 			return exp_flows[i]
+
+
+
+	
 
 
 

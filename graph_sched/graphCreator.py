@@ -56,7 +56,7 @@ if __name__ == "__main__":
 	main_flow = par.get_main(exp_flows)
 
 	#creating a generator for the expanded graph
-	gen = par.generate_task(main_flow)
+	gen = par.generate_task(exp_flows[0])
 
 	#getting the number of tasks in the expanded graph
 	num_tasks = 0
@@ -64,12 +64,19 @@ if __name__ == "__main__":
 		num_tasks += 1
 
 	#creating a new generator for the expanded graph
-	par.make_white(main_flow)
-	gen = par.generate_task(main_flow)
+	par.make_white(exp_flows[0])
+	gen = par.generate_task(exp_flows[0])
+	task_list = []
+	for task in gen:
+		task_list.append(task)
 
 	#getting the number of physical cores of the machine
 	max_flows = par.get_core_num(profile_xml)
-	par.scanGraph(main_flow)
+	#par.scanGraph(main_flow)
+
+	flow_list = []
+	opt_flow = []
+	par.get_flow(flow_list, task_list, 0, opt_flow, num_tasks, max_flows)
 
 	#prints the object flow graphs
 	if(output == "True"):
