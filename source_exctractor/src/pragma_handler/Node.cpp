@@ -9,15 +9,19 @@
 
 
 Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang::SourceManager& sm){
-
-	this->pragma = pragma;
-
-  toLocationStruct(sm);
-
-	setParentFunction(fd, sm);	
-
+  
   this->optionVect = new std::map<std::string, varList>();
-	setPragmaName(sm);
+  this->pragma = pragma;
+
+  if(pragma->getAssociatedStmt()) {
+    if(strcmp(pragma->getStmtClassName(), "OMPParallelDirective") == 0 && utils::Line(pragma->getAssociatedStmt()->getLocStart(), sm) == utils::Line(pragma->getAssociatedStmt()->getLocEnd(), sm)){
+      setPragmaClauses(sm);
+      this->pragma = static_cast<clang::OMPExecutableDirective *>(static_cast<clang::CapturedStmt *>(pragma->getAssociatedStmt())->getCapturedStmt());
+    }
+  }
+  toLocationStruct(sm);
+	setParentFunction(fd, sm);	
+	setPragmaClauses(sm);
 
 	childrenVect = new std::vector<Node *>();
 
@@ -106,7 +110,7 @@ void Node::setParentFunction(clang::FunctionDecl *functD, const clang::SourceMan
 
 
 
-void Node::setPragmaName(clang::SourceManager& sm) {
+void Node::setPragmaClauses(clang::SourceManager& sm) {
 
 	this->pragmaName = this->pragma->getStmtClassName();
   
@@ -119,32 +123,26 @@ void Node::setPragmaName(clang::SourceManager& sm) {
   for(unsigned i = 0; i < nClauses; i ++) {
     c = pragma->getClause(i);
     cName = getOpenMPClauseName(c->getClauseKind());
-
+    varList *vl = new varList;
     if(strcmp(cName, "shared") == 0 || strcmp(cName, "private") == 0 || strcmp(cName, "firstprivate") == 0) {
-      varList vl;
       for(clang::StmtRange range = c->children(); range; ++ range) {
         const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*range);
         const clang::NamedDecl *nD = dRE->getFoundDecl();
         const clang::ValueDecl *vD = dRE->getDecl();
-        std::vector<std::string> vect;
-        vl.insert(vl.end(), std::pair<std::string, std::string>(vD->getType().getAsString(), nD->getNameAsString()));
+        vl->insert(std::pair<std::string, std::string>(nD->getNameAsString(), vD->getType().getAsString()));
       }
-      optionVect->insert(this->optionVect->end(), std::pair<std::string, varList>(cName, vl));
-
-    } else if(strcmp(cName, "period") == 0) {
-        clang::OMPPeriodClause *pC = static_cast<clang::OMPPeriodClause *>(c);
-          
-        const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(pC->getPeriodValue());
-        varList vl;
-        char periodVal[100];
-        sprintf(periodVal, "%lu", iL->getValue().getZExtValue());
-        vl.insert(vl.end(), std::pair<std::string, std::string>("", periodVal));
-        optionVect->insert(this->optionVect->end(), std::pair<std::string, varList>(cName, vl));
-    } else {
-      varList vl;
-      vl.insert(vl.end(), std::pair<std::string, std::string>("", ""));
-      optionVect->insert(this->optionVect->end(), std::pair<std::string, varList>(cName, vl));
+    }else if(strcmp(cName, "period") == 0) {
+      clang::OMPPeriodClause *pC = static_cast<clang::OMPPeriodClause *>(c);
+      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(pC->getPeriodValue());
+      char periodVal[100];
+      sprintf(periodVal, "%lu", iL->getValue().getZExtValue());
+      vl->insert(std::pair<std::string, std::string>(periodVal, ""));
+    }else {
+      vl->insert(std::pair<std::string, std::string>("", ""));
     }
+
+    optionVect->insert(std::pair<std::string, varList>(cName, *vl));
+
   }
 
 }
@@ -233,12 +231,12 @@ void Node::createXMLPragmaOptions(tinyxml2::XMLDocument *doc, tinyxml2::XMLEleme
 
           if(strcmp((*itv).first.c_str(), "") != 0) {
             tinyxml2::XMLElement *typeElement = doc->NewElement("Type");
-            tinyxml2::XMLText* typeText = doc->NewText((*itv).first.c_str());
+            tinyxml2::XMLText* typeText = doc->NewText((*itv).second.c_str());
             typeElement->InsertEndChild(typeText);
             parameterElement->InsertEndChild(typeElement);
           }
           tinyxml2::XMLElement *nameElement = doc->NewElement("Var");
-          tinyxml2::XMLText* nameText = doc->NewText((*itv).second.c_str());
+          tinyxml2::XMLText* nameText = doc->NewText((*itv).first.c_str());
           nameElement->InsertEndChild(nameText);
           parameterElement->InsertEndChild(nameElement);
 
@@ -274,11 +272,12 @@ void Node::visitNodeChildren() {
 void Node::getPragmaInfo() {
 
 	std::cout << this->pragmaName << std::endl;
-  std::cout << "Num clauses = " << this->pragma->getNumClauses() << std::endl;
+  std::cout << "Num clauses = " << this->optionVect->size() << std::endl;
 	for(std::map<std::string, varList>:: iterator itm = optionVect->begin(); itm != optionVect->end(); ++itm) {
 		std::cout << (*itm).first << ": ";
-		for(varList::iterator itv = (*itm).second.begin(); itv != (*itm).second.end(); ++ itv)
-			std::cout << " " << (*itv).first << " " << (*itv).second;
+		for(varList::iterator itv = (*itm).second.begin(); itv != (*itm).second.end(); ++ itv) {      
+			std::cout << " " << (*itv).second << " " << (*itv).first;
+    }
 
 		std::cout << std::endl;
 	}

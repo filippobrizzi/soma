@@ -21,17 +21,26 @@
                     <Option>
                         <Name>period</Name>
                         <Parameter>
+                            <Type></Type>
                             <Var>191</Var>
                         </Parameter>
                     </Option>
                     <Option>
                         <Name>shared</Name>
                         <Parameter>
+                            <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                        <Parameter>
                             <Type>float *</Type>
                             <Var>d</Var>
                         </Parameter>
                         <Parameter>
-                            <Type>int</Type>
+                            <Type>float</Type>
+                            <Var>e</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>double</Type>
                             <Var>n</Var>
                         </Parameter>
                     </Option>
@@ -42,41 +51,35 @@
                 </Position>
             </Pragma>
             <Pragma>
-                <Name>OMPParallelDirective</Name>
+                <Name>OMPForDirective</Name>
                 <Options>
+                    <Option>
+                        <Name>period</Name>
+                        <Parameter>
+                            <Type></Type>
+                            <Var>1</Var>
+                        </Parameter>
+                    </Option>
                     <Option>
                         <Name>shared</Name>
                         <Parameter>
                             <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
                             <Var>b</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>float *</Type>
+                            <Var>d</Var>
                         </Parameter>
                     </Option>
                 </Options>
                 <Position>
-                    <StartLine>20</StartLine>
-                    <EndLine>20</EndLine>
-                </Position>
-            </Pragma>
-            <Pragma>
-                <Name>OMPForDirective</Name>
-                <Position>
                     <StartLine>21</StartLine>
                     <EndLine>22</EndLine>
                 </Position>
-                <For>
-                    <Declaration>
-                        <Type>int</Type>
-                        <LoopVariable>j</LoopVariable>
-                        <InitValue>124</InitValue>
-                    </Declaration>
-                    <Condition>
-                        <Op></Op>
-                        <ConditionVariable></ConditionVariable>
-                    </Condition>
-                    <Increment>
-                        <Op>++</Op>
-                    </Increment>
-                </For>
             </Pragma>
         </Pragmas>
     </Function>
@@ -86,42 +89,39 @@
         <Line>28</Line>
         <Pragmas>
             <Pragma>
-                <Name>OMPParallelDirective</Name>
-                <Options>
-                    <Option>
-                        <Name>shared</Name>
-                        <Parameter>
-                            <Type>int</Type>
-                            <Var>a</Var>
-                        </Parameter>
-                    </Option>
-                </Options>
-                <Position>
-                    <StartLine>34</StartLine>
-                    <EndLine>34</EndLine>
-                </Position>
-            </Pragma>
-            <Pragma>
                 <Name>OMPForDirective</Name>
+                <Options>
+                    <Option>
+                        <Name>period</Name>
+                        <Parameter>
+                            <Type></Type>
+                            <Var>19</Var>
+                        </Parameter>
+                    </Option>
+                    <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>b</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>c</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>n</Var>
+                        </Parameter>
+                    </Option>
+                </Options>
                 <Position>
-                    <StartLine>35</StartLine>
-                    <EndLine>37</EndLine>
+                    <StartLine>36</StartLine>
+                    <EndLine>38</EndLine>
                 </Position>
-                <For>
-                    <Declaration>
-                        <Type>int</Type>
-                        <LoopVariable>i</LoopVariable>
-                        <InitValue>0</InitValue>
-                    </Declaration>
-                    <Condition>
-                        <Op></Op>
-                        <ConditionVariable></ConditionVariable>
-                    </Condition>
-                    <Increment>
-                        <Op>+=</Op>
-                        <IncrementValue>1</IncrementValue>
-                    </Increment>
-                </For>
             </Pragma>
             <Pragma>
                 <Name>OMPParallelDirective</Name>
@@ -135,8 +135,8 @@
                     </Option>
                 </Options>
                 <Position>
-                    <StartLine>40</StartLine>
-                    <EndLine>80</EndLine>
+                    <StartLine>41</StartLine>
+                    <EndLine>81</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
@@ -152,13 +152,20 @@
                                 </Option>
                             </Options>
                             <Position>
-                                <StartLine>42</StartLine>
-                                <EndLine>45</EndLine>
+                                <StartLine>43</StartLine>
+                                <EndLine>46</EndLine>
                             </Position>
                         </Pragma>
                         <Pragma>
                             <Name>OMPTaskDirective</Name>
                             <Options>
+                                <Option>
+                                    <Name>period</Name>
+                                    <Parameter>
+                                        <Type></Type>
+                                        <Var>19</Var>
+                                    </Parameter>
+                                </Option>
                                 <Option>
                                     <Name>shared</Name>
                                     <Parameter>
@@ -168,15 +175,15 @@
                                 </Option>
                             </Options>
                             <Position>
-                                <StartLine>48</StartLine>
-                                <EndLine>51</EndLine>
+                                <StartLine>49</StartLine>
+                                <EndLine>52</EndLine>
                             </Position>
                         </Pragma>
                         <Pragma>
                             <Name>OMPForDirective</Name>
                             <Position>
-                                <StartLine>54</StartLine>
-                                <EndLine>56</EndLine>
+                                <StartLine>55</StartLine>
+                                <EndLine>57</EndLine>
                             </Position>
                             <For>
                                 <Declaration>
@@ -205,8 +212,8 @@
                                 </Option>
                             </Options>
                             <Position>
-                                <StartLine>59</StartLine>
-                                <EndLine>74</EndLine>
+                                <StartLine>60</StartLine>
+                                <EndLine>75</EndLine>
                             </Position>
                             <Children>
                                 <Pragmas>
@@ -222,8 +229,8 @@
                                             </Option>
                                         </Options>
                                         <Position>
-                                            <StartLine>61</StartLine>
-                                            <EndLine>63</EndLine>
+                                            <StartLine>62</StartLine>
+                                            <EndLine>64</EndLine>
                                         </Position>
                                     </Pragma>
                                     <Pragma>
@@ -238,8 +245,8 @@
                                             </Option>
                                         </Options>
                                         <Position>
-                                            <StartLine>66</StartLine>
-                                            <EndLine>72</EndLine>
+                                            <StartLine>67</StartLine>
+                                            <EndLine>73</EndLine>
                                         </Position>
                                     </Pragma>
                                 </Pragmas>
@@ -257,8 +264,8 @@
                                 </Option>
                             </Options>
                             <Position>
-                                <StartLine>76</StartLine>
-                                <EndLine>78</EndLine>
+                                <StartLine>77</StartLine>
+                                <EndLine>79</EndLine>
                             </Position>
                         </Pragma>
                     </Pragmas>
@@ -276,16 +283,25 @@
                     </Option>
                 </Options>
                 <Position>
-                    <StartLine>83</StartLine>
-                    <EndLine>88</EndLine>
+                    <StartLine>84</StartLine>
+                    <EndLine>89</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
                         <Pragma>
                             <Name>OMPForDirective</Name>
+                            <Options>
+                                <Option>
+                                    <Name>period</Name>
+                                    <Parameter>
+                                        <Type></Type>
+                                        <Var>12</Var>
+                                    </Parameter>
+                                </Option>
+                            </Options>
                             <Position>
-                                <StartLine>85</StartLine>
-                                <EndLine>87</EndLine>
+                                <StartLine>86</StartLine>
+                                <EndLine>88</EndLine>
                             </Position>
                             <For>
                                 <Declaration>

@@ -50,7 +50,7 @@ protected:
 	Node *parentNode;
 
 /* Function to exctract all the parameters of the pragma */
-	void setPragmaName(clang::SourceManager& sm);
+	void setPragmaClauses(clang::SourceManager& sm);
 
 public:
 	bool profiled = false;

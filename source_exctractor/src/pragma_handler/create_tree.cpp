@@ -11,47 +11,25 @@ std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pr
 	
   std::vector<clang::OMPExecutableDirective *>::iterator itr;
 	for(itr = pragmaList->begin(); itr != pragmaList->end(); ++ itr) {    
-    if((*itr)->getAssociatedStmt()) {
-      //if(strcmp((*itr)->getStmtClassName(), "OMPParallelDirective") != 0 || utils::Line((*itr)->getAssociatedStmt()->getLocStart(), sm) != utils::Line((*itr)->getAssociatedStmt()->getLocEnd(), sm)) {
 
-        clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
-    		Node * n = new Node(*itr, fd, sm);
-    		
-        if(fd != functionDecl) {
-    			functionDecl = fd;
-    			Root *root = new Root(n, n->getParentFunctionInfo());
-          n->setParentNode(NULL);
-          root->setLastNode(n);
-          rootVect->insert(rootVect->end(), root);
+    clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
+    Node * n = new Node(*itr, fd, sm);
 
-        } else {
-         	buildTree(rootVect->back(), n);
-          rootVect->back()->setLastNode(n);
-        }    		
-      //}else {
-        //clang::OMPExecutableDirective *ompD = static_cast<clang::OMPExecutableDirective *>((*itr)->getAssociatedStmt());
-        //ompD->swapClauses((*itr));
-        //clang::OMPExecutableDirective *omptmp = *itr;
-        //itr ++;
-        //(*itr)->swapClauses(omptmp);
-      //}
-    } else {
-        clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
+    if((*itr)->getAssociatedStmt())
+      if(strcmp((*itr)->getStmtClassName(), "OMPParallelDirective") == 0 && utils::Line((*itr)->getAssociatedStmt()->getLocStart(), sm) == utils::Line((*itr)->getAssociatedStmt()->getLocEnd(), sm))
+        itr++;
+    
+    if(fd != functionDecl) {
+      functionDecl = fd;
+      Root *root = new Root(n, n->getParentFunctionInfo());
+      n->setParentNode(NULL);
+      root->setLastNode(n);
+      rootVect->insert(rootVect->end(), root);
 
-        Node * n = new Node(*itr, fd, sm);
-        
-        if(fd != functionDecl) {
-          functionDecl = fd;
-          Root *root = new Root(n, n->getParentFunctionInfo());
-          n->setParentNode(NULL);
-          root->setLastNode(n);
-          rootVect->insert(rootVect->end(), root);
-
-        } else {
-          buildTree(rootVect->back(), n);
-          rootVect->back()->setLastNode(n);
-        }
-    } 
+    }else {
+      buildTree(rootVect->back(), n);
+      rootVect->back()->setLastNode(n);
+    }
   }
   return rootVect;
 }

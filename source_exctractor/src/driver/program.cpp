@@ -86,8 +86,6 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     std::stringstream text3;
     text3 << "}\n";
     RewriteProfiling.InsertText(endSL, text3.str(), true, false);
-
-    std::cout << f->getNameInfo().getAsString() << " - " << utils::Line(f->getLocStart(), sm) << std::endl;
   }
   return true; 
 }
@@ -102,7 +100,6 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   			previousStmt = s;
   			clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
   			pragmaList.insert(pragmaList.end(), omps);
-        std::cout << "Pragma " << omps->getStmtClassName() << " - " << utils::Line(omps->getLocStart(), sm) << " - clauses: " << omps->getNumClauses() << std::endl;
   			clang::Stmt *as = omps->getAssociatedStmt();
         if(as) {
           clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();

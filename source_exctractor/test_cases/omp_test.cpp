@@ -9,15 +9,15 @@ public:
 float* X::y (int i, int *c) {
 	int a = i;
 	int b;
-  int n;
-  float *d;
-	#pragma omp parallel shared(n, d) period(191)
+  double n;
+  float *d, e;
+	#pragma omp parallel shared(a, n, d, e) period(191)
   {
     sleep(1);
   }
 	
 	//if(a == 5) {
-		#pragma omp parallel for shared(b, a) 
+		#pragma omp parallel for shared(b, a, d) period(1)
  		for(int j = 124; j < 125; j ++)
   			 sleep(1);
 	//}
@@ -31,7 +31,8 @@ int main() {
  b=0;
  a = 10;
  n = 2;
- #pragma omp parallel for shared(a)
+ int c;
+ #pragma omp parallel for shared(a, n, b, c) period(19)
  for(int i=0;i< 1; i += 1) {
    sleep(1);
  }
@@ -44,7 +45,7 @@ int main() {
     sleep(1);
   }
 
-  #pragma omp task shared(b)
+  #pragma omp task shared(b) period(19)
   {
   	/* code */
     sleep(1);
@@ -81,7 +82,7 @@ int main() {
 
  #pragma omp parallel shared(b)
  {
-    #pragma omp for
+    #pragma omp for period(12)
     for(int i=1;i< n; i += 1) {
       sleep(1);
     }
