@@ -121,17 +121,16 @@ void Node::setPragmaName(clang::SourceManager& sm) {
     cName = getOpenMPClauseName(c->getClauseKind());
 
     if(strcmp(cName, "shared") == 0 || strcmp(cName, "private") == 0 || strcmp(cName, "firstprivate") == 0) {
+      varList vl;
       for(clang::StmtRange range = c->children(); range; ++ range) {
         const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*range);
         const clang::NamedDecl *nD = dRE->getFoundDecl();
         const clang::ValueDecl *vD = dRE->getDecl();
         std::vector<std::string> vect;
-
-        varList vl;
         vl.insert(vl.end(), std::pair<std::string, std::string>(vD->getType().getAsString(), nD->getNameAsString()));
-        optionVect->insert(this->optionVect->end(), std::pair<std::string, varList>(cName, vl));
       }
-    
+      optionVect->insert(this->optionVect->end(), std::pair<std::string, varList>(cName, vl));
+
     } else if(strcmp(cName, "period") == 0) {
         clang::OMPPeriodClause *pC = static_cast<clang::OMPPeriodClause *>(c);
           
@@ -146,7 +145,8 @@ void Node::setPragmaName(clang::SourceManager& sm) {
       vl.insert(vl.end(), std::pair<std::string, std::string>("", ""));
       optionVect->insert(this->optionVect->end(), std::pair<std::string, varList>(cName, vl));
     }
-	}
+  }
+
 }
 
 

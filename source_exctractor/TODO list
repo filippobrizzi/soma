@@ -1,5 +1,15 @@
 
-Check the problem of the clauses for the #omp parallel for:
-	the clauses are associated with the #omp parallel instead of the #omp for.
 
-Check why myprogram doesn't work with Cloth.cpp
+1 - Solve the issues with the #omp parallel for : 
+	(a) clauses that are attached to the paralleldirective must be forwarded to the fordirective
+	(b) why dont print all the var
+
+2 - Profiling: the loop variable must be apdated = (conditionVar - initializationVar)/increment
+
+3 - Investigate why the condition variables in Cloth.cpp are not detected
+
+4 - Profiling problem: when the function is like void x()
+												 {
+
+												 }
+	-> solution: take the compoundstmt and insert inside 

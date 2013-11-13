@@ -10,7 +10,6 @@ CXXFLAGS := -I$(shell $(LLVMCONFIG) --src-root)/tools/clang/include -I$(shell $(
 
 LLVMLDFLAGS := $(shell $(LLVMCONFIG) --ldflags --libs $(LLVMCOMPONENTS))
 
-#SOURCES = src/main.cpp src/driver/compiler.cpp src/driver/program.cpp src/utils/source_locations.cpp
 SOURCES = $(wildcard src/*.cpp) $(wildcard src/driver/*.cpp) $(wildcard src/utils/*.cpp) \
 		  $(wildcard src/pragma_handler/*.cpp) $(wildcard src/xml_creator/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)

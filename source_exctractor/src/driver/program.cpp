@@ -3,11 +3,7 @@
 
 
 void Program::ParseSourceCode(std::string fileName) {
-		
-  /*	const clang::FileEntry *pFile = ccompiler.getFileManager().getFile(fileName);
-  	ccompiler.getSourceManager().createMainFileID(pFile);
-  	ccompiler.getDiagnosticClient().BeginSourceFile(ccompiler.getLangOpts(), &ccompiler.getPreprocessor());
-*/
+
   // Convert <file>.c to <file_profile>.c
   std::string outNameProfile (fileName);
   size_t ext = outNameProfile.rfind(".");
@@ -79,6 +75,7 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
       this->insertInclude = true;
     } 
 
+    ST = f->getBody()->getLocStart();
   	unsigned startLine = utils::Line(ST, sm);
     clang::SourceLocation newSL = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
     std::stringstream text2;
@@ -105,7 +102,7 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   			previousStmt = s;
   			clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
   			pragmaList.insert(pragmaList.end(), omps);
-        std::cout << "Pragma " << omps->getStmtClassName() << " - " << utils::Line(omps->getLocStart(), sm) << std::endl;
+        std::cout << "Pragma " << omps->getStmtClassName() << " - " << utils::Line(omps->getLocStart(), sm) << " - clauses: " << omps->getNumClauses() << std::endl;
   			clang::Stmt *as = omps->getAssociatedStmt();
         if(as) {
           clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
@@ -116,9 +113,7 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   		    if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0)
             RewriteProfile(cs);
         
-        }else {
-          RewriteProfile(omps);  		 
-        }
+        }        
       }
   	}
   	
@@ -134,7 +129,8 @@ void ProfilingRecursiveASTVisitor::RewriteProfile(clang::Stmt *s) {
 
     std::stringstream text;
     if(clang::isa<clang::ForStmt>(s)) {
-      std::string conditionVar = forCondition(s);
+      //std::string conditionVar = forCondition(s);
+      std::string conditionVar = "";
       text << "if( ProfileTracker x = ProfileTrackParams(" << functionLine << ", " << pragmaLine << ", " << conditionVar << "))\n";
       RewriteProfiling.InsertText(ST, text.str(), true, true);
 
