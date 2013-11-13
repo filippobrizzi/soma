@@ -1,0 +1,6 @@
+File program.cpp:
+	line 132 : //std::string conditionVar = forCondition(s); (condition var fail for Cloth cause the 			variable is not in a good format)
+
+File ForNode.cpp:
+	line 25 :   //this->forCondition(fs); (condition var fail for Cloth cause the variable is not in a good format)
+

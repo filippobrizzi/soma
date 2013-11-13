@@ -11,7 +11,7 @@ float* X::y (int i, int *c) {
 	int b;
   int n;
   float *d;
-	#pragma omp parallel shared(n)
+	#pragma omp parallel shared(n, d) period(191)
   {
     sleep(1);
   }

@@ -19,7 +19,17 @@
                 <Name>OMPParallelDirective</Name>
                 <Options>
                     <Option>
+                        <Name>period</Name>
+                        <Parameter>
+                            <Var>191</Var>
+                        </Parameter>
+                    </Option>
+                    <Option>
                         <Name>shared</Name>
+                        <Parameter>
+                            <Type>float *</Type>
+                            <Var>d</Var>
+                        </Parameter>
                         <Parameter>
                             <Type>int</Type>
                             <Var>n</Var>
@@ -29,6 +39,22 @@
                 <Position>
                     <StartLine>15</StartLine>
                     <EndLine>17</EndLine>
+                </Position>
+            </Pragma>
+            <Pragma>
+                <Name>OMPParallelDirective</Name>
+                <Options>
+                    <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>b</Var>
+                        </Parameter>
+                    </Option>
+                </Options>
+                <Position>
+                    <StartLine>20</StartLine>
+                    <EndLine>20</EndLine>
                 </Position>
             </Pragma>
             <Pragma>
@@ -44,8 +70,8 @@
                         <InitValue>124</InitValue>
                     </Declaration>
                     <Condition>
-                        <Op>&lt;</Op>
-                        <ConditionValue>125</ConditionValue>
+                        <Op></Op>
+                        <ConditionVariable></ConditionVariable>
                     </Condition>
                     <Increment>
                         <Op>++</Op>
@@ -60,6 +86,22 @@
         <Line>28</Line>
         <Pragmas>
             <Pragma>
+                <Name>OMPParallelDirective</Name>
+                <Options>
+                    <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                    </Option>
+                </Options>
+                <Position>
+                    <StartLine>34</StartLine>
+                    <EndLine>34</EndLine>
+                </Position>
+            </Pragma>
+            <Pragma>
                 <Name>OMPForDirective</Name>
                 <Position>
                     <StartLine>35</StartLine>
@@ -72,8 +114,8 @@
                         <InitValue>0</InitValue>
                     </Declaration>
                     <Condition>
-                        <Op>&lt;</Op>
-                        <ConditionValue>1</ConditionValue>
+                        <Op></Op>
+                        <ConditionVariable></ConditionVariable>
                     </Condition>
                     <Increment>
                         <Op>+=</Op>
@@ -143,8 +185,8 @@
                                     <InitValue>1</InitValue>
                                 </Declaration>
                                 <Condition>
-                                    <Op>&lt;</Op>
-                                    <ConditionValue>2</ConditionValue>
+                                    <Op></Op>
+                                    <ConditionVariable></ConditionVariable>
                                 </Condition>
                                 <Increment>
                                     <Op>++</Op>
@@ -252,8 +294,8 @@
                                     <InitValue>1</InitValue>
                                 </Declaration>
                                 <Condition>
-                                    <Op>&lt;</Op>
-                                    <ConditionVariable>n</ConditionVariable>
+                                    <Op></Op>
+                                    <ConditionVariable></ConditionVariable>
                                 </Condition>
                                 <Increment>
                                     <Op>+=</Op>
