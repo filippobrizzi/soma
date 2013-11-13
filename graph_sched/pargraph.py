@@ -44,6 +44,7 @@ class Node(object):
         self.deadline = None
         self.d = None
         self.children_time = 0
+        self.color = 'white'
     def add(self, x):	
     	x.parent.append(self)
     	self.children.append(x)
@@ -142,10 +143,10 @@ class Time_Node():
 		self.caller_list = []
 		self.children_time = []
 
-def scanGraph(node, node_list, pre = ""):
+def scanGraph(node):
 	#print pre, node.type
-	if (node.type+node.start_line) not in node_list:
-		node_list.append(node.type+node.start_line)
+	if node.color != 'black':
+		node.color = 'black'
 		node.myself()
 		print "     has children:"
 		for c in node.children:
@@ -154,7 +155,7 @@ def scanGraph(node, node_list, pre = ""):
 		for p in node.parent :
 			print "          ",p.type,"@",p.start_line
 		for n in node.children:
-			scanGraph(n, node_list, pre + "  ")
+			scanGraph(n)
 
 def indent(elem, level=0):
     i = "\n" + level * "  "
@@ -767,34 +768,51 @@ def get_parameter(parameter):
 		type_ = 'None'
 	return (type_, parameter.find('Var').text)
 
-def get_flow(flow_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
-	task_i = get_task(level)
-	if task_i == None or len(flow_list) > MAX_FLOWS:
-		break
-	new_flow = []
-	for flow in flow_list :
-		flow.append(task_i)
-		if get_bandwidth(flow) <= 1:
-			if level == NUM_TASKS:
-				if get_tot_bandwidth(flow_list) < get_tot_bandwidth(optimal_flow):
-					optimal_flow = deepcopy(flow_list)
+def get_flow(flow_list, task_gen, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
+	task_i = task_gen.next()
+	if task_i != None and len(flow_list) <= MAX_FLOWS:	
+		new_flow = []
+		for flow in flow_list :
+			flow.append(task_i)
+			if get_bandwidth(flow) <= 1:
+				if level == NUM_TASKS:
+					if get_tot_bandwidth(flow_list) < get_tot_bandwidth(optimal_flow):
+						optimal_flow = deepcopy(flow_list)
+				else:
+					get_flow(copy.deepcopy(flow_list), level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
 			else:
-				get_flow(copy.deepcopy(flow_list), level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
-		else:
-			flow.remove(task_i)
-	new_flow.append(task_i)
-	flow_list.append(new_flow)
-	get_flow(copy.deepcopy(flow_list), level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
+				flow.remove(task_i)
+		new_flow.append(task_i)
+		flow_list.append(new_flow)
+		get_flow(copy.deepcopy(flow_list), task_gen, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
 
 
 
-def get_task(node, node_list, pre = ""):
-	#print pre, node.type
-	if (node.type+node.start_line) not in node_list:
-		node_list.append(node.type+node.start_line)
+def generate_task(node):
+	if node.color != 'black':
+		node.color = 'black'
 		yield node
 		for n in node.children:
-			scanGraph(n, node_list, pre + "  ")
+			for node in generate_task(n):
+				yield node
+
+def get_core_num(profile):
+	root = ET.ElementTree(file = profile).getroot()
+	return int(root.find('Hardware/NumberofCores').text) / 2
+
+def make_white(node):
+	if node.color == 'black':
+		node.color = 'white'
+		for child in node.children:
+			make_white(child)
+
+def get_main(exp_flows):
+	for i in range(len(exp_flows)):
+		if exp_flows[i].type == 'main':
+			return exp_flows[i]
+
+
+
 
 
 
