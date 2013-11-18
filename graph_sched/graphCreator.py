@@ -1,6 +1,7 @@
 import sys
 import pargraph as par
 import copy
+import schedule as sched
 
 """ Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output)
 """
@@ -53,10 +54,10 @@ if __name__ == "__main__":
 	#creating the expanded graph where the functions are inserted in the flow graph
 	exp_flows = copy.deepcopy(flow_graphs)
 	par.explode_graph(exp_flows)
-	main_flow = par.get_main(exp_flows)
+	main_flow = sched.get_main(exp_flows)
 
 	#creating a generator for the expanded graph
-	gen = par.generate_task(exp_flows[0])
+	gen = sched.generate_task(exp_flows[0])
 
 	#getting the number of tasks in the expanded graph
 	num_tasks = 0
@@ -64,14 +65,14 @@ if __name__ == "__main__":
 		num_tasks += 1
 
 	#creating a new generator for the expanded graph
-	par.make_white(exp_flows[0])
-	gen = par.generate_task(exp_flows[0])
+	sched.make_white(exp_flows[0])
+	gen = sched.generate_task(exp_flows[0])
 	task_list = []
 	for task in gen:
 		task_list.append(task)
 
 	#getting the number of physical cores of the machine
-	max_flows = par.get_core_num(profile_xml)
+	max_flows = sched.get_core_num(profile_xml)
 	#par.scanGraph(main_flow)
 
 	flow_list = []
@@ -81,7 +82,7 @@ if __name__ == "__main__":
 	#prints the object flow graphs
 	if(output == "True"):
 		for g in flow_graphs:
-			par.make_white(g)
+			sched.make_white(g)
 			par.scanGraph(g)
 
 	
