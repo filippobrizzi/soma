@@ -2,20 +2,21 @@ import sys
 import pargraph as par
 import copy
 import schedule as sched
+import profiler as pro
+
 
 """ Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output)
 """
 
 if __name__ == "__main__":
 	
-
 	pragma_xml = sys.argv[1]
 	executable = sys.argv[2]
 	count = int(sys.argv[3])
 	output = sys.argv[4]
 
 	#runs count time the executable and aggregates the informations in executable_profile.xml. The single profile outputs are saved as profile+iter.xml
-	profile_xml = par.profileCreator(count, executable)
+	profile_xml = pro.profileCreator(count, executable)
 
 	#return the nested dot graphs in code style (one for each function)
 	visual_nested_graphs = par.getNesGraph(pragma_xml, profile_xml)
@@ -39,7 +40,7 @@ if __name__ == "__main__":
 	par.dump_graphs(flow_graphs)
 
 	#adding to the original xml the profiling informations --> code.xml
-	par.add_profile_xml(profile_xml, pragma_xml)
+	pro.add_profile_xml(profile_xml, pragma_xml)
 
 	#creating the total graph with the call-tree
 	func_graph = par.create_complete_graph(visual_flow_graphs, profile_xml)
@@ -77,7 +78,7 @@ if __name__ == "__main__":
 
 	flow_list = []
 	opt_flow = []
-	par.get_flow(flow_list, task_list, 0, opt_flow, num_tasks, max_flows)
+	sched.get_flow(flow_list, task_list, 0, opt_flow, num_tasks, max_flows)
 
 	#prints the object flow graphs
 	if(output == "True"):

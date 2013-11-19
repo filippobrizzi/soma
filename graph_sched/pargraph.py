@@ -1,10 +1,9 @@
 import pydot as p
-import numpy 
+import profiler as pro
 import xml.etree.cElementTree as ET
 from random import randrange
-import os
-import re
 import copy
+import schedule as sched
 
 colors = (	"beige",  "bisque3",	"bisque4",	"blanchedalmond",	   "blue",  
 "blue1",	"blue2",	"blue3",	"blue4",	"blueviolet",
@@ -186,6 +185,80 @@ def indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
+	for d in xml_tree.find('Pragmas').findall('Pragma'):
+		end_line = d.find('Position/EndLine').text
+		key = d.find('Position/StartLine').text
+
+		if key not in func_pragmas:
+			time = 0
+			variance = 0
+			loops = 0
+			callerid = None
+			children_time = 0
+		else:
+			time = func_pragmas[key][0]
+			variance = func_pragmas[key][1]
+			loops = func_pragmas[key][2]
+			callerid = func_pragmas[key][3]
+			children_time =  func_pragmas[key][4]
+
+		tmp_name = d.find('Name').text.replace("::", " ")
+		visual_name = tmp_name+"@%s"%key
+
+		if ("For" in tmp_name ):
+			if (d.find('For/Declaration/InitValue') != None):
+				init_value = d.find('For/Declaration/InitValue').text
+			else:
+				init_value = d.find('For/Declaration/InitVariable').text
+			if (d.find('For/Condition/ConditionValue') != None):
+				init_var = d.find('For/Condition/ConditionValue').text
+			else:
+				init_var = d.find('For/Condition/ConditionVariable').text
+			if(d.find('For/Increment/IncrementValue') != None):
+				inc = d.find('For/Increment/IncrementValue').text
+			else:
+				inc = ""
+			Objchild = For_Node(tmp_name, d.find('Position/StartLine').text, d.find('For/Declaration/Type').text, d.find('For/Declaration/LoopVariable').text, init_value, d.find('For/Condition/Op').text, init_var, d.find('For/Increment/Op').text, inc, time, variance, loops )
+			visual_name = visual_name + "\nfor( " + Objchild.init_var + " = " + Objchild.init_value + "; " + Objchild.init_var + " " + Objchild.init_cond + " " + Objchild.init_cond_value + "; " + Objchild.init_var + " " + Objchild.init_increment + " " + Objchild.init_increment_value + ")"
+		else:
+			Objchild = Node(tmp_name, key, time, variance )
+
+		deadline = None
+		if(d.find('Options')):
+			for op in d.findall('Options/Option'):
+				Objchild.options.append( (op.find('Name').text,[get_parameter(i) for i in op.findall('Parameter')]) )
+				if op.find('Name').text == 'deadline':
+					deadline = op.find('Parameter').text
+		Objchild.end_line = end_line
+		Objchild.callerid = callerid
+		Objchild.deadline = deadline
+		Objchild.children_time = children_time
+		if (time == 0):
+			child = p.Node(key, label = visual_name + "\nnot executed", root = root)
+		else:
+			child = p.Node(key, label = visual_name + "\nexecution time: " + str(time) + "\nvariance: " + str(variance), root = root)
+		pragma_graph.add_node(node)
+		pragma_graph.add_node(child)
+		pragma_graph.add_edge(p.Edge(node, child))
+		treeNode.add(Objchild)
+		#print Objchild.type,"@",Objchild.start_line," is attached to ",treeNode.type,"@",treeNode.start_line
+
+		if(d.find('Children')):
+			node_ = create_diamond(d.find('Children'), pragma_graph, child, Objchild, func_pragmas, root)
+			tmp_name = (node_.start_line)
+			if tmp_name not in func_pragmas:
+				time = 0
+			else:
+				time = func_pragmas[tmp_name][0]
+			#treeNode = Node('BARRIER_end', tmp_name, 0, 0)
+			#Objchild.add(treeNode)
+			treeNode = node_
+			node = p.Node(tmp_name + "_end", label = "BARRIER", root = root)
+		else:
+			node = child
+			treeNode = Objchild
+
 def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 	special_node = p.Node(node.get_name().replace("\"", "") + "_end", label = 'BARRIER', root = root)
 	Objspecial_node = Node( 'BARRIER_end' , node.get_name() , 0, 0 )
@@ -284,84 +357,10 @@ def find_nesting(tree, graph, node, func_pragmas, pre = ""):
 		if(d.find('Children')):
 			find_nesting(d.find('Children'), graph, child, func_pragmas, pre + " ")
 
-def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
-	for d in xml_tree.find('Pragmas').findall('Pragma'):
-		end_line = d.find('Position/EndLine').text
-		key = d.find('Position/StartLine').text
-
-		if key not in func_pragmas:
-			time = 0
-			variance = 0
-			loops = 0
-			callerid = None
-			children_time = 0
-		else:
-			time = func_pragmas[key][0]
-			variance = func_pragmas[key][1]
-			loops = func_pragmas[key][2]
-			callerid = func_pragmas[key][3]
-			children_time =  func_pragmas[key][4]
-
-		tmp_name = d.find('Name').text.replace("::", " ")
-		visual_name = tmp_name+"@%s"%key
-
-		if ("For" in tmp_name ):
-			if (d.find('For/Declaration/InitValue') != None):
-				init_value = d.find('For/Declaration/InitValue').text
-			else:
-				init_value = d.find('For/Declaration/InitVariable').text
-			if (d.find('For/Condition/ConditionValue') != None):
-				init_var = d.find('For/Condition/ConditionValue').text
-			else:
-				init_var = d.find('For/Condition/ConditionVariable').text
-			if(d.find('For/Increment/IncrementValue') != None):
-				inc = d.find('For/Increment/IncrementValue').text
-			else:
-				inc = ""
-			Objchild = For_Node(tmp_name, d.find('Position/StartLine').text, d.find('For/Declaration/Type').text, d.find('For/Declaration/LoopVariable').text, init_value, d.find('For/Condition/Op').text, init_var, d.find('For/Increment/Op').text, inc, time, variance, loops )
-			visual_name = visual_name + "\nfor( " + Objchild.init_var + " = " + Objchild.init_value + "; " + Objchild.init_var + " " + Objchild.init_cond + " " + Objchild.init_cond_value + "; " + Objchild.init_var + " " + Objchild.init_increment + " " + Objchild.init_increment_value + ")"
-		else:
-			Objchild = Node(tmp_name, key, time, variance )
-
-		deadline = None
-		if(d.find('Options')):
-			for op in d.findall('Options/Option'):
-				Objchild.options.append( (op.find('Name').text,[get_parameter(i) for i in op.findall('Parameter')]) )
-				if op.find('Name').text == 'deadline':
-					deadline = op.find('Parameter').text
-		Objchild.end_line = end_line
-		Objchild.callerid = callerid
-		Objchild.deadline = deadline
-		Objchild.children_time = children_time
-		if (time == 0):
-			child = p.Node(key, label = visual_name + "\nnot executed", root = root)
-		else:
-			child = p.Node(key, label = visual_name + "\nexecution time: " + str(time) + "\nvariance: " + str(variance), root = root)
-		pragma_graph.add_node(node)
-		pragma_graph.add_node(child)
-		pragma_graph.add_edge(p.Edge(node, child))
-		treeNode.add(Objchild)
-		#print Objchild.type,"@",Objchild.start_line," is attached to ",treeNode.type,"@",treeNode.start_line
-
-		if(d.find('Children')):
-			node_ = create_diamond(d.find('Children'), pragma_graph, child, Objchild, func_pragmas, root)
-			tmp_name = (node_.start_line)
-			if tmp_name not in func_pragmas:
-				time = 0
-			else:
-				time = func_pragmas[tmp_name][0]
-			#treeNode = Node('BARRIER_end', tmp_name, 0, 0)
-			#Objchild.add(treeNode)
-			treeNode = node_
-			node = p.Node(tmp_name + "_end", label = "BARRIER", root = root)
-		else:
-			node = child
-			treeNode = Objchild
-
 def getNesGraph(xml, profile_xml):
 	tree = ET.ElementTree(file = xml) 
 	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
-	functions = getProfilesMap(profile_xml)
+	functions = pro.getProfilesMap(profile_xml)
 
 	root = tree.getroot()
 	graphs = []
@@ -383,36 +382,11 @@ def getNesGraph(xml, profile_xml):
 
 	return graphs
 
-def getProfilesMap(profile_xml):
-	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
-
-	functions = {}
-
-	for func in profile_graph_root.findall('Function'):
-		f = Function(func.find('Time').text, func.find('Variance').text, func.find('ChildrenTime').text)
-		f.callerid = []
-		if (func.find('CallerId') != None):
-			f.callerid.append(func.find('CallerId').text.replace("[","").replace("]",""))
-		functions[func.find('FunctionLine').text] = f
-
-	for pragma in profile_graph_root.findall('Pragma'):
-		if pragma.find('CallerId') != None:
-			callerid = pragma.find('CallerId').text
-		else:
-			callerid = None
-		if (pragma.find('Loops') != None):
-			loops = pragma.find('Loops').text
-		else :
-			loops = 0
-		functions[pragma.find('FunctionLine').text].add_pragma( (pragma.find('PragmaLine').text, pragma.find('Time').text, pragma.find('Variance').text, loops, callerid, pragma.find('ChildrenTime').text ))
-	
-	return functions
-
 def getParalGraph(pragma_xml, profile_xml):
 	pragma_graph_root = ET.ElementTree(file = pragma_xml).getroot()
 	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
 
-	functions = getProfilesMap(profile_xml)
+	functions = pro.getProfilesMap(profile_xml)
 	objGraph = []
 	graphs = []
 	count = 0
@@ -444,151 +418,6 @@ def getParalGraph(pragma_xml, profile_xml):
 		count = count + 1
 	return (graphs, objGraph)
 
-def profileCreator(cycle, executable):
-	pragma_times = {}
-	function_times = {}
-	j = 0
-
-	for i in range(cycle):
-		print "profiling iteration: " + str((j + 1))
-		os.system("./" + executable + ">/dev/null")
-		os.system("mv log_file.xml " + "logfile%s.xml" % j)
-		root = ET.ElementTree(file = "logfile%s.xml" % j).getroot()
-
-		for pragma in root.iter('Pragma'):
-			key = pragma.attrib['fid'] + pragma.attrib['pid']
-			if (key not in pragma_times):
-				pragma_times[key] = Time_Node(int(pragma.attrib['fid']), int(pragma.attrib['pid']))
-			if ('callerid' in pragma.attrib):
-				if pragma.attrib['callerid'] not in pragma_times[key].caller_list:
-					pragma_times[key].caller_list.append(pragma.attrib['callerid'])
-			if ('loops' in pragma.attrib):
-				pragma_times[key].loops.append(int(pragma.attrib['loops']))
-			if ('time' in pragma.attrib):
-				pragma_times[key].time = pragma.attrib['time']
-			if ('childrenTime' in pragma.attrib):
-				pragma_times[key].children_time.append(int(pragma.attrib['childrenTime']))
-			pragma_times[key].times.append(int(pragma.attrib['elapsedTime']))
-
-				
-		for func in root.iter('Function'):
-			key = func.attrib['fid']
-			if (key in function_times):
-				function_times[key].times.append(int(func.attrib['elapsedTime']))
-			else:
-				function_times[key] = Time_Node(int(func.attrib['fid']), 0)
-				function_times[key].times.append(int(func.attrib['elapsedTime']))
-			if ('callerid' in func.attrib):
-				if int(func.attrib['callerid']) not in function_times[key].caller_list:
-					function_times[key].caller_list.append(int(func.attrib['callerid']))
-			if ('time' in func.attrib):
-				function_times[key].time = func.attrib['time']
-			if ('childrenTime' in func.attrib):
-				function_times[key].children_time.append(int(func.attrib['childrenTime']))
-
-		j += 1
-
-	num_cores = ET.ElementTree(file = "logfile0.xml").getroot().find('Hardware').attrib['NumberofCores']
-	tot_memory = ET.ElementTree(file = "logfile0.xml").getroot().find('Hardware').attrib['MemorySize']
-
-	root = ET.Element('Log_file')
-	h = ET.SubElement(root, 'Hardware')
-	h1 = ET.SubElement(h, 'NumberofCores')
-	h2 = ET.SubElement(h, 'MemorySize')
-	h1.text = num_cores
-	h2.text = tot_memory
-
-	for key in function_times:
-		s = ET.SubElement(root, 'Function')
-		line = ET.SubElement(s, 'FunctionLine')
-		time = ET.SubElement(s, 'Time')
-		var = ET.SubElement(s, 'Variance')
-		if (len(function_times[key].caller_list) != 0 ):
-			callerid = ET.SubElement(s, 'CallerId')
-			callerid.text = str(function_times[key].caller_list)
-		if (len(function_times[key].children_time) != 0):
-			children_time = ET.SubElement(s, 'ChildrenTime')
-			children_time.text = str(numpy.mean(function_times[key].children_time))
-		time.text = str(numpy.mean(function_times[key].times))
-		line.text = str(function_times[key].func_line)
-		var.text = str(numpy.std(function_times[key].times))
-
-	for key in pragma_times:
-		s = ET.SubElement(root, 'Pragma')
-		f_line = ET.SubElement(s, 'FunctionLine')
-		p_line = ET.SubElement(s, 'PragmaLine')
-		time = ET.SubElement(s, 'Time')
-		var = ET.SubElement(s, 'Variance')
-		if (len(pragma_times[key].loops) != 0):
-			loops = ET.SubElement(s, 'Loops')
-			loops.text = str(numpy.mean(pragma_times[key].loops))
-		if (len(pragma_times[key].caller_list) != 0 ):
-			callerid = ET.SubElement(s, 'CallerId')
-			callerid.text = str(pragma_times[key].caller_list)
-		if (len(pragma_times[key].children_time) != 0):
-			children_time = ET.SubElement(s, 'ChildrenTime')
-			children_time.text = str(numpy.mean(pragma_times[key].children_time))
-		time.text = str(numpy.mean(pragma_times[key].times))
-		f_line.text = str(pragma_times[key].func_line)
-		p_line.text = str(pragma_times[key].pragma_line)
-		var.text = str(numpy.std(pragma_times[key].times))
-
-	tree = ET.ElementTree(root)
-	indent(tree.getroot())
-	tree.write(executable + "_profile.xml")
-
-	return executable + "_profile.xml"
-
-def add_profile_xml(profile_xml, xml_tree):
-	functions = getProfilesMap(profile_xml)
-	tree = ET.ElementTree(file = xml_tree) 
-	root = tree.getroot()
-	type_ = ET.SubElement(root, 'GraphType')
-	type_.text = 'Code'
-
-	for func in root.findall('Function'):
-		key = func.find('Line').text
-		func_time =  ET.SubElement(func, 'Time')
-		func_time.text = functions[key].time
-		func_variance = ET.SubElement(func, 'Variance')
-		func_variance.text = functions[key].variance
-		if len(functions[key].callerid) > 0:
-			func_caller_ids = ET.SubElement(func, 'Callerids')
-			tmp_list = set(functions[key].callerid)
-			for id in tmp_list:
-				func_caller_id = ET.SubElement(func_caller_ids,'Callerid')
-				func_caller_id.text = id
-		for pragma in func.iter('Pragma'):
-			pragma_key = pragma.find('Position/StartLine').text
-			if pragma_key in functions[key].pragmas:
-				pragma_time = ET.SubElement(pragma, 'Time')
-				pragma_time.text = functions[key].pragmas[pragma_key][0]
-				pragma_variance = ET.SubElement(pragma, 'Variance')
-				pragma_variance.text = functions[key].pragmas[pragma_key][1]
-				if (functions[key].pragmas[pragma_key][2] != 0):
-					pragma_loops = ET.SubElement(pragma, 'Loops')
-					pragma_loops.text = functions[key].pragmas[pragma_key][2]	
-				if 	(functions[key].pragmas[pragma_key][3] != None):
-					pragma_callerid = ET.SubElement(pragma, 'Callerid')
-					pragma_callerid.text = functions[key].pragmas[pragma_key][3].replace('[','').replace(']','').replace('\'','')
-
-	indent(tree.getroot())			
-	tree.write('code.xml')
-
-def get_table(profile_xml):
-	tree = ET.ElementTree(file = profile_xml) 
-	root = tree.getroot()
-	table = {}
-
-	for func in root.iter('Function'):
-		table[func.find('FunctionLine').text] = []
-		if func.find('CallerId') != None:
-			l = re.findall(r'\d+',func.find('CallerId').text)
-			for j in l:
-				table[func.find('FunctionLine').text].append(j)
-
-	return table
-
 def create_complete_graph(visual_flow_graphs, profile_xml):
 	func_graph = p.Dot(graph_type = 'digraph', compound = 'true')
 	clusters = []
@@ -604,7 +433,7 @@ def create_complete_graph(visual_flow_graphs, profile_xml):
 		func_graph.add_subgraph(clusters[i])
 		i +=  1
 
-	functions_callers = get_table(profile_xml)
+	functions_callers = pro.get_table(profile_xml)
 	
 	for func in visual_flow_graphs:
 		root = func.get_nodes()[0].obj_dict['attributes']['root']
@@ -613,38 +442,6 @@ def create_complete_graph(visual_flow_graphs, profile_xml):
 				func_graph.add_edge(p.Edge(caller, root))
 
 	return func_graph
-
-def get_last(node):
-	if not node.children:
-		return node	
-	else:
-		 return get_last(node.children[0])
-
-def get_min(node):
-	minimum = float("inf")
-	found = False
-	for child in node.children:
-		if child.d == None:
-			found = True
-	if found == False:
-		#print "setting: ",child.type,"@",child.start_line
-		for child in node.children:
-			min_tmp = child.d - (float(child.time) - float(child.children_time))
-			if min_tmp < minimum:
-				minimum = min_tmp
-		return minimum
-
-def chetto_deadlines(node):
-	if node.parent :
-		for p in node.parent:
-			p.d = get_min(p)
-		for p in node.parent:
-			chetto_deadlines(p)
-
-def chetto(flow_graph, deadline):
-	node = get_last(flow_graph)
-	node.d = deadline
-	chetto_deadlines(node)
 
 def dump_graphs(flow_graphs):
 	root = ET.Element('File')
@@ -763,7 +560,7 @@ def explode_graph(flow_graphs):
 					child.parent.remove(caller_node)
 				caller_node.children = []
 				caller_node.children.append(function_copy)
-				last_node = get_last(function_copy)
+				last_node = sched.get_last(function_copy)
 				last_node.children = children_list
 				for child in children_list:
 					child.parent.append(last_node)
