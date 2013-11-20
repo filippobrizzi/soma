@@ -166,7 +166,7 @@ def getProfilesMap(profile_xml):
 
 	for pragma in profile_graph_root.findall('Pragma'):
 		if pragma.find('CallerId') != None:
-			callerid = pragma.find('CallerId').text
+			callerid = pragma.find('CallerId').text.replace("[\'","").replace("\']","")
 		else:
 			callerid = None
 		if (pragma.find('Loops') != None):

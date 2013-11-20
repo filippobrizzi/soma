@@ -4,6 +4,7 @@ import xml.etree.cElementTree as ET
 from random import randrange
 import copy
 import schedule as sched
+import re
 
 colors = (	"beige",  "bisque3",	"bisque4",	"blanchedalmond",	   "blue",  
 "blue1",	"blue2",	"blue3",	"blue4",	"blueviolet",
@@ -146,11 +147,12 @@ class Flow():
 	def __init__(self):
 		self.tasks = []
 		self.bandwidth = 0
+		self.time = 0
 	def add_task(self, task):
 		self.tasks.append(task)
-		self.update()
-	def update(self):
-		pass
+		self.update(task)
+	def update(self, task):
+		self.time += float(task.time) - float(task.children_time)
 	def dump(self):
 		print "flow:"
 		for task in self.tasks:
@@ -185,6 +187,42 @@ def indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+def getParalGraph(pragma_xml, profile_xml):
+	pragma_graph_root = ET.ElementTree(file = pragma_xml).getroot()
+	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
+
+	functions = pro.getProfilesMap(profile_xml)
+	objGraph = []
+	graphs = []
+	count = 0
+	arch = Architecture(profile_graph_root.find('Hardware/NumberofCores').text, profile_graph_root.find('Hardware/MemorySize').text)
+	
+	file_name = pragma_graph_root.find('Name').text
+	
+	for n in pragma_graph_root.findall('Function'):
+		graphs.append(p.Dot(graph_type = 'digraph'))
+		name = n.find('Name').text
+		time = functions[n.find('Line').text].time
+		callerid = functions[n.find('Line').text].callerid
+		children_time = functions[n.find('Line').text].children_time
+		root = n.find('Line').text
+		if (time == 0):
+			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nnot executed", root = root)
+		else:
+			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nexecution time " + time, root = root)
+		pragma_graph_root.callerid = callerid
+		graphs[count].add_node(pragma_graph_root)
+		Objroot = Fx_Node(name, n.find('Line').text,n.find('ReturnType').text, functions[n.find('Line').text].time, functions[n.find('Line').text].variance, file_name)
+		for par in n.findall('Parameters/Parameter'):
+			Objroot.add_arg( ( par.find('Type').text,par.find('Name').text ) )
+		Objroot.children_time = children_time
+		for caller in functions[n.find('Line').text].callerid:
+			Objroot.callerid.append(caller)
+		objGraph.append(Objroot)
+		scan(n, graphs[count], pragma_graph_root, objGraph[count], functions[n.find('Line').text].pragmas, root)
+		count = count + 1
+	return (graphs, objGraph)
+
 def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 	for d in xml_tree.find('Pragmas').findall('Pragma'):
 		end_line = d.find('Position/EndLine').text
@@ -192,7 +230,7 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 
 		if key not in func_pragmas:
 			time = 0
-			variance = 0
+			variance = None
 			loops = 0
 			callerid = None
 			children_time = 0
@@ -231,7 +269,7 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 				if op.find('Name').text == 'deadline':
 					deadline = op.find('Parameter').text
 		Objchild.end_line = end_line
-		Objchild.callerid = callerid
+		Objchild.callerid.append(callerid)
 		Objchild.deadline = deadline
 		Objchild.children_time = children_time
 		if (time == 0):
@@ -270,7 +308,7 @@ def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 
 		if key not in func_pragmas:
 			time = 0
-			variance = 0
+			variance = None
 			loops = 0
 			callerid = None
 			children_time = 0
@@ -311,7 +349,7 @@ def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 					deadline = op.find('Parameter').text
 
 		Objchild.end_line = end_line
-		Objchild.callerid = callerid
+		Objchild.callerid.append(callerid)
 		Objchild.deadline = deadline
 		Objchild.children_time = children_time
 
@@ -382,42 +420,6 @@ def getNesGraph(xml, profile_xml):
 
 	return graphs
 
-def getParalGraph(pragma_xml, profile_xml):
-	pragma_graph_root = ET.ElementTree(file = pragma_xml).getroot()
-	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
-
-	functions = pro.getProfilesMap(profile_xml)
-	objGraph = []
-	graphs = []
-	count = 0
-	arch = Architecture(profile_graph_root.find('Hardware/NumberofCores').text, profile_graph_root.find('Hardware/MemorySize').text)
-	
-	file_name = pragma_graph_root.find('Name').text
-	
-	for n in pragma_graph_root.findall('Function'):
-		graphs.append(p.Dot(graph_type = 'digraph'))
-		name = n.find('Name').text
-		time = functions[n.find('Line').text].time
-		callerid = functions[n.find('Line').text].callerid
-		children_time = functions[n.find('Line').text].children_time
-		root = n.find('Line').text
-		if (time == 0):
-			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nnot executed", root = root)
-		else:
-			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nexecution time " + time, root = root)
-		pragma_graph_root.callerid = callerid
-		graphs[count].add_node(pragma_graph_root)
-		Objroot = Fx_Node(name, n.find('Line').text,n.find('ReturnType').text, functions[n.find('Line').text].time, functions[n.find('Line').text].variance, file_name)
-		for par in n.findall('Parameters/Parameter'):
-			Objroot.add_arg( ( par.find('Type').text,par.find('Name').text ) )
-		Objroot.children_time = children_time
-		for caller in functions[n.find('Line').text].callerid:
-			Objroot.callerid.append(caller)
-		objGraph.append(Objroot)
-		scan(n, graphs[count], pragma_graph_root, objGraph[count], functions[n.find('Line').text].pragmas, root)
-		count = count + 1
-	return (graphs, objGraph)
-
 def create_complete_graph(visual_flow_graphs, profile_xml):
 	func_graph = p.Dot(graph_type = 'digraph', compound = 'true')
 	clusters = []
@@ -481,7 +483,7 @@ def dump_graphs(flow_graphs):
 			edge_list = []
 			pragmas = ET.SubElement(function, 'Nodes')
 			dump_pragmas(func, pragmas, pragma_list)
-			edges = ET.SubElement(function, 'Nodes')
+			edges = ET.SubElement(function, 'Edges')
 			dump_edges(func, edges, edge_list)
 
 	tree = ET.ElementTree(root)
@@ -517,6 +519,18 @@ def dump_pragmas(pragma_node, pragmas_element, pragma_list):
 			if(name.text != "BARRIER"):
 				end = ET.SubElement(position, 'EndLine')
 				end.text = pragma.end_line
+			if (pragma.callerid != None ):
+				callerids = ET.SubElement(pragma_, 'Callerids')
+				for id_ in pragma.callerid:
+					callerid = ET.SubElement(callerids, 'Callerid')
+					callerid.text = id_
+			if(pragma.time != 0):
+				time = ET.SubElement(pragma_, 'Time')
+				time.text = pragma.time
+			if(pragma.variance != None):
+				variance = ET.SubElement(pragma_, 'Variance')
+				variance.text = pragma.variance
+
 		dump_pragmas(pragma, pragmas_element, pragma_list)
 
 def dump_edges(pragma_node, edges_element, pragma_list):

@@ -9,12 +9,12 @@ digraph G {
 		label="y()\n execution time: 2.0\nvariance: 0.0",
 		pos="237,162",
 		width=2.4853];
-	y -> "OMPParallelDirective@15"	 [color=gold2,
+	y -> "OMPParallelDirective@15"	 [color=darkorange,
 		pos="e,156.62,81.298 200,124.31 188.59,112.99 175.88,100.39 163.94,88.553"];
 	"OMPForDirective@21"	 [height=1.1471,
 		label="OMPForDirective@21\n execution time: 1.0\nvariance: 0.0",
 		pos="357,42",
 		width=2.8384];
-	y -> "OMPForDirective@21"	 [color=gold2,
+	y -> "OMPForDirective@21"	 [color=darkorange,
 		pos="e,318.88,80.48 274.31,124.31 286.16,112.66 299.39,99.649 311.74,87.51"];
 }
