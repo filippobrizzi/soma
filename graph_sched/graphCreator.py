@@ -74,14 +74,15 @@ if __name__ == "__main__":
 
 	#getting the number of physical cores of the machine
 	max_flows = sched.get_core_num(profile_xml)
-
 	flow_list = []
 	optimal_flow = []
 	sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows)
 
-
+	
 	for flow in optimal_flow:
 		flow.dump()
+		print flow.time
+	
 
 	#prints the flow graphs
 	if(output == "True"):

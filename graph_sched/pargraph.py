@@ -157,6 +157,10 @@ class Flow():
 		print "flow:"
 		for task in self.tasks:
 			print task.type," "
+	def remove_task(self, task):
+		self.tasks.remove(task)
+		self.time -= float(task.time) - float(task.children_time)
+
 
 def scanGraph(node):
 	#print pre, node.type

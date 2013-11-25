@@ -5,55 +5,46 @@ import math
 
 #returns the optimal flows 
 def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
-	if len(flow_list) < MAX_FLOWS - 1 and level < NUM_TASKS:
+	if len(flow_list) < MAX_FLOWS and len(task_list) > level:
 		task_i = task_list[level]
 		new_flow = par.Flow()
 		
 		for flow in flow_list :
 			flow.add_task(task_i)
 			get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
-			flow.tasks.remove(task_i)
+			flow.remove_task(task_i)
 		new_flow.add_task(task_i)
 		flow_list.append(new_flow)
 		get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
 		flow_list.remove(new_flow)
+		
 		if 'For' in task_i.type :
 			#checks the possible splittings of the for node
-			for i in range(1, MAX_FLOWS):
+			for i in range(2, MAX_FLOWS + 1):
 				tmp_task_list = []
 				#splits the for node in j nodes
-				for j in range(1, i + 1):
+				for j in range(0, i):
 					#fix time
-					task = par.For_Node("splitted_" + task_i.start_line + "_" + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
+					task = par.For_Node("splitted_" + task_i.start_line + "_" + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, float(task_i.time) / i, task_i.variance, math.floor(float(task_i.mean_loops) / i))
 					task_list.append(task)
 					tmp_task_list.append(task)
-				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i, MAX_FLOWS)
+				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS)
 				for tmp_task in tmp_task_list:
 					task_list.remove(tmp_task)
+		
 	else:
+		"""
+		print "testing"
+		for flow in flow_list:
+			flow.dump()
+		print
+		"""
+		print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
 		if get_cost(flow_list) < get_cost(optimal_flow):
-			print "better sol:"
 			del optimal_flow[:]
 			for flow in flow_list:
-				optimal_flow.append(flow)
-
-
-
-		"""
-		if 'For' in task_i.type :
-			#checks the possible splittings of the for node
-			for i in range(1, MAX_FLOWS):
-				tmp_task_list = []
-				#splits the for node in j nodes
-				for j in range(1, i + 1):
-					#fix time
-					task = par.For_Node("splitted_" + task_i.start_line + "_" + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
-					task_list.append(task)
-					tmp_task_list.append(task)
-				get_optimal_flow(copy.deepcopy(flow_list), task_list, level + 1, optimal_flow, NUM_TASKS + i, MAX_FLOWS)
-				for tmp_task in tmp_task_list:
-					task_list.remove(tmp_task)
-		"""
+				#flow.dump()
+				optimal_flow.append(copy.deepcopy(flow))
 
 #generator for the tasks of the graph
 def generate_task(node):
