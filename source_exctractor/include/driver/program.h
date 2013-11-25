@@ -49,6 +49,7 @@ class ProfilingRecursiveASTVisitor: public clang::RecursiveASTVisitor<ProfilingR
   void RewriteProfile(clang::Stmt *s);
   std::string forCondition(const clang::Stmt *s);
   unsigned getFunctionLine(clang::SourceLocation sl);
+  //clang::FunctionDecl *EmitFunction(clang::Stmt *s);
 
 public:
   ProfilingRecursiveASTVisitor(clang::Rewriter &RProfiling, clang::Rewriter &RPragma, const clang::SourceManager& sm) : 

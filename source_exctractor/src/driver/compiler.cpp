@@ -47,8 +47,7 @@ ClangCompiler::ClangCompiler(int argc, char **argv) {
 	          clang::frontend::Angled,
 	          false,
 	          false);
-
-/*  headerSearchOptions.AddPath("/usr/include/c++/4.8/",
+  headerSearchOptions.AddPath("/usr/include/c++/4.8/",
             clang::frontend::Angled,
             false,
             false);
@@ -57,7 +56,7 @@ ClangCompiler::ClangCompiler(int argc, char **argv) {
             clang::frontend::Angled,
             false,
             false);
-*/
+
 
  // Allow C++ code to get rewritten
   clang::LangOptions langOpts;

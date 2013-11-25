@@ -696,37 +696,40 @@ if( ProfileTracker x = ProfileTrackParams(638, 0)) {
   *
   */
 int Cloth::step(ParTaskTag xpar, const Scalar h)
-{
+{   
 if( ProfileTracker x = ProfileTrackParams(654, 0)) {
+    int countxx;
     NoParTag par;
     curStep++;
     {
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(653, 659))
+    if( ProfileTracker x = ProfileTrackParams(653, 660))
     {
 //        #pragma omp single
-        if( ProfileTracker x = ProfileTrackParams(653, 661))
+        if( ProfileTracker x = ProfileTrackParams(653, 662))
         {
 //            #pragma omp task
-            if( ProfileTracker x = ProfileTrackParams(653, 663))
+            if( ProfileTracker x = ProfileTrackParams(653, 664))
             {
 //                #pragma omp task
-                if( ProfileTracker x = ProfileTrackParams(653, 665))
+                if( ProfileTracker x = ProfileTrackParams(653, 666))
                 {
                     // pre contibrution
                     const Scalar damp = conf.damping;
+                    count = n_ver*VECTORSIZE/SUBFORLOOP
                     #pragma omp parallel for
-                    for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                    for(int i = 0; i < countxx; i++)
                         stiffedpreb.segment<SUBFORLOOP>(i*SUBFORLOOP) = (-h - damp) * V.segment<SUBFORLOOP>(i*SUBFORLOOP) - X.segment<SUBFORLOOP>(i*SUBFORLOOP) - Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
                 }
 //                #pragma omp task
-                if( ProfileTracker x = ProfileTrackParams(653, 673))
+                if( ProfileTracker x = ProfileTrackParams(653, 675))
                 {
                     // sparse <- qmrot_t <- bend_t <- Pm <- N
-                    {
+                    {   
+                        countxx = n_ver;
 //                        #pragma omp parallel for
-                        if( ProfileTracker x = ProfileTrackParams(653, 677, ))
-                        for (int i = 0; i < n_ver; ++i)
+                        if( ProfileTracker x = ProfileTrackParams(653, 680, ))
+                        for (int i = 0; i < countxx; ++i)
                         {
                             const unsigned int count = vertextri_t::maxtri;
                             VectorType n(VectorType::Zero());
@@ -740,10 +743,11 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
                             Pm[i] = n * n.transpose();
                         }
                     }
-                    {
+                    {   
+                        countxx = n_tri;
 //                        #pragma omp parallel for
-                        if( ProfileTracker x = ProfileTrackParams(653, 693, ))
-                        for(int i = 0; i < n_tri; i++)
+                        if( ProfileTracker x = ProfileTrackParams(653, 697, ))
+                        for(int i = 0; i < countxx; i++)
                         {
                             Vector3i t = connectivity.col(i);
                             const Matrix3 & Pma = Pm[t(0)];
@@ -752,10 +756,11 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
                             shells[i]->update_bend(Pma,Pmb,Pmc);
                         }
                     }
-                    {
+                    {   
+                        countxx = n_blocks;
 //                        #pragma omp parallel for
-                        if( ProfileTracker x = ProfileTrackParams(653, 704, ))
-                        for(int i = 0; i < n_blocks; ++i)
+                        if( ProfileTracker x = ProfileTrackParams(653, 709, ))
+                        for(int i = 0; i < countxx; ++i)
                         {
                             MatrixType mtx;
                             mtx.setZero();
@@ -782,14 +787,15 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
                 }
             }
 //            #pragma omp task
-            if( ProfileTracker x = ProfileTrackParams(653, 731))
+            if( ProfileTracker x = ProfileTrackParams(653, 736))
             {
                 // prepare the B component by F0, using part
                 {
                     PrePost top("\tcomputeF0");
+                    countxx = n_ver;
 //                    #pragma omp parallel for
-                    if( ProfileTracker x = ProfileTrackParams(653, 736, ))
-                    for (int i = 0; i < n_ver; ++i)
+                    if( ProfileTracker x = ProfileTrackParams(653, 742, ))
+                    for (int i = 0; i < countxx; ++i)
                     {
                         const unsigned int count = vertextri_t::maxtri;
                         VectorType f0(VectorType::Zero());
@@ -808,9 +814,10 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
                 }
                 {
                     PrePost top("\tcomputeB1");
+                    countxx = n_ver*VECTORSIZE/SUBFORLOOP;
                     #pragma omp parallel for
                     // except stiffedpostb
-                    for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                    for(int i = 0; i < countxx; i++)
                         b.segment<SUBFORLOOP>(i*SUBFORLOOP) = h*(F.segment<SUBFORLOOP>(i*SUBFORLOOP) + G.segment<SUBFORLOOP>(i*SUBFORLOOP) + F0.segment<SUBFORLOOP>(i*SUBFORLOOP)) + M.segment<SUBFORLOOP>(i*SUBFORLOOP).cwiseProduct(Z.segment<SUBFORLOOP>(i*SUBFORLOOP));
                 }
                 assmp(ParTag(),deltaV,Z);
@@ -820,31 +827,35 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
 
             // integrate
 //            #pragma omp task
-            if( ProfileTracker x = ProfileTrackParams(653, 767))
+            if( ProfileTracker x = ProfileTrackParams(653, 774))
             {
                 PrePost top("\tcomputeB2");
+                countxx = n_ver*VECTORSIZE/SUBFORLOOP;
                 #pragma omp parallel for
-                for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                for(int i = 0; i < countxx; i++)
                     b.segment<SUBFORLOOP>(i*SUBFORLOOP) += h*stiffedpostb.segment<SUBFORLOOP>(i*SUBFORLOOP);
             }
 
             // requires only sparse_k
 //            #pragma omp task
-            if( ProfileTracker x = ProfileTrackParams(653, 776))
+            if( ProfileTracker x = ProfileTrackParams(653, 784))
             {
                 {
                     PrePost top("\tcomputeSparse");
                     const Scalar damp = conf.damping;
                     // now fill the left part of the equation: M - h df/dv - h^2 df/dx
+                    size_t countxx2 = sparse_k.size();
+                    size_t aaa = 10;
                     #pragma omp parallel for
-                    for (size_t i = 0; i < sparse_k.size(); ++i)
+                    for (size_t i = 0; i < aaa; ++i)
                         sparse_k[i] *= h * (h + damp);
                 }
                 {
                     PrePost top("\tcomputeP");
+                    countxx = n_ver;
 //                    #pragma omp parallel for
-                    if( ProfileTracker x = ProfileTrackParams(653, 788, ))
-                    for (int i = 0; i < n_ver; ++i)
+                    if( ProfileTracker x = ProfileTrackParams(653, 799, ))
+                    for (int i = 0; i < countxx; ++i)
                     {
                         //MatrixType & mat = sparse_k[diagonal_ref[i]];
                         MatrixType & mat = sparse_k[i];
@@ -868,7 +879,7 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
                 iter = 0;
             }
 //            #pragma omp task
-            if( ProfileTracker x = ProfileTrackParams(653, 812))
+            if( ProfileTracker x = ProfileTrackParams(653, 823))
             {
                 PrePost top("\tFr");
 				spmv(par,sp_idx, sparse_k, deltaV, Frtmp);
@@ -877,14 +888,15 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
 				ifilter(par,Fr,S,Frtmp);
            }
 //            #pragma omp task
-            if( ProfileTracker x = ProfileTrackParams(653, 820))
+            if( ProfileTracker x = ProfileTrackParams(653, 831))
             {
                 // OPTIONALLY: V => Vtmp => split X and V
                 {
                     PrePost top("\tXV");
+                    countxx = n_ver*VECTORSIZE/SUBFORLOOP;
 //                    #pragma omp parallel for
-                    if( ProfileTracker x = ProfileTrackParams(653, 825, ))
-                    for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                    if( ProfileTracker x = ProfileTrackParams(653, 837, ))
+                    for(int i = 0; i < countxx; i++)
                     {
                         X.segment<SUBFORLOOP>(i*SUBFORLOOP) += h * (deltaV.segment<SUBFORLOOP>(i*SUBFORLOOP)+V.segment<SUBFORLOOP>(i*SUBFORLOOP)) + Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
                         V.segment<SUBFORLOOP>(i*SUBFORLOOP) += deltaV.segment<SUBFORLOOP>(i*SUBFORLOOP);
@@ -892,8 +904,9 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
                 }
                 {
                     PrePost topc("\tupdate");
+                    countxx = n_tri;
                     #pragma omp parallel for
-                    for (int i = 0; i < n_tri; ++i)
+                    for (int i = 0; i < countxx; ++i)
                         shells[i]->update();
                 }
             }
@@ -910,7 +923,7 @@ if( ProfileTracker x = ProfileTrackParams(654, 0)) {
   */
 int Cloth::step(InParTag par, const Scalar h)
 {
-if( ProfileTracker x = ProfileTrackParams(849, 0)) {
+if( ProfileTracker x = ProfileTrackParams(862, 0)) {
     return step(ParTaskTag(),h);
 }
 }
@@ -921,7 +934,7 @@ if( ProfileTracker x = ProfileTrackParams(849, 0)) {
  */
 int Cloth::step(ParTag par,const Scalar h)
 {
-if( ProfileTracker x = ProfileTrackParams(858, 0)) {
+if( ProfileTracker x = ProfileTrackParams(871, 0)) {
     int i;
     // bad SPVM and ScaleSparseK
     for(i = StepPhases::Start; i <= StepPhases::UpdateP; i++)
@@ -941,7 +954,7 @@ if( ProfileTracker x = ProfileTrackParams(858, 0)) {
 
 int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
 {
-if( ProfileTracker x = ProfileTrackParams(876, 0)) {
+if( ProfileTracker x = ProfileTrackParams(889, 0)) {
     ParTag par;
     SimLoggerScope sls(logger,(SimLogger::SimState)(SimLogger::PhaseBase+phase),curStep,h);
     lasth = h;
@@ -952,14 +965,15 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
         curStep++;
         break;
     case StepPhases::UpdateShells:
+        countxx = n_tri;
         #pragma omp parallel for
-        for (int i = 0; i < n_tri; ++i)
+        for (int i = 0; i < countxx; ++i)
             shells[i]->update();
         break;
     case StepPhases::VertexGet:
-//        #pragma omp parallel for
-        if( ProfileTracker x = ProfileTrackParams(875, 893, ))
-        for (int i = 0; i < n_ver; ++i)
+        countxx = n_ver;
+        #pragma omp parallel for
+        for (int i = 0; i < countxx; ++i)
         {
             const unsigned int count = vertextri_t::maxtri;
             VectorType f0(VectorType::Zero());
@@ -977,9 +991,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
         }
         break;
     case StepPhases::TriangleRot:
-//        #pragma omp parallel for
-        if( ProfileTracker x = ProfileTrackParams(875, 912, ))
-        for(int i = 0; i < n_tri; i++)
+        countxx = n_tri;
+        #pragma omp parallel for
+        for(int i = 0; i < countxx; i++)
         {
             Vector3i t = connectivity.col(i);
             const Matrix3 & Pma = Pm[t(0)];
@@ -991,9 +1005,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
     case StepPhases::SparseK:
         {
             const bool symmetricBuildA = conf.symmetricBuildA;
-//            #pragma omp parallel for
-            if( ProfileTracker x = ProfileTrackParams(875, 925, ))
-            for(int i = 0; i < n_blocks; ++i)
+            countxx = n_blocks;
+            #pragma omp parallel for
+            for(int i = 0; i < countxx; ++i)
             {
                 MatrixType mtx;
                 mtx.setZero();
@@ -1049,9 +1063,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
 
 
         //         stiffedpreb = (-conf.damping - h)*V - X - Y;
+        countxx = n_ver*VECTORSIZE/SUBFORLOOP;
         #pragma omp parallel for
-
-        for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+        for(int i = 0; i < countxx; i++)
             // is this SSE2 vectorized?
             stiffedpreb.segment<SUBFORLOOP>(i*SUBFORLOOP) = (-h - damp) * V.segment<SUBFORLOOP>(i*SUBFORLOOP) - X.segment<SUBFORLOOP>(i*SUBFORLOOP) - Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
 
@@ -1071,9 +1085,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
         if(conf.applyExternalForce != 0)
             conf.applyExternalForce(*this);
     case StepPhases::ComputeB:
-
+        countxx = n_ver*VECTORSIZE/SUBFORLOOP;
         #pragma omp parallel for
-        for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+        for(int i = 0; i < countxx; i++)
             b.segment<SUBFORLOOP>(i*SUBFORLOOP) = h*(F.segment<SUBFORLOOP>(i*SUBFORLOOP) + G.segment<SUBFORLOOP>(i*SUBFORLOOP) + stiffedpostb.segment<SUBFORLOOP>(i*SUBFORLOOP) + F0.segment<SUBFORLOOP>(i*SUBFORLOOP)) + M.segment<SUBFORLOOP>(i*SUBFORLOOP).cwiseProduct(Z.segment<SUBFORLOOP>(i*SUBFORLOOP));
 
         //std::cerr << b.dot(b) << " " << F.dot(F) << " " << G.dot(G) << stiffedpostb.dot(G) << " " << F0.dot(F0) << " " << M.dot(M) << " " << Z.dot(Z) << std::endl;
@@ -1102,7 +1116,7 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
         // now we jointly build the preconditioning matrix (mass)
         // and add the mass to the Sparse: (M - h df/dv - h^2 df/dx)
 //        #pragma omp parallel for
-        if( ProfileTracker x = ProfileTrackParams(875, 1034, ))
+        if( ProfileTracker x = ProfileTrackParams(888, 1051, ))
         for (int i = 0; i < n_ver; ++i)
         {
             MatrixType & mat = sparse_k[diagonal_ref[i]];
@@ -1118,9 +1132,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
              * Modified Preconditioner: P* = P S^-1
              */
 
-
+            countxx = S.vtxFixed.size();
             #pragma omp parallel for
-            for(int i = 0; i < S.vtxFixed.size(); i++)
+            for(int i = 0; i <  countxx; i++)
                 P.segment<VECTORSIZE>(S.vtxFixed[i]*VECTORSIZE).setOnes();
 
             // C = P
@@ -1130,8 +1144,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
             //      C + M (I-C)
             // so
             //      C += M (I-C)
+            countxx = S.size();
             #pragma omp parallel for
-            for(int j = 0; j < S.size(); j++)
+            for(int j = 0; j < countxx; j++)
             {
                 int i = VECTORSIZE*S.getIndex(j);
                 P.segment<VECTORSIZE>(i) += (VectorType(1,1,1)-P.segment<VECTORSIZE>(i)).cwiseProduct(S.getMatrix(j).diagonal());
@@ -1168,9 +1183,9 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
         // update velocity and position
         //V += deltaV;
         //X += h * V + Y;
-//        #pragma omp parallel  for
-        if( ProfileTracker x = ProfileTrackParams(875, 1100, ))
-        for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+        countxx = n_ver*VECTORSIZE/SUBFORLOOP;
+        #pragma omp parallel  for
+        for(int i = 0; i < countxx; i++)
         {
             V.segment<SUBFORLOOP>(i*SUBFORLOOP) += deltaV.segment<SUBFORLOOP>(i*SUBFORLOOP);
             X.segment<SUBFORLOOP>(i*SUBFORLOOP) += h * V.segment<SUBFORLOOP>(i*SUBFORLOOP) + Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
@@ -1187,7 +1202,7 @@ if( ProfileTracker x = ProfileTrackParams(876, 0)) {
 
 int Cloth::stepone(StepPhases::Enum phase, const Scalar h)
 {
-if( ProfileTracker x = ProfileTrackParams(1115, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1134, 0)) {
     NoParTag par;
     SimLoggerScope sls(logger,(SimLogger::SimState)(SimLogger::PhaseBase+phase),curStep,h);
     lasth = h;
@@ -1387,7 +1402,7 @@ if( ProfileTracker x = ProfileTrackParams(1115, 0)) {
 
 int Cloth::step(NoParTag par,const Scalar h)
 {
-if( ProfileTracker x = ProfileTrackParams(1313, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1332, 0)) {
     for(int i = StepPhases::Start; i <= StepPhases::End; i++)
         stepone((StepPhases::Enum)i,h);
     return  iter;
@@ -1396,7 +1411,7 @@ if( ProfileTracker x = ProfileTrackParams(1313, 0)) {
 
 void Cloth::addCollideImpact(int ivtx, const Vector3 & d, const Vector3 & dn, const Vector3 & s, Scalar r, const Vector3 & vs, int objects)
 {
-if( ProfileTracker x = ProfileTrackParams(1320, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1339, 0)) {
     // X += dyn + Y
     // d = p-s
     // dn = normalized(d)
@@ -1422,7 +1437,7 @@ if( ProfileTracker x = ProfileTrackParams(1320, 0)) {
 
 bool Cloth::computeImpactVelocity(int ivtx, const Vector3 & vp, const Vector3 & vs, const Vector3 & dn , Vector3 & dv, Matrix3 & q, bool &sticked)
 {
-if( ProfileTracker x = ProfileTrackParams(1344, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1363, 0)) {
     // vrel > 0
     //  (1+e) vs_n - (1+e) vp_n = (1+eps)(vs_n-vp_n)
     const Scalar vpnl = vp.dot(dn);
@@ -1496,7 +1511,7 @@ if( ProfileTracker x = ProfileTrackParams(1344, 0)) {
 
 void Cloth::updateMaterial()
 {
-if( ProfileTracker x = ProfileTrackParams(1416, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1435, 0)) {
     for (int i = 0; i < n_tri; ++i)
         shells[i]->rest_state_material();
 
@@ -1505,7 +1520,7 @@ if( ProfileTracker x = ProfileTrackParams(1416, 0)) {
 
 void Cloth::collideClear()
 {
-if( ProfileTracker x = ProfileTrackParams(1423, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1442, 0)) {
     Y.setZero(); // cleanup of the displacement
     Z.setZero();
     S.clear(); // remove the collisions
@@ -1520,7 +1535,7 @@ if( ProfileTracker x = ProfileTrackParams(1423, 0)) {
 
 int Cloth::collide(const Vector3 s, Scalar r, const Vector3 vs)
 {
-if( ProfileTracker x = ProfileTrackParams(1436, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1455, 0)) {
     const Scalar r2 = r * r;    
     collideClear();
 
@@ -1547,7 +1562,7 @@ if( ProfileTracker x = ProfileTrackParams(1436, 0)) {
    */
 int Cloth::collide2(const Vector3 s, Scalar r, const Vector3 vs,const Vector3 s2, Scalar r2, const Vector3 vs2)
 {
-if( ProfileTracker x = ProfileTrackParams(1461, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1480, 0)) {
     const Scalar rsq = r * r;
     const Scalar rsq2 = r2 * r2;
     collideClear();
@@ -1605,7 +1620,7 @@ if( ProfileTracker x = ProfileTrackParams(1461, 0)) {
  */
 Scalar Cloth::collide_first_time(const Vector3 s, Scalar r, const Vector3 vs)
 {
-if( ProfileTracker x = ProfileTrackParams(1517, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1536, 0)) {
     const Scalar r2 = r * r;
     bool found = false;
     double time = 0;
@@ -1684,7 +1699,7 @@ if( ProfileTracker x = ProfileTrackParams(1517, 0)) {
  */
 Scalar Cloth::collide_first_time2(const Vector3 s, Scalar r, const Vector3 vs,const Vector3 s2, Scalar r2, const Vector3 vs2)
 {
-if( ProfileTracker x = ProfileTrackParams(1594, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1613, 0)) {
     const Scalar rsq = r * r;
     const Scalar rsq2 = r2 * r2;
     bool found = false;
@@ -1789,7 +1804,7 @@ if( ProfileTracker x = ProfileTrackParams(1594, 0)) {
 
 int Cloth::collide_sphere_tri(const Vector3 s, Scalar r, const Vector3 vs)
 {
-if( ProfileTracker x = ProfileTrackParams(1697, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1716, 0)) {
     return collide2_sphere_tri(s,r,vs,s,0,vs);
 }
 }
@@ -1797,7 +1812,7 @@ if( ProfileTracker x = ProfileTrackParams(1697, 0)) {
 
 int Cloth::collide2_sphere_tri(const Vector3 s, Scalar r, const Vector3 vs,const Vector3 s2, Scalar r2, const Vector3 vs2)
 {
-if( ProfileTracker x = ProfileTrackParams(1703, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1722, 0)) {
     inv_vertexindex_t inv = Cloth::getInvVertexIndexer();
     const Scalar rsq = r*r;
     const Scalar rsq2 = r*r;
@@ -1885,7 +1900,7 @@ if( ProfileTracker x = ProfileTrackParams(1703, 0)) {
 // collision cylinder / triangle
 int Cloth::collide_cylinder(const Cylinder & c)
 {
-if( ProfileTracker x = ProfileTrackParams(1789, 0)) {
+if( ProfileTracker x = ProfileTrackParams(1808, 0)) {
     Vector3 k0; // distance origin vertex
     Scalar ds_n; // distance along triangle normal
     Scalar ex_n; // extent along normal
@@ -2087,7 +2102,7 @@ if( ProfileTracker x = ProfileTrackParams(1789, 0)) {
 
 void VertexTriangles::build(unsigned int n_ver, unsigned int n_tri, const Eigen::MatrixXi & connectivity)
 {
-if( ProfileTracker x = ProfileTrackParams(1989, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2008, 0)) {
     std::vector<std::vector<vtxpos> > adj1(n_ver);
     for (unsigned i = 0; i < adj1.size(); ++i)
         adj1[i].reserve(8); // most of vertices are 8
@@ -2113,7 +2128,7 @@ if( ProfileTracker x = ProfileTrackParams(1989, 0)) {
 template <int MAXTRI>
 void VertexTrianglesMax<MAXTRI>::build(unsigned int n_ver, unsigned int n_tri, const Eigen::MatrixXi & connectivity)
 {
-if( ProfileTracker x = ProfileTrackParams(2013, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2032, 0)) {
     std::vector<std::vector<vtxpos> > adj1(n_ver);
     for (unsigned i = 0; i < adj1.size(); ++i)
         adj1[i].reserve(8); // most of vertices are 8
@@ -2143,10 +2158,10 @@ struct piecevertex
 {
     static unsigned int indexer(unsigned int x,unsigned int y, unsigned int w, unsigned int h)
     {
-if( ProfileTracker x = ProfileTrackParams(2041, 0)) {
-if( ProfileTracker x = ProfileTrackParams(2041, 0)) {
-if( ProfileTracker x = ProfileTrackParams(2041, 0)) {
-if( ProfileTracker x = ProfileTrackParams(2041, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2060, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2060, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2060, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2060, 0)) {
         unsigned int xpart = w/NX;
         unsigned int ypart = h/NY;
         unsigned int xblock = xpart*ypart; // each block size
@@ -2164,10 +2179,10 @@ if( ProfileTracker x = ProfileTrackParams(2041, 0)) {
 
     static void inv_indexer(unsigned int idx,unsigned int & x, unsigned int & y, unsigned int w, unsigned int h)
     {
-if( ProfileTracker x = ProfileTrackParams(2054, 0)) {
-if( ProfileTracker x = ProfileTrackParams(2054, 0)) {
-if( ProfileTracker x = ProfileTrackParams(2054, 0)) {
-if( ProfileTracker x = ProfileTrackParams(2054, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2073, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2073, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2073, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2073, 0)) {
         unsigned int xpart = w/NX;
         unsigned int ypart = h/NY;
         unsigned int xblock = xpart*ypart; // each block size
@@ -2189,7 +2204,7 @@ if( ProfileTracker x = ProfileTrackParams(2054, 0)) {
 
 inline Cloth::vertexindex_t Cloth::getVertexIndexer() const
 {
-if( ProfileTracker x = ProfileTrackParams(2071, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2090, 0)) {
     switch(conf.vertexOrder)
     {
     case -1:
@@ -2209,7 +2224,7 @@ if( ProfileTracker x = ProfileTrackParams(2071, 0)) {
 
 inline Cloth::inv_vertexindex_t Cloth::getInvVertexIndexer() const
 {
-if( ProfileTracker x = ProfileTrackParams(2089, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2108, 0)) {
     switch(conf.vertexOrder)
     {
     case -1:
@@ -2231,7 +2246,7 @@ if( ProfileTracker x = ProfileTrackParams(2089, 0)) {
 // this requires same number of triangles and vertices
 bool Cloth::loadState(std::istream & ins, Configuration * override)
 {
-if( ProfileTracker x = ProfileTrackParams(2109, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2128, 0)) {
     Configuration c;
     ins >> c;
     if(c.W != conf.W|| c.H != conf.H)
@@ -2435,7 +2450,7 @@ if( ProfileTracker x = ProfileTrackParams(2109, 0)) {
 // remember to make it binary
 void Cloth::saveState(std::ostream & ons) const
 {
-if( ProfileTracker x = ProfileTrackParams(2311, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2330, 0)) {
     ons << conf;
     ons << "EOF\r\n";
 
@@ -2574,21 +2589,21 @@ DUMPV(M)
 
 void Cloth::lockS()
 {
-if( ProfileTracker x = ProfileTrackParams(2448, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2467, 0)) {
     Smutex.lock();
 }
 }
 
 void Cloth::unlockS()
 {
-if( ProfileTracker x = ProfileTrackParams(2453, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2472, 0)) {
     Smutex.unlock();
 }
 }
 
 void Cloth::swapS()
 {
-if( ProfileTracker x = ProfileTrackParams(2458, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2477, 0)) {
     Smutex.lock();
         Sfront = 1-Sfront;
     Smutex.unlock();
@@ -2598,7 +2613,7 @@ if( ProfileTracker x = ProfileTrackParams(2458, 0)) {
 
 void Cloth::reset()
 {
-if( ProfileTracker x = ProfileTrackParams(2466, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2485, 0)) {
     Y.setZero(); // cleanup of the displacement
     Z.setZero();
     S.clear(); // remove the collisions
@@ -2612,7 +2627,7 @@ if( ProfileTracker x = ProfileTrackParams(2466, 0)) {
 
 VectorType Cloth::getCollisionResidual()
 {
-if( ProfileTracker x = ProfileTrackParams(2478, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2497, 0)) {
     VectorType force(VectorType::Zero());
     for(S_t::const_iterator it = S.begin(); it != S.end(); ++it)
         force += (Fr.segment<VECTORSIZE>(it->idx*VECTORSIZE)); // G.segment<3>(i*3)+Fr.segment<3>(it->idx*3)
@@ -2624,7 +2639,7 @@ if( ProfileTracker x = ProfileTrackParams(2478, 0)) {
 // project the cylinder along the vector DN
 void Cylinder::Project(Scalar & min,Scalar & max, Vector3 DN) const
 {
-if( ProfileTracker x = ProfileTrackParams(2488, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2507, 0)) {
     Scalar UAX_N = DN.dot(U_HAX);
     Scalar dist = DN.dot(orig);
     Scalar e2 = extent* fabs(UAX_N); //abs?
@@ -2638,14 +2653,14 @@ if( ProfileTracker x = ProfileTrackParams(2488, 0)) {
 
 void Cloth::clear_external_forces()
 {
-if( ProfileTracker x = ProfileTrackParams(2500, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2519, 0)) {
     F.setZero();
 }
 }
 
 void Cloth::apply_force(int ivtx,Vector3 f)
 {
-if( ProfileTracker x = ProfileTrackParams(2505, 0)) {
+if( ProfileTracker x = ProfileTrackParams(2524, 0)) {
     F.segment<3>(ivtx*3) = f;
 }
 }

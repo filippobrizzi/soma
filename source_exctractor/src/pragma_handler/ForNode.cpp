@@ -22,7 +22,7 @@ ForNode::ForNode(clang::ForStmt *fors) {
 void ForNode::forSetParameters(clang::ForStmt *fs) {
   
   this->forInitialization(fs);
-  //this->forCondition(fs);
+  this->forCondition(fs);
   this->forIncrement(fs);
 
 }

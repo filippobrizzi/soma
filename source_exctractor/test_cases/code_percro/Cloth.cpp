@@ -651,7 +651,8 @@ int Cloth::step(const Scalar h)
   *
   */
 int Cloth::step(ParTaskTag xpar, const Scalar h)
-{
+{   
+    int countxx;
     NoParTag par;
     curStep++;
     {
@@ -665,16 +666,18 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                 {
                     // pre contibrution
                     const Scalar damp = conf.damping;
+                    count = n_ver*VECTORSIZE/SUBFORLOOP
                     #pragma omp parallel for
-                    for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                    for(int i = 0; i < countxx; i++)
                         stiffedpreb.segment<SUBFORLOOP>(i*SUBFORLOOP) = (-h - damp) * V.segment<SUBFORLOOP>(i*SUBFORLOOP) - X.segment<SUBFORLOOP>(i*SUBFORLOOP) - Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
                 }
                 #pragma omp task
                 {
                     // sparse <- qmrot_t <- bend_t <- Pm <- N
-                    {
+                    {   
+                        countxx = n_ver;
                         #pragma omp parallel for
-                        for (int i = 0; i < n_ver; ++i)
+                        for (int i = 0; i < countxx; ++i)
                         {
                             const unsigned int count = vertextri_t::maxtri;
                             VectorType n(VectorType::Zero());
@@ -688,9 +691,10 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                             Pm[i] = n * n.transpose();
                         }
                     }
-                    {
+                    {   
+                        countxx = n_tri;
                         #pragma omp parallel for
-                        for(int i = 0; i < n_tri; i++)
+                        for(int i = 0; i < countxx; i++)
                         {
                             Vector3i t = connectivity.col(i);
                             const Matrix3 & Pma = Pm[t(0)];
@@ -699,9 +703,10 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                             shells[i]->update_bend(Pma,Pmb,Pmc);
                         }
                     }
-                    {
+                    {   
+                        countxx = n_blocks;
                         #pragma omp parallel for
-                        for(int i = 0; i < n_blocks; ++i)
+                        for(int i = 0; i < countxx; ++i)
                         {
                             MatrixType mtx;
                             mtx.setZero();
@@ -732,8 +737,9 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                 // prepare the B component by F0, using part
                 {
                     PrePost top("\tcomputeF0");
+                    countxx = n_ver;
                     #pragma omp parallel for
-                    for (int i = 0; i < n_ver; ++i)
+                    for (int i = 0; i < countxx; ++i)
                     {
                         const unsigned int count = vertextri_t::maxtri;
                         VectorType f0(VectorType::Zero());
@@ -752,9 +758,10 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                 }
                 {
                     PrePost top("\tcomputeB1");
+                    countxx = n_ver*VECTORSIZE/SUBFORLOOP;
                     #pragma omp parallel for
                     // except stiffedpostb
-                    for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                    for(int i = 0; i < countxx; i++)
                         b.segment<SUBFORLOOP>(i*SUBFORLOOP) = h*(F.segment<SUBFORLOOP>(i*SUBFORLOOP) + G.segment<SUBFORLOOP>(i*SUBFORLOOP) + F0.segment<SUBFORLOOP>(i*SUBFORLOOP)) + M.segment<SUBFORLOOP>(i*SUBFORLOOP).cwiseProduct(Z.segment<SUBFORLOOP>(i*SUBFORLOOP));
                 }
                 assmp(ParTag(),deltaV,Z);
@@ -766,8 +773,9 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
             #pragma omp task
             {
                 PrePost top("\tcomputeB2");
+                countxx = n_ver*VECTORSIZE/SUBFORLOOP;
                 #pragma omp parallel for
-                for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                for(int i = 0; i < countxx; i++)
                     b.segment<SUBFORLOOP>(i*SUBFORLOOP) += h*stiffedpostb.segment<SUBFORLOOP>(i*SUBFORLOOP);
             }
 
@@ -778,14 +786,17 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                     PrePost top("\tcomputeSparse");
                     const Scalar damp = conf.damping;
                     // now fill the left part of the equation: M - h df/dv - h^2 df/dx
+                    size_t countxx2 = sparse_k.size();
+                    size_t aaa = 10;
                     #pragma omp parallel for
-                    for (size_t i = 0; i < sparse_k.size(); ++i)
+                    for (size_t i = 0; i < aaa; ++i)
                         sparse_k[i] *= h * (h + damp);
                 }
                 {
                     PrePost top("\tcomputeP");
+                    countxx = n_ver;
                     #pragma omp parallel for
-                    for (int i = 0; i < n_ver; ++i)
+                    for (int i = 0; i < countxx; ++i)
                     {
                         //MatrixType & mat = sparse_k[diagonal_ref[i]];
                         MatrixType & mat = sparse_k[i];
@@ -821,8 +832,9 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                 // OPTIONALLY: V => Vtmp => split X and V
                 {
                     PrePost top("\tXV");
+                    countxx = n_ver*VECTORSIZE/SUBFORLOOP;
                     #pragma omp parallel for
-                    for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+                    for(int i = 0; i < countxx; i++)
                     {
                         X.segment<SUBFORLOOP>(i*SUBFORLOOP) += h * (deltaV.segment<SUBFORLOOP>(i*SUBFORLOOP)+V.segment<SUBFORLOOP>(i*SUBFORLOOP)) + Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
                         V.segment<SUBFORLOOP>(i*SUBFORLOOP) += deltaV.segment<SUBFORLOOP>(i*SUBFORLOOP);
@@ -830,8 +842,9 @@ int Cloth::step(ParTaskTag xpar, const Scalar h)
                 }
                 {
                     PrePost topc("\tupdate");
+                    countxx = n_tri;
                     #pragma omp parallel for
-                    for (int i = 0; i < n_tri; ++i)
+                    for (int i = 0; i < countxx; ++i)
                         shells[i]->update();
                 }
             }
@@ -884,13 +897,15 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
         curStep++;
         break;
     case StepPhases::UpdateShells:
+        countxx = n_tri;
         #pragma omp parallel for
-        for (int i = 0; i < n_tri; ++i)
+        for (int i = 0; i < countxx; ++i)
             shells[i]->update();
         break;
     case StepPhases::VertexGet:
+        countxx = n_ver;
         #pragma omp parallel for
-        for (int i = 0; i < n_ver; ++i)
+        for (int i = 0; i < countxx; ++i)
         {
             const unsigned int count = vertextri_t::maxtri;
             VectorType f0(VectorType::Zero());
@@ -908,8 +923,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
         }
         break;
     case StepPhases::TriangleRot:
+        countxx = n_tri;
         #pragma omp parallel for
-        for(int i = 0; i < n_tri; i++)
+        for(int i = 0; i < countxx; i++)
         {
             Vector3i t = connectivity.col(i);
             const Matrix3 & Pma = Pm[t(0)];
@@ -921,8 +937,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
     case StepPhases::SparseK:
         {
             const bool symmetricBuildA = conf.symmetricBuildA;
+            countxx = n_blocks;
             #pragma omp parallel for
-            for(int i = 0; i < n_blocks; ++i)
+            for(int i = 0; i < countxx; ++i)
             {
                 MatrixType mtx;
                 mtx.setZero();
@@ -978,9 +995,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
 
 
         //         stiffedpreb = (-conf.damping - h)*V - X - Y;
+        countxx = n_ver*VECTORSIZE/SUBFORLOOP;
         #pragma omp parallel for
-
-        for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+        for(int i = 0; i < countxx; i++)
             // is this SSE2 vectorized?
             stiffedpreb.segment<SUBFORLOOP>(i*SUBFORLOOP) = (-h - damp) * V.segment<SUBFORLOOP>(i*SUBFORLOOP) - X.segment<SUBFORLOOP>(i*SUBFORLOOP) - Y.segment<SUBFORLOOP>(i*SUBFORLOOP);
 
@@ -1000,9 +1017,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
         if(conf.applyExternalForce != 0)
             conf.applyExternalForce(*this);
     case StepPhases::ComputeB:
-
+        countxx = n_ver*VECTORSIZE/SUBFORLOOP;
         #pragma omp parallel for
-        for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+        for(int i = 0; i < countxx; i++)
             b.segment<SUBFORLOOP>(i*SUBFORLOOP) = h*(F.segment<SUBFORLOOP>(i*SUBFORLOOP) + G.segment<SUBFORLOOP>(i*SUBFORLOOP) + stiffedpostb.segment<SUBFORLOOP>(i*SUBFORLOOP) + F0.segment<SUBFORLOOP>(i*SUBFORLOOP)) + M.segment<SUBFORLOOP>(i*SUBFORLOOP).cwiseProduct(Z.segment<SUBFORLOOP>(i*SUBFORLOOP));
 
         //std::cerr << b.dot(b) << " " << F.dot(F) << " " << G.dot(G) << stiffedpostb.dot(G) << " " << F0.dot(F0) << " " << M.dot(M) << " " << Z.dot(Z) << std::endl;
@@ -1046,9 +1063,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
              * Modified Preconditioner: P* = P S^-1
              */
 
-
+            countxx = S.vtxFixed.size();
             #pragma omp parallel for
-            for(int i = 0; i < S.vtxFixed.size(); i++)
+            for(int i = 0; i <  countxx; i++)
                 P.segment<VECTORSIZE>(S.vtxFixed[i]*VECTORSIZE).setOnes();
 
             // C = P
@@ -1058,8 +1075,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
             //      C + M (I-C)
             // so
             //      C += M (I-C)
+            countxx = S.size();
             #pragma omp parallel for
-            for(int j = 0; j < S.size(); j++)
+            for(int j = 0; j < countxx; j++)
             {
                 int i = VECTORSIZE*S.getIndex(j);
                 P.segment<VECTORSIZE>(i) += (VectorType(1,1,1)-P.segment<VECTORSIZE>(i)).cwiseProduct(S.getMatrix(j).diagonal());
@@ -1096,8 +1114,9 @@ int Cloth::steponepar(StepPhases::Enum phase, const Scalar h)
         // update velocity and position
         //V += deltaV;
         //X += h * V + Y;
+        countxx = n_ver*VECTORSIZE/SUBFORLOOP;
         #pragma omp parallel  for
-        for(int i = 0; i < n_ver*VECTORSIZE/SUBFORLOOP; i++)
+        for(int i = 0; i < countxx; i++)
         {
             V.segment<SUBFORLOOP>(i*SUBFORLOOP) += deltaV.segment<SUBFORLOOP>(i*SUBFORLOOP);
             X.segment<SUBFORLOOP>(i*SUBFORLOOP) += h * V.segment<SUBFORLOOP>(i*SUBFORLOOP) + Y.segment<SUBFORLOOP>(i*SUBFORLOOP);

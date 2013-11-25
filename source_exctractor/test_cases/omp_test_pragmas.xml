@@ -80,6 +80,20 @@
                     <StartLine>21</StartLine>
                     <EndLine>22</EndLine>
                 </Position>
+                <For>
+                    <Declaration>
+                        <Type>int</Type>
+                        <LoopVariable>j</LoopVariable>
+                        <InitValue>124</InitValue>
+                    </Declaration>
+                    <Condition>
+                        <Op>&lt;</Op>
+                        <ConditionValue>125</ConditionValue>
+                    </Condition>
+                    <Increment>
+                        <Op>++</Op>
+                    </Increment>
+                </For>
             </Pragma>
         </Pragmas>
     </Function>
@@ -122,6 +136,21 @@
                     <StartLine>36</StartLine>
                     <EndLine>38</EndLine>
                 </Position>
+                <For>
+                    <Declaration>
+                        <Type>int</Type>
+                        <LoopVariable>i</LoopVariable>
+                        <InitValue>0</InitValue>
+                    </Declaration>
+                    <Condition>
+                        <Op>&lt;</Op>
+                        <ConditionValue>1</ConditionValue>
+                    </Condition>
+                    <Increment>
+                        <Op>+=</Op>
+                        <IncrementValue>1</IncrementValue>
+                    </Increment>
+                </For>
             </Pragma>
             <Pragma>
                 <Name>OMPParallelDirective</Name>
@@ -192,8 +221,8 @@
                                     <InitValue>1</InitValue>
                                 </Declaration>
                                 <Condition>
-                                    <Op></Op>
-                                    <ConditionVariable></ConditionVariable>
+                                    <Op>&lt;</Op>
+                                    <ConditionValue>2</ConditionValue>
                                 </Condition>
                                 <Increment>
                                     <Op>++</Op>
@@ -310,8 +339,8 @@
                                     <InitValue>1</InitValue>
                                 </Declaration>
                                 <Condition>
-                                    <Op></Op>
-                                    <ConditionVariable></ConditionVariable>
+                                    <Op>&lt;</Op>
+                                    <ConditionVariable>n</ConditionVariable>
                                 </Condition>
                                 <Increment>
                                     <Op>+=</Op>

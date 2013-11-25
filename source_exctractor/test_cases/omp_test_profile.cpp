@@ -21,7 +21,7 @@ if( ProfileTracker x = ProfileTrackParams(9, 0)) {
 	
 	//if(a == 5) {
 //		#pragma omp parallel for shared(b, a, d) period(1)
- 		if( ProfileTracker x = ProfileTrackParams(9, 21, ))
+ 		if( ProfileTracker x = ProfileTrackParams(9, 21, 125 - 124))
  		for(int j = 124; j < 125; j ++)
   			 sleep(1);
 	//}
@@ -39,7 +39,7 @@ if( ProfileTracker x = ProfileTrackParams(28, 0)) {
  n = 2;
  int c;
 // #pragma omp parallel for shared(a, n, b, c) period(19)
- if( ProfileTracker x = ProfileTrackParams(28, 36, ))
+ if( ProfileTracker x = ProfileTrackParams(28, 36, 1 - 0))
  for(int i=0;i< 1; i += 1) {
    sleep(1);
  }
@@ -62,7 +62,7 @@ if( ProfileTracker x = ProfileTrackParams(28, 0)) {
   }
 
 //  #pragma omp for
-    if( ProfileTracker x = ProfileTrackParams(28, 55, ))
+    if( ProfileTracker x = ProfileTrackParams(28, 55, 2 - 1))
     for(int i=1;i< 2; i ++) {
       sleep(1);
     }
@@ -99,7 +99,7 @@ if( ProfileTracker x = ProfileTrackParams(28, 0)) {
  if( ProfileTracker x = ProfileTrackParams(28, 84))
  {
 //    #pragma omp for period(12)
-    if( ProfileTracker x = ProfileTrackParams(28, 86, ))
+    if( ProfileTracker x = ProfileTrackParams(28, 86, n - 1))
     for(int i=1;i< n; i += 1) {
       sleep(1);
     }

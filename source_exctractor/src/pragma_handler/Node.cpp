@@ -17,6 +17,7 @@ Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang
     if(strcmp(pragma->getStmtClassName(), "OMPParallelDirective") == 0 && utils::Line(pragma->getAssociatedStmt()->getLocStart(), sm) == utils::Line(pragma->getAssociatedStmt()->getLocEnd(), sm)){
       setPragmaClauses(sm);
       this->pragma = static_cast<clang::OMPExecutableDirective *>(static_cast<clang::CapturedStmt *>(pragma->getAssociatedStmt())->getCapturedStmt());
+      std::cout << this->pragma->getStmtClassName() << std::endl;
     }
   }
   toLocationStruct(sm);
@@ -25,8 +26,8 @@ Node::Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang
 
 	childrenVect = new std::vector<Node *>();
 
-	if(strcmp(pragma->getStmtClassName(), "OMPForDirective") == 0) {
-    clang::ForStmt *fs = static_cast<clang::ForStmt *>(static_cast<clang::CapturedStmt *>(pragma->getAssociatedStmt())->getCapturedStmt());
+	if(strcmp(this->pragma->getStmtClassName(), "OMPForDirective") == 0) {
+    clang::ForStmt *fs = static_cast<clang::ForStmt *>(static_cast<clang::CapturedStmt *>(this->pragma->getAssociatedStmt())->getCapturedStmt());
     this->forNode = new ForNode(fs);
   } else
 		this->forNode = NULL;
@@ -95,12 +96,9 @@ void Node::setParentFunction(clang::FunctionDecl *functD, const clang::SourceMan
  * ---- If the parent function is declared in a class return the name of the class ----
  */
 /*  if (clang::CXXMethodDecl *cxxMethodD = dynamic_cast<clang::CXXMethodDecl *>(functD)){
-    std::cout << "CIAO -3" << std::endl;
-
     const clang::NamedDecl *nD = static_cast<const clang::NamedDecl *>(cxxMethodD->getParent());            
     fI.parentFunctionClassName = nD->getQualifiedNameAsString();
-  }else {
-    std::cout << "CIAO -2" << std::endl;
+  }
 */
     fI.parentFunctionClassName = "";
 //  }
@@ -127,9 +125,11 @@ void Node::setPragmaClauses(clang::SourceManager& sm) {
     if(strcmp(cName, "shared") == 0 || strcmp(cName, "private") == 0 || strcmp(cName, "firstprivate") == 0) {
       for(clang::StmtRange range = c->children(); range; ++ range) {
         const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*range);
-        const clang::NamedDecl *nD = dRE->getFoundDecl();
-        const clang::ValueDecl *vD = dRE->getDecl();
-        vl->insert(std::pair<std::string, std::string>(nD->getNameAsString(), vD->getType().getAsString()));
+        if(dRE) {
+          const clang::NamedDecl *nD = dRE->getFoundDecl();
+          const clang::ValueDecl *vD = dRE->getDecl();
+          vl->insert(std::pair<std::string, std::string>(nD->getNameAsString(), vD->getType().getAsString()));
+        }
       }
     }else if(strcmp(cName, "period") == 0) {
       clang::OMPPeriodClause *pC = static_cast<clang::OMPPeriodClause *>(c);

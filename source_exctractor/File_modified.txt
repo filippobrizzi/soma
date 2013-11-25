@@ -186,8 +186,3 @@ line 1722
   case OMPC_period:
 
 -----------------------------------------------------------------------------------------
-
-*** clang/lib/CodeGen/CGStmtOpenMP.cpp : line 1605
-
-  case OMPC_period:
-

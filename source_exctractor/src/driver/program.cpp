@@ -21,7 +21,6 @@ void Program::ParseSourceCode(std::string fileName) {
 	if (ext == std::string::npos)
  		ext = outNamePragma.length();
 	outNamePragma.insert(ext, "_pragma");
-
 	llvm::errs() << "Output to: " << outNamePragma << "\n";
 	llvm::raw_fd_ostream outFilePragma(outNamePragma.c_str(), OutErrorInfo, 0);  
 */
@@ -43,13 +42,12 @@ void Program::ParseSourceCode(std::string fileName) {
   // Now output rewritten source code
 	const clang::RewriteBuffer *RewriteBufProfiling = rewriteProfiling.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());  	
   outFileProfile << std::string(RewriteBufProfiling->begin(), RewriteBufProfiling->end());
-
   outFileProfile.close();
 
-  //const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
-  //outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
-  //outFilePragma.close();
-  
+/*  const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
+  outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
+  outFilePragma.close();
+ */ 
 }
 
 
@@ -103,14 +101,24 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   			clang::Stmt *as = omps->getAssociatedStmt();
         if(as) {
           clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
-
-/*
- * ---- In the case of #omp parallel for we have to go down two level befor finding the ForStmt ----
- */
+          //In the case of #omp parallel for we have to go down two level befor finding the ForStmt 
   		    if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0)
             RewriteProfile(cs);
-        
-        }        
+
+
+
+          std::cout << s->getStmtClassName() << " " << utils::Line(s->getLocStart() ,sm) << std::endl;
+          clang::CapturedStmt *cs2 = static_cast<clang::CapturedStmt *>(as);
+          for(clang::CapturedStmt::capture_iterator I = cs2->capture_begin(); I != cs2->capture_end(); ++I){
+            clang::VarDecl *vd = I->getCapturedVar(); 
+            std::cout << vd->getNameAsString() << " - " << vd->getType().getAsString() << std::endl;
+          }
+          std::cout << std::endl;
+
+          
+
+
+        }
       }
   	}
   	
@@ -126,8 +134,8 @@ void ProfilingRecursiveASTVisitor::RewriteProfile(clang::Stmt *s) {
 
     std::stringstream text;
     if(clang::isa<clang::ForStmt>(s)) {
-      //std::string conditionVar = forCondition(s);
-      std::string conditionVar = "";
+      std::string conditionVar = forCondition(s);
+      //std::string conditionVar = "";
       text << "if( ProfileTracker x = ProfileTrackParams(" << functionLine << ", " << pragmaLine << ", " << conditionVar << "))\n";
       RewriteProfiling.InsertText(ST, text.str(), true, true);
 
@@ -150,25 +158,78 @@ void ProfilingRecursiveASTVisitor::RewriteProfile(clang::Stmt *s) {
 
 std::string ProfilingRecursiveASTVisitor::forCondition(const clang::Stmt *s) {
 	const clang::ForStmt *fS = static_cast<const clang::ForStmt *>(s);
-  	const clang::Expr *cE = fS->getCond();
-  	const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(cE);
+  const clang::Expr *cE = fS->getCond();
+  const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(cE);
+  std::string startValue, endValue;
 
 /*
- *  Conditional value
+ *  Conditional end value
  */
-  	const clang::Expr *rEx = bO->getRHS();
-  	if(strcmp(rEx->getStmtClassName(), "IntegerLiteral") == 0) {
-    	const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(rEx);
-    	std::stringstream text;
-    	text << iL->getValue().getZExtValue();
-    	return text.str();
+  const clang::Expr *rEx = bO->getRHS();
+  if(strcmp(rEx->getStmtClassName(), "IntegerLiteral") == 0) {
+    const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(rEx);
+    std::stringstream text;
+    text << iL->getValue().getZExtValue();
+    //return text.str();
+    endValue = text.str();
 
-  	} else if(strcmp(rEx->getStmtClassName(), "ImplicitCastExpr") == 0) {
-    	const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(rEx->child_begin()));
-    	const clang::NamedDecl *nD = dRE->getFoundDecl();
-    	return nD->getNameAsString(); 
-  	}
-  	return "";
+  } else if(strcmp(rEx->getStmtClassName(), "ImplicitCastExpr") == 0) {
+  	const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(rEx->child_begin()));
+  	const clang::NamedDecl *nD = dRE->getFoundDecl();
+  	//return nD->getNameAsString(); 
+    endValue = nD->getNameAsString();
+  }
+
+/*
+ * Conditional start value
+ */
+
+  if(strcmp(fS->child_begin()->getStmtClassName(), "DeclStmt") == 0) {
+    const clang::DeclStmt *dS = static_cast<const clang::DeclStmt *>(*(fS->child_begin()));
+    const clang::Decl *d = dS->getSingleDecl();
+/*
+ *  for (... = 0)
+ */
+    if(strcmp(dS->child_begin()->getStmtClassName(), "IntegerLiteral") == 0) {      
+      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(*(dS->child_begin())); 
+      std::stringstream text;
+      text << iL->getValue().getZExtValue();
+      //return text.str();
+      startValue = text.str();/*
+ *  for (... = a)
+ */
+    }else if (strcmp(dS->child_begin()->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(dS->child_begin()->child_begin()));
+      const clang::NamedDecl *nD = dRE->getFoundDecl();
+      startValue = nD->getNameAsString();
+    }
+  }
+/*
+ *  for ( i = ...)
+ */
+  else if(strcmp(fS->child_begin()->getStmtClassName(), "BinaryOperator") == 0) {
+    const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(*(fS->child_begin())); 
+    const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(bO->child_begin()));
+/*
+ *  for( ... = 0)
+ */
+    clang::ConstStmtIterator stI = bO->child_begin();
+    stI ++;
+    if(strcmp(stI->getStmtClassName(), "IntegerLiteral") == 0) {
+      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(*stI);
+      startValue = iL->getValue().getZExtValue();      
+/*
+ *  for ( ... = a)
+ */
+    } else if (strcmp(stI->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(stI->child_begin()));
+      const clang::NamedDecl *nD = dRE->getFoundDecl();
+      startValue = nD->getNameAsString();
+    }
+  }
+  endValue.append(" - ");
+  endValue.append(startValue);
+  return endValue;
 }
 
 unsigned ProfilingRecursiveASTVisitor::getFunctionLine(clang::SourceLocation sl) {
@@ -185,4 +246,3 @@ unsigned ProfilingRecursiveASTVisitor::getFunctionLine(clang::SourceLocation sl)
 
 	return 0;
 }
-
