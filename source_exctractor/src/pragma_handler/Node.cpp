@@ -66,6 +66,7 @@ void Node::setParentFunction(clang::FunctionDecl *functD, const clang::SourceMan
   
   fI.fD = functD;
   fI.parentFunctionLine =  utils::Line(functD->getLocStart(), sm);
+  fI.parentFunctionLineEnd = utils::Line(functD->getLocEnd(), sm);
 /*
  * ---- Name of the function containing the pragma ----
  */

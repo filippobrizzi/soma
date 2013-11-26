@@ -87,9 +87,8 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
           clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
           //In the case of #omp parallel for we have to go down two level befor finding the ForStmt 
   		    if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0)
+            
             RewriteProfile(cs);
-
-
 
           std::cout << s->getStmtClassName() << " " << utils::Line(s->getLocStart() ,sm) << std::endl;
           clang::CapturedStmt *cs2 = static_cast<clang::CapturedStmt *>(as);
@@ -250,6 +249,7 @@ void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *rootVec
   TransformASTConsumer tastConsumer(rewritePragma, rootVect, ccompiler.getSourceManager());
   
   // Parse the AST
+
   clang::ParseAST(ccompiler.getPreprocessor(), &tastConsumer, ccompiler.getASTContext());
   ccompiler.getDiagnosticClient().EndSourceFile();
 
@@ -285,7 +285,7 @@ public:\n\
       std::thread t(std::ref(nb));\n\
       t.join();\n\
   }\n\
-};\n";
+};\n \n";
 
       RewritePragma.InsertText(ST, text, true, false);
     }
@@ -295,20 +295,153 @@ public:\n\
 }
 
 bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
-  return true;
-}
-
-
-/*bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   
   clang::SourceLocation ST = s->getLocStart();
   if(sm.getFileID(ST) == sm.getMainFileID()) {
     if (clang::isa<clang::OMPExecutableDirective>(s) && s != previousStmt) {
       previousStmt = s;
       clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
+      clang::Stmt *as = omps->getAssociatedStmt();
+        if(as) {
+          clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
+          if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0) {
 
-
-
+            RewriteOMP(as);
+          }
+        }
+    }
   }
-*/
+  return true;
+}
 
+void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
+  
+  clang::Stmt *s = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
+
+  clang::SourceLocation ST = s->getLocStart();
+  unsigned pragmaLine = utils::Line(ST,sm);
+
+  Node *n = getNodeforPragma(s);
+
+
+  std::stringstream text;
+  std::stringstream textParam;
+  std::stringstream textVar;
+  std::stringstream textCallmeVar;
+  std::stringstream textNested;
+  std::stringstream textVarConstr;
+/*
+ * ----- Insert before pragma ----
+ */
+  text <<
+"{\n\
+  class Nested : public NestedBase {\n\
+    Nested(";
+
+  textVarConstr << " : ";
+  clang::CapturedStmt *cs = static_cast<clang::CapturedStmt *>(as);
+  for(clang::CapturedStmt::capture_iterator I = cs->capture_begin(); I != cs->capture_end(); ++I){
+    clang::VarDecl *vd = I->getCapturedVar(); 
+    std::string type = vd->getType().getAsString();
+
+    if(I != cs->capture_begin()){
+      textParam << ", ";
+      textCallmeVar << ", ";
+      textNested << ", ";
+    }
+
+    if(type.find("class") != std::string::npos)
+      type.erase(0, 6);
+
+    if(n->optionVect->find("private") != n->optionVect->end()) {
+      if(n->optionVect->find("private")->second.find(vd->getNameAsString()) != n->optionVect->find("private")->second.end() 
+            || type.find("*") != std::string::npos){
+
+        textParam << type << " " << vd->getNameAsString();
+        textVar << type << " " << vd->getNameAsString() << "_;\n";
+
+      }else{
+        textParam << type << " & " << vd->getNameAsString();
+        textVar << type << " & " << vd->getNameAsString() << "_;\n";
+      }
+    }else if(type.find("*") != std::string::npos) {
+      textParam << type << " " << vd->getNameAsString();
+      textVar << type << " " << vd->getNameAsString() << "_;\n";
+
+    }else {
+      textParam << type << " & " << vd->getNameAsString();
+      textVar << type << " & " << vd->getNameAsString() << "_;\n";
+    }
+
+    textVarConstr << vd->getNameAsString() << "_(" << vd->getNameAsString() << ") ";
+    textCallmeVar << vd->getNameAsString() << "_";
+    textNested << vd->getNameAsString();
+  }
+
+  text << textParam.str() << ") " << textVarConstr.str() << "{ }\n" << textVar.str() << "\n";    
+  text << "void fx(" << textParam.str() <<")\n";
+
+  RewritePragma.InsertText(ST, text.str(), true, true);
+
+  unsigned startLine = utils::Line(s->getLocStart(), sm);
+  clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine - 1, 1);
+  RewritePragma.InsertText(pragmaST, "//", true, false);
+  
+/*
+ * ----- Insert after pragma ----
+ */
+  std::stringstream textAfter;
+  textAfter <<"\
+void callme() {\n\
+  fx(" << textCallmeVar.str() << ");\n\
+}\n\
+};\n\
+Nested _x_(" << textNested.str() <<");\n\
+InstanceRun::call(InstanceRun::ScheduleOptions(), _x_);\n\
+}\n";
+
+  unsigned endLine = utils::Line(s->getLocEnd(), sm);
+  clang::SourceLocation pragmaEndST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
+    std::cout << pragmaEndST.printToString(sm) << std::endl;
+
+  RewritePragma.InsertText(pragmaEndST, textAfter.str(), true, false);
+
+
+}
+
+
+
+Node *TransformRecursiveASTVisitor::getNodeforPragma(clang::Stmt *s){
+
+  clang::SourceLocation ST = s->getLocStart();
+  unsigned l = utils::Line(ST, sm);
+
+  std::vector<Root *>::iterator ritr;
+  for(ritr = rootVect->begin(); ritr != rootVect->end(); ritr ++) {
+    if((*ritr)->getFunctionLineStart() < utils::Line(ST, sm) && (*ritr)->getFunctionLineEnd() > utils::Line(ST, sm))
+      break;
+  }
+  
+  std::vector<Node *>::iterator nitr;
+  Node * n;
+  for(nitr = (*ritr)->childrenVect->begin(); nitr != (*ritr)->childrenVect->end(); nitr ++) {
+    n = recursiveNodeforPragma(*nitr, l);
+    if(n != NULL)
+      return n;
+  }
+  return NULL;
+}
+
+Node *TransformRecursiveASTVisitor::recursiveNodeforPragma(Node *n, unsigned l) {
+  Node *nn;
+  if(n->getStartLine() == l){
+        return n;
+  }else if(n->childrenVect != NULL) {
+    for(std::vector<Node *>::iterator nitr = n->childrenVect->begin(); nitr != n->childrenVect->end(); ++ nitr) {
+      nn = recursiveNodeforPragma(*nitr, l);
+      if(nn != NULL)
+        return nn;
+    }
+  }
+  return NULL;
+}

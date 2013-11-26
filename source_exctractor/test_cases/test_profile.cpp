@@ -24,17 +24,15 @@ if( ProfileTracker x = ProfileTrackParams(16, 0)) {
 	double e;
 	c = 0;
 	float *ptr;
-	A bbb;
+	A *bbb;
 	//std::string ss;
-//	#pragma omp parallel shared(a, b, c) private(d, e)
+//	#pragma omp parallel shared(a, b, c) private(d, bbb)
 	if( ProfileTracker x = ProfileTrackParams(16, 26))
 	{
 		int yy;
 		double *kk;
-		e = 
-
-		#pragma omp task
-		 
+//		#pragma omp task 
+		if( ProfileTracker x = ProfileTrackParams(16, 30))
 		{	
 			int x;
 			float *pp;
@@ -49,10 +47,12 @@ if( ProfileTracker x = ProfileTrackParams(16, 0)) {
 
 			A aaa;
 			aaa.aa = a;
-			bbb.aa = a;
+			//bbb.aa = a;
+			bbb = new A();
 		}
 
-		#pragma omp for
+//		#pragma omp for
+		if( ProfileTracker x = ProfileTrackParams(16, 49, 100 - 10))
 		for (int i = 10; i < 100; ++i)
 		{	
 			c++;

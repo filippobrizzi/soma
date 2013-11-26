@@ -12,7 +12,6 @@ int main(int argc, char **argv) {
 
 	Program program(argc, argv);
 
-	
 	std::vector<Root *> *rootVect = CreateTree(program.getPragmaList(), program.getFunctionList(), program.ccompiler.getSourceManager());
 
 	for(std::vector<Root *>::iterator itr = rootVect->begin(); itr != rootVect->end(); ++itr) 

@@ -10,8 +10,8 @@ std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pr
 	std::vector<Root *> *rootVect = new std::vector<Root *>();
 	
   std::vector<clang::OMPExecutableDirective *>::iterator itr;
-	for(itr = pragmaList->begin(); itr != pragmaList->end(); ++ itr) {    
 
+	for(itr = pragmaList->begin(); itr != pragmaList->end(); ++ itr) {    
     clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
     Node * n = new Node(*itr, fd, sm);
 

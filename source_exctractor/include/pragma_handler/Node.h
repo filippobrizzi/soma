@@ -14,6 +14,7 @@ struct FunctionInfo {
 	clang::FunctionDecl *fD;
 
 	unsigned parentFunctionLine;
+	unsigned parentFunctionLineEnd;
 	std::string parentFunctionName;
 	std::string parentFunctionReturnType;
 	int nParams;
@@ -39,14 +40,12 @@ protected:
 
 /*Pragma name with all the parameters */
 	std::string pragmaName;
-	typedef std::map<std::string, std::string> varList;
-	std::map<std::string, varList> *optionVect;
+	
 
 /*Line number of the function that contains this pragma */
 	FunctionInfo fI;
 
 /* Variables to construct the tree */
-	std::vector<Node *> *childrenVect;
 	Node *parentNode;
 
 /* Function to exctract all the parameters of the pragma */
@@ -55,6 +54,11 @@ protected:
 public:
 	bool profiled = false;
 	SourceLocationStruct sL;
+	
+	std::vector<Node *> *childrenVect;
+
+	typedef std::map<std::string, std::string> varList;
+	std::map<std::string, varList> *optionVect;
 
 	Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang::SourceManager& sm);
 

@@ -11,12 +11,12 @@
                     <Option>
                         <Name>private</Name>
                         <Parameter>
-                            <Type>float</Type>
-                            <Var>d</Var>
+                            <Type>class A *</Type>
+                            <Var>bbb</Var>
                         </Parameter>
                         <Parameter>
-                            <Type>double</Type>
-                            <Var>e</Var>
+                            <Type>float</Type>
+                            <Var>d</Var>
                         </Parameter>
                     </Option>
                     <Option>
@@ -37,8 +37,57 @@
                 </Options>
                 <Position>
                     <StartLine>26</StartLine>
-                    <EndLine>56</EndLine>
+                    <EndLine>54</EndLine>
                 </Position>
+                <Children>
+                    <Pragmas>
+                        <Pragma>
+                            <Name>OMPTaskDirective</Name>
+                            <Options>
+                                <Option>
+                                    <Name>firstprivate</Name>
+                                    <Parameter>
+                                        <Type>class A *</Type>
+                                        <Var>bbb</Var>
+                                    </Parameter>
+                                    <Parameter>
+                                        <Type>float</Type>
+                                        <Var>d</Var>
+                                    </Parameter>
+                                    <Parameter>
+                                        <Type>double *</Type>
+                                        <Var>kk</Var>
+                                    </Parameter>
+                                </Option>
+                            </Options>
+                            <Position>
+                                <StartLine>30</StartLine>
+                                <EndLine>46</EndLine>
+                            </Position>
+                        </Pragma>
+                        <Pragma>
+                            <Name>OMPForDirective</Name>
+                            <Position>
+                                <StartLine>49</StartLine>
+                                <EndLine>52</EndLine>
+                            </Position>
+                            <For>
+                                <Declaration>
+                                    <Type>int</Type>
+                                    <LoopVariable>i</LoopVariable>
+                                    <InitValue>10</InitValue>
+                                </Declaration>
+                                <Condition>
+                                    <Op>&lt;</Op>
+                                    <ConditionValue>100</ConditionValue>
+                                </Condition>
+                                <Increment>
+                                    <Op>++</Op>
+                                </Increment>
+                            </For>
+                        </Pragma>
+                    </Pragmas>
+                </Children>
             </Pragma>
         </Pragmas>
     </Function>

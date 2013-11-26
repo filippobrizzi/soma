@@ -20,10 +20,10 @@ void Root::visitTree() {
 
   std::cout << "FUNCTION INFO " << std::endl;
 
-  std::cout << "Name = " << fI.parentFunctionName << "ReturnType = " << fI.parentFunctionReturnType << std::endl;
+  std::cout << "Name = " << fI.parentFunctionName << "  ReturnType = " << fI.parentFunctionReturnType << std::endl;
 
 	for(std::vector<Node *>::iterator itn = this->childrenVect->begin(); itn != this->childrenVect->end(); itn ++) {
-		(*itn)->getPragmaInfo();
+    (*itn)->getPragmaInfo();
    	(*itn)->printNode();
    	std::cout << std::endl;
     		

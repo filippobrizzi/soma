@@ -11,12 +11,12 @@ class Root {
 private:	
 	FunctionInfo fI;
 
-	std::vector<Node *> *childrenVect;
-
 	Node *lastNode;
 
 public:
 	Root(Node *n, FunctionInfo fI);
+
+	std::vector<Node *> *childrenVect;
 
 	void setLastNode(Node *n) {this->lastNode = n; };
 	Node* getLastNode() { return this->lastNode; };
@@ -24,6 +24,9 @@ public:
 	void addChildNode(Node *n) { this->childrenVect->insert(this->childrenVect->end(), n); };
 
 	void createXMLFunction(tinyxml2::XMLDocument *doc);
+	
+	unsigned getFunctionLineStart(){ return fI.parentFunctionLine; }
+	unsigned getFunctionLineEnd() {return fI.parentFunctionLineEnd; }
 
 	void visitTree(); 
 };
