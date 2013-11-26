@@ -1,5 +1,6 @@
 #include "driver/compiler.h"
 #include "utils/source_locations.h"
+#include "pragma_handler/Root.h"
 
 #include "clang/StaticAnalyzer/Core/PathSensitive/CheckerContext.h"
 
@@ -15,23 +16,26 @@
 
 class Program {
 
-//ClangCompiler ccompiler;
 std::vector<clang::OMPExecutableDirective *> *pragmaList;
 std::vector<clang::FunctionDecl *> *functionList;
 
 
 void ParseSourceCode(std::string fileName);
+void ParseSourceCode(std::string fileName, std::vector<Root *> *rootVect);
 
 public:
 	Program(int argc, char **argv) : ccompiler(argc, argv), pragmaList(NULL), functionList(NULL) {
 		ParseSourceCode(argv[argc - 1]);
 	}
+
+  Program(int argc,char **argv, std::vector<Root *> *rootVect) : ccompiler(argc, argv), pragmaList(NULL), functionList(NULL) {
+    ParseSourceCode(argv[argc - 1], rootVect);
+  }
 	
 	std::vector<clang::OMPExecutableDirective *> *getPragmaList() { return pragmaList; }
 	std::vector<clang::FunctionDecl *> *getFunctionList() { return functionList; }
 
 	ClangCompiler ccompiler;
-	//clang::CompilerInstance ccompiler;
 };
 
 
@@ -39,7 +43,6 @@ public:
 class ProfilingRecursiveASTVisitor: public clang::RecursiveASTVisitor<ProfilingRecursiveASTVisitor> {
 
   clang::Rewriter &RewriteProfiling;
-  clang::Rewriter &RewritePragma;
   
   const clang::SourceManager& sm;
 
@@ -52,8 +55,8 @@ class ProfilingRecursiveASTVisitor: public clang::RecursiveASTVisitor<ProfilingR
   //clang::FunctionDecl *EmitFunction(clang::Stmt *s);
 
 public:
-  ProfilingRecursiveASTVisitor(clang::Rewriter &RProfiling, clang::Rewriter &RPragma, const clang::SourceManager& sm) : 
-          RewriteProfiling(RProfiling), RewritePragma(RPragma), sm(sm), insertInclude(false), previousStmt(NULL) { }
+  ProfilingRecursiveASTVisitor(clang::Rewriter &RProfiling, const clang::SourceManager& sm) : 
+          RewriteProfiling(RProfiling), sm(sm), insertInclude(false), previousStmt(NULL) { }
   
   bool VisitStmt(clang::Stmt *s);
   bool VisitFunctionDecl(clang::FunctionDecl *f);
@@ -67,8 +70,8 @@ public:
 class ProfilingASTConsumer : public clang::ASTConsumer { 
 public:
 
-  ProfilingASTConsumer(clang::Rewriter &RProfiling, clang::Rewriter &RPragma, const clang::SourceManager& sm) : 
-          rv(RProfiling, RPragma, sm) { }
+  ProfilingASTConsumer(clang::Rewriter &RProfiling, const clang::SourceManager& sm) : 
+          rv(RProfiling, sm) { }
   
   virtual bool HandleTopLevelDecl(clang::DeclGroupRef d) {
     typedef clang::DeclGroupRef::iterator iter;
@@ -84,3 +87,44 @@ public:
 
 };
 
+/*
+ * --------------------------------------------------------------------------------------------------
+ * --------------------------------------------------------------------------------------------------
+ */
+
+class TransformRecursiveASTVisitor: public clang::RecursiveASTVisitor<TransformRecursiveASTVisitor> {
+
+  clang::Rewriter &RewritePragma;
+  
+  const clang::SourceManager& sm;
+
+  clang::Stmt *previousStmt;
+  bool insertInclude;
+
+  std::vector<Root *> *rootVect;
+
+public:
+  TransformRecursiveASTVisitor(clang::Rewriter &RPragma, std::vector<Root *> *rootVect, const clang::SourceManager& sm) : 
+          RewritePragma(RPragma), rootVect(rootVect), sm(sm), insertInclude(false), previousStmt(NULL) { }
+  
+  bool VisitStmt(clang::Stmt *s);
+  bool VisitFunctionDecl(clang::FunctionDecl *f);
+};
+
+
+class TransformASTConsumer : public clang::ASTConsumer { 
+public:
+
+  TransformASTConsumer(clang::Rewriter &RPragma, std::vector<Root *> *rootVect, const clang::SourceManager& sm) : 
+          rv(RPragma, rootVect, sm) { }
+  
+  virtual bool HandleTopLevelDecl(clang::DeclGroupRef d) {
+    typedef clang::DeclGroupRef::iterator iter;
+    for (iter b = d.begin(), e = d.end(); b != e; ++b) {
+      rv.TraverseDecl(*b);
+    } 
+    return true; 
+  }
+
+  TransformRecursiveASTVisitor rv;
+};

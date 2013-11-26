@@ -49,18 +49,4 @@
             </Pragma>
         </Pragmas>
     </Function>
-    <Function>
-        <Name>y</Name>
-        <ReturnType>int</ReturnType>
-        <Line>36</Line>
-        <Pragmas>
-            <Pragma>
-                <Name>OMPParallelDirective</Name>
-                <Position>
-                    <StartLine>41</StartLine>
-                    <EndLine>43</EndLine>
-                </Position>
-            </Pragma>
-        </Pragmas>
-    </Function>
 </File>

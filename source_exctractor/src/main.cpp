@@ -1,6 +1,5 @@
 
-#include "driver/program.h"
-//#include "pragma_handler/create_tree.h"
+//#include "driver/program.h"
 #include "xml_creator/XMLcreator.h"
 
 
@@ -21,6 +20,7 @@ int main(int argc, char **argv) {
 	
 	createXML(rootVect, argv[argc - 1]);
 
+	Program program2(argc, argv, rootVect);
 	return 0;
 }
 

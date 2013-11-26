@@ -31,9 +31,10 @@ if( ProfileTracker x = ProfileTrackParams(16, 0)) {
 	{
 		int yy;
 		double *kk;
+		e = 
+
 		#pragma omp task
-//		 
-		if( ProfileTracker x = ProfileTrackParams(16, 31))
+		 
 		{	
 			int x;
 			float *pp;
@@ -51,8 +52,7 @@ if( ProfileTracker x = ProfileTrackParams(16, 0)) {
 			bbb.aa = a;
 		}
 
-//		#pragma omp for
-		if( ProfileTracker x = ProfileTrackParams(16, 49, 100 - 10))
+		#pragma omp for
 		for (int i = 10; i < 100; ++i)
 		{	
 			c++;

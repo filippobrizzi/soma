@@ -15,22 +15,10 @@ void Program::ParseSourceCode(std::string fileName) {
   std::string OutErrorInfo;
   llvm::raw_fd_ostream outFileProfile(outNameProfile.c_str(), OutErrorInfo, 0);
 
-  // Convert <file>.c to <file_pragma>.c
-/*	std::string outNamePragma (fileName);
-	ext = outNamePragma.rfind(".");
-	if (ext == std::string::npos)
- 		ext = outNamePragma.length();
-	outNamePragma.insert(ext, "_pragma");
-	llvm::errs() << "Output to: " << outNamePragma << "\n";
-	llvm::raw_fd_ostream outFilePragma(outNamePragma.c_str(), OutErrorInfo, 0);  
-*/
   clang::Rewriter rewriteProfiling;
   rewriteProfiling.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
-  clang::Rewriter rewritePragma;
-  rewritePragma.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
-
-
-  ProfilingASTConsumer astConsumer(rewriteProfiling, rewritePragma, ccompiler.getSourceManager());
+  
+  ProfilingASTConsumer astConsumer(rewriteProfiling, ccompiler.getSourceManager());
   // Parse the AST
   clang::ParseAST(ccompiler.getPreprocessor(), &astConsumer, ccompiler.getASTContext());
 	ccompiler.getDiagnosticClient().EndSourceFile();
@@ -44,12 +32,8 @@ void Program::ParseSourceCode(std::string fileName) {
   outFileProfile << std::string(RewriteBufProfiling->begin(), RewriteBufProfiling->end());
   outFileProfile.close();
 
-/*  const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
-  outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
-  outFilePragma.close();
- */ 
-}
 
+}
 
 
 
@@ -114,10 +98,6 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
             std::cout << vd->getNameAsString() << " - " << vd->getType().getAsString() << std::endl;
           }
           std::cout << std::endl;
-
-          
-
-
         }
       }
   	}
@@ -246,3 +226,89 @@ unsigned ProfilingRecursiveASTVisitor::getFunctionLine(clang::SourceLocation sl)
 
 	return 0;
 }
+/*
+ * -------------------------------------------------------------------------------------------------------------------
+ * -------------------------------------------------------------------------------------------------------------------
+ */
+
+void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *rootVect) {
+
+ // Convert <file>.c to <file_transformed>.c
+  std::string outNamePragma (fileName);
+  size_t ext = outNamePragma.rfind(".");
+  if (ext == std::string::npos)
+    ext = outNamePragma.length();
+  outNamePragma.insert(ext, "_tranformed");
+
+  llvm::errs() << "Output to: " << outNamePragma << "\n";
+  std::string OutErrorInfo;
+  llvm::raw_fd_ostream outFilePragma(outNamePragma.c_str(), OutErrorInfo, 0);  
+
+  clang::Rewriter rewritePragma;
+  rewritePragma.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
+
+  TransformASTConsumer tastConsumer(rewritePragma, rootVect, ccompiler.getSourceManager());
+  
+  // Parse the AST
+  clang::ParseAST(ccompiler.getPreprocessor(), &tastConsumer, ccompiler.getASTContext());
+  ccompiler.getDiagnosticClient().EndSourceFile();
+
+  const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
+  outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
+  outFilePragma.close();
+}
+
+
+bool TransformRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {     
+  clang::SourceLocation ST = f->getLocStart();
+
+  if(sm.getFileID(ST) == sm.getMainFileID() && !clang::isa<clang::CXXMethodDecl>(f)) {
+    if(this->insertInclude == false) {
+      this->insertInclude = true;
+
+      std::string text = 
+"class NestedBase { \n\
+  public: \n\
+  virtual void callme() = 0;\n\
+  void operator()() {\n\
+    callme();\n\
+  }\n\
+};\n\
+\n\
+class InstanceRun {\n\
+public:\n\
+  struct ScheduleOptions\n\
+  {\n\
+  };\n\
+\n\
+  static void call(ScheduleOptions opts, NestedBase & nb) {\n\
+      std::thread t(std::ref(nb));\n\
+      t.join();\n\
+  }\n\
+};\n";
+
+      RewritePragma.InsertText(ST, text, true, false);
+    }
+  }
+  
+  return true;
+}
+
+bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
+  return true;
+}
+
+
+/*bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
+  
+  clang::SourceLocation ST = s->getLocStart();
+  if(sm.getFileID(ST) == sm.getMainFileID()) {
+    if (clang::isa<clang::OMPExecutableDirective>(s) && s != previousStmt) {
+      previousStmt = s;
+      clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
+
+
+
+  }
+*/
+

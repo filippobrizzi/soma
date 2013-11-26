@@ -2,7 +2,7 @@
 //#include <iostream>
 #include <unistd.h>
 
-int y();
+//int y();
 
 int main() {
 
@@ -21,7 +21,7 @@ int main() {
  		
  	}
  	
- 	int a = y();
+ //	int a = y();
 
  	#pragma omp master
 // 	printf("hello world\n");
@@ -33,7 +33,7 @@ int main() {
 	return 0;
 }
 
-int y() {
+/*int y() {
 
 	int b = 0;
 
@@ -45,4 +45,4 @@ int y() {
 
 	return b;
 
-}
+}*/
