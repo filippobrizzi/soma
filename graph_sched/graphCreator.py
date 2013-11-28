@@ -3,6 +3,7 @@ import pargraph as par
 import copy
 import schedule as sched
 import profiler as pro
+import threading
 
 
 """ Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output)
@@ -49,16 +50,13 @@ if __name__ == "__main__":
 	func_graph.write_pdf('graphs/function_graphs.pdf')
 	func_graph.write_dot('graphs/function_graphs.dot')
 
-	#for flow_graph in flow_graphs:
-	#par.chetto(flow_graphs[1],10)
-
 	#creating the expanded graph where the functions are inserted in the flow graph
 	exp_flows = copy.deepcopy(flow_graphs)
 	par.explode_graph(exp_flows)
 	main_flow = sched.get_main(exp_flows)
 
 	#creating a generator for the expanded graph
-	gen = sched.generate_task(exp_flows[0])
+	gen = sched.generate_task(main_flow)
 
 	#getting the number of tasks in the expanded graph
 	num_tasks = 0
@@ -66,8 +64,8 @@ if __name__ == "__main__":
 		num_tasks += 1
 
 	#creating a new generator for the expanded graph
-	sched.make_white(exp_flows[0])
-	gen = sched.generate_task(exp_flows[0])
+	sched.make_white(main_flow)
+	gen = sched.generate_task(main_flow)
 	task_list = []
 	for task in gen:
 		task_list.append(task)
@@ -76,13 +74,15 @@ if __name__ == "__main__":
 	max_flows = sched.get_core_num(profile_xml)
 	flow_list = []
 	optimal_flow = []
-	sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows)
+	#sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows)
 
-	
+	""" works?
 	for flow in optimal_flow:
-		flow.dump()
-		print flow.time
-	
+		for task in flow.tasks:
+			task.id = flow.id
+	"""
+
+	#sched.chetto(main_flow, 12)
 
 	#prints the flow graphs
 	if(output == "True"):

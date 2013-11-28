@@ -37,14 +37,17 @@ class Node(object):
         self.children = []
         self.parent = []
         self.options = []
-        self.time = time
+        self.time = float(time)
         self.variance = variance
         self.end_line = 0
         self.callerid = []
         self.deadline = None
+        self.arrival = None
         self.d = None
         self.children_time = 0
+        self.in_time = 0
         self.color = 'white'
+        self.id = None
     def add(self, x):	
     	x.parent.append(self)
     	self.children.append(x)
@@ -56,6 +59,7 @@ class Node(object):
 					print "    time: ", self.time
 					print "    variance: ", self.variance
 					print "    children time: ", self.children_time
+					print "    self time: ", self.in_time
 				else:
 					print "    not executed"
 				if(len(self.options) != 0):
@@ -89,6 +93,7 @@ class For_Node(Node):
 			print "    time: ", self.time
 			print "    variance: ", self.variance
 			print "    children time: ", self.children_time,"\n"
+			print "    self time: ", self.in_time,"\n"
 		else:
 			print "    not executed\n"
 
@@ -97,7 +102,7 @@ class Fx_Node(Node):
 		Node.__init__(self, Ptype, line, time, variance)
 		self.arguments = []
 		self.returnType = returnType
-		self.time = time
+		self.time = float(time)
 		self.file_name = file_name
 	def add_arg(self, type_):
 		self.arguments.append(type_)
@@ -121,10 +126,11 @@ class Fx_Node(Node):
 
 class Function():
 	def __init__(self, time, variance, children_time):
-		self.time = time
+		self.time = float(time)
 		self.variance = variance
 		self.pragmas = {}
-		self.children_time = children_time
+		self.children_time = float(children_time)
+		self.in_time = float(self.time)-float(self.children_time)
 	def add_pragma(self, pragma):
 		self.pragmas[pragma[0]] = (pragma[1], pragma[2], pragma[3], pragma[4], pragma[5])
 
@@ -152,14 +158,14 @@ class Flow():
 		self.tasks.append(task)
 		self.update(task)
 	def update(self, task):
-		self.time += float(task.time) - float(task.children_time)
-	def dump(self):
-		print "flow:"
+		self.time += task.in_time #float(task.time) - float(task.children_time)
+	def dump(self,prefix=""):
+		print prefix,"flow:"
 		for task in self.tasks:
-			print task.type," "
+			print prefix,"\t",task.type," ",task.start_line
 	def remove_task(self, task):
 		self.tasks.remove(task)
-		self.time -= float(task.time) - float(task.children_time)
+		self.time -= task.in_time #float(task.time) - float(task.children_time)
 
 
 def scanGraph(node):
@@ -206,20 +212,21 @@ def getParalGraph(pragma_xml, profile_xml):
 	for n in pragma_graph_root.findall('Function'):
 		graphs.append(p.Dot(graph_type = 'digraph'))
 		name = n.find('Name').text
-		time = functions[n.find('Line').text].time
+		time = float(functions[n.find('Line').text].time)
 		callerid = functions[n.find('Line').text].callerid
-		children_time = functions[n.find('Line').text].children_time
+		children_time = float(functions[n.find('Line').text].children_time)
 		root = n.find('Line').text
 		if (time == 0):
 			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nnot executed", root = root)
 		else:
-			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nexecution time " + time, root = root)
+			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nexecution time %f" % time, root = root)
 		pragma_graph_root.callerid = callerid
 		graphs[count].add_node(pragma_graph_root)
-		Objroot = Fx_Node(name, n.find('Line').text,n.find('ReturnType').text, functions[n.find('Line').text].time, functions[n.find('Line').text].variance, file_name)
+		Objroot = Fx_Node(name, n.find('Line').text,n.find('ReturnType').text, float(functions[n.find('Line').text].time), functions[n.find('Line').text].variance, file_name)
 		for par in n.findall('Parameters/Parameter'):
 			Objroot.add_arg( ( par.find('Type').text,par.find('Name').text ) )
 		Objroot.children_time = children_time
+		Objroot.in_time = Objroot.time - children_time
 		for caller in functions[n.find('Line').text].callerid:
 			Objroot.callerid.append(caller)
 		objGraph.append(Objroot)
@@ -239,11 +246,11 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 			callerid = None
 			children_time = 0
 		else:
-			time = func_pragmas[key][0]
+			time = float(func_pragmas[key][0])
 			variance = func_pragmas[key][1]
 			loops = func_pragmas[key][2]
 			callerid = func_pragmas[key][3]
-			children_time =  func_pragmas[key][4]
+			children_time =  float(func_pragmas[key][4])
 
 		tmp_name = d.find('Name').text.replace("::", " ")
 		visual_name = tmp_name+"@%s"%key
@@ -276,6 +283,7 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 		Objchild.callerid.append(callerid)
 		Objchild.deadline = deadline
 		Objchild.children_time = children_time
+		Objchild.in_time = Objchild.time-children_time
 		if (time == 0):
 			child = p.Node(key, label = visual_name + "\nnot executed", root = root)
 		else:
@@ -317,11 +325,11 @@ def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 			callerid = None
 			children_time = 0
 		else:
-			time = func_pragmas[key][0]
+			time = float(func_pragmas[key][0])
 			variance = func_pragmas[key][1]
 			loops = func_pragmas[key][2]
 			callerid = func_pragmas[key][3]
-			children_time = func_pragmas[key][4]
+			children_time = float(func_pragmas[key][4])
 
 		tmp_name = d.find('Name').text.replace("::", " ")
 		visual_name = tmp_name + "@%s" % key
@@ -356,6 +364,7 @@ def create_diamond(tree, graph, node, treeNode, func_pragmas, root):
 		Objchild.callerid.append(callerid)
 		Objchild.deadline = deadline
 		Objchild.children_time = children_time
+		Objchild.in_time = Objchild.time - children_time
 
 		child = p.Node(key, label = visual_name + "\nexecution time: " + str(time) + "\nvariance: " + str(variance), root = root)
 		graph.add_node(node)
@@ -410,14 +419,14 @@ def getNesGraph(xml, profile_xml):
 
 	for n in root.iter('Function'):
 		key = n.find('Line').text
-		time = functions[key].time
+		time = float(functions[key].time)
 		variance = functions[key].variance
 		graphs.append(p.Dot(graph_type = 'digraph'))
 		name = n.find('Name').text
 		if (time == 0):
 			root = p.Node(name, label = name + "()" + "\nnot executed")
 		else:
-			root = p.Node(name, label = name + "()" + "\n execution time: " + str(time) + "\nvariance: " + str(variance))
+			root = p.Node(name, label = name + "()" + "\n execution time: %f" % time + "\nvariance: " + str(variance))
 		graphs[count].add_node(root)
 		find_nesting(n, graphs[count], root, functions[key].pragmas)
 		count += 1
@@ -473,9 +482,9 @@ def dump_graphs(flow_graphs):
 		line = ET.SubElement(function, 'Line')
 		line.text = func.start_line 
 		time = ET.SubElement(function, 'Time')
-		time.text = func.time
+		time.text = str(func.time)
 		variance = ET.SubElement(function, 'Variance')
-		variance.text = func.variance
+		variance.text = str(func.variance)
 		func.xml_parent = None
 		if ( func.callerid != None ):
 			callerids = ET.SubElement(function, 'Callerids')
@@ -530,10 +539,10 @@ def dump_pragmas(pragma_node, pragmas_element, pragma_list):
 					callerid.text = id_
 			if(pragma.time != 0):
 				time = ET.SubElement(pragma_, 'Time')
-				time.text = pragma.time
+				time.text = str(pragma.time)
 			if(pragma.variance != None):
 				variance = ET.SubElement(pragma_, 'Variance')
-				variance.text = pragma.variance
+				variance.text = str(pragma.variance)
 
 		dump_pragmas(pragma, pragmas_element, pragma_list)
 
@@ -589,6 +598,13 @@ def get_parameter(parameter):
 	else:
 		type_ = 'None'
 	return (type_, parameter.find('Var').text)
+
+
+
+
+
+
+
 
 
 

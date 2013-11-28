@@ -1,18 +1,22 @@
 import pargraph as par
-import copy
 import xml.etree.cElementTree as ET
 import math
+import copy
+from threading import Thread
+
 
 #returns the optimal flows 
 def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS):
-	if len(flow_list) < MAX_FLOWS and len(task_list) > level:
+	curopt = get_cost(optimal_flow)
+	cur = get_cost(flow_list)
+	if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt:
 		task_i = task_list[level]
-		new_flow = par.Flow()
-		
+		# test integrating the single task in each
 		for flow in flow_list :
 			flow.add_task(task_i)
 			get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
 			flow.remove_task(task_i)
+		new_flow = par.Flow()		
 		new_flow.add_task(task_i)
 		flow_list.append(new_flow)
 		get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS)
@@ -24,27 +28,27 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 				tmp_task_list = []
 				#splits the for node in j nodes
 				for j in range(0, i):
-					#fix time
 					task = par.For_Node("splitted_" + task_i.start_line + "_" + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, float(task_i.time) / i, task_i.variance, math.floor(float(task_i.mean_loops) / i))
 					task_list.append(task)
 					tmp_task_list.append(task)
 				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS)
 				for tmp_task in tmp_task_list:
 					task_list.remove(tmp_task)
-		
+			
 	else:
-		"""
-		print "testing"
-		for flow in flow_list:
-			flow.dump()
-		print
-		"""
-		print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
-		if get_cost(flow_list) < get_cost(optimal_flow):
+		if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur < curopt:
+			#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
 			del optimal_flow[:]
+			id = 0
+			print "newflowset:"
 			for flow in flow_list:
-				#flow.dump()
+				flow.id = id
+				id += 1
 				optimal_flow.append(copy.deepcopy(flow))
+
+				flow.dump("\t")
+				print "\ttime:",flow.time
+			print "\tcost ", get_cost(optimal_flow),"with flows",len(flow_list)
 
 #generator for the tasks of the graph
 def generate_task(node):
@@ -105,21 +109,58 @@ def chetto_deadlines(node):
 			chetto_deadlines(p)
 
 #applys the chetto algorithm to obtain the deadline and arrival time for each task
-def chetto(flow_graph, deadline):
+def chetto(flow_graph, deadline, optimal_flow):
 	node = get_last(flow_graph)
 	node.d = deadline
 	chetto_deadlines(node)
+	flow_graph.arrival = 0
+	chetto_arrival(flow_graph, optimal_flow)
 
 #gets the cost of the worst flow
 def get_cost(flow_list):
-	max_cost = 0
 	if len(flow_list) == 0:
 		return float("inf")
 	else:
-		for flow in flow_list:
-			if flow.time > max_cost:
-				max_cost = flow.time
-		return max_cost
+		return max([flow.time for flow in flow_list])
+
+def chetto_arrival(node, optimal_flow):
+	if node.children :
+		for child in node.children:
+			if child.arrival == None and all_set(child) == True:
+				(a, d) = get_max(child, optimal_flow)
+				child.arrival = max(a, d)
+			chetto_arrival(child)
+
+
+def get_max(node, optimal_flow):
+	maximum_a = 0
+	maximum_d = 0
+	for p in node.parent:
+		if p.arrival > maximum_a and get_id(p, optimal_flow) == get_id(node, optimal_flow):
+			maximum_a = p.arrival
+		if p.deadline > maximum_d and get_id(p, optimal_flow) != get_id(node, optimal_flow):
+			maximum_d = p.deadline
+	return (maximum_a, maximum_d)
+
+#checks if all the parent nodes have the arrival times set
+def all_set(node):
+	found = True
+	for p in node.parent:
+		if p.arrival == None:
+			found = False
+	return found
+
+def get_id(node, optimal_flow):
+	for flow in optimal_flow:
+		for task in flow.tasks:
+			if node.type == task.type:
+				return flow.id
+
+
+
+
+
+
 
 
 

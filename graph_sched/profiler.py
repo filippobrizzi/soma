@@ -112,9 +112,9 @@ def add_profile_xml(profile_xml, xml_tree):
 	for func in root.findall('Function'):
 		key = func.find('Line').text
 		func_time =  ET.SubElement(func, 'Time')
-		func_time.text = functions[key].time
+		func_time.text = str(functions[key].time)
 		func_variance = ET.SubElement(func, 'Variance')
-		func_variance.text = functions[key].variance
+		func_variance.text = str(functions[key].variance)
 		if len(functions[key].callerid) > 0:
 			func_caller_ids = ET.SubElement(func, 'Callerids')
 			tmp_list = set(functions[key].callerid)

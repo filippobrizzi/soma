@@ -2,10 +2,10 @@ digraph G {
 	graph [bb="0,0,236,322"];
 	node [label="\N"];
 	9	 [height=0.8171,
-		label="y()\nexecution time 2.0",
+		label="y()\nexecution time 2.000000",
 		pos="118,292",
 		root=9,
-		width=2.3433];
+		width=3.0342];
 	15	 [height=1.1471,
 		label="OMPParallelDirective@15\nexecution time: 1.0\nvariance: 0.0",
 		pos="118,184",

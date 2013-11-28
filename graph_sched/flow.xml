@@ -134,7 +134,7 @@
           <StartLine>40</StartLine>
         </Position>
         <Callerids />
-        <Variance />
+        <Variance>0</Variance>
       </Pragma>
       <Pragma id="8388">
         <Name>OMPParallelDirective</Name>
@@ -175,7 +175,7 @@
           <StartLine>83</StartLine>
         </Position>
         <Callerids />
-        <Variance />
+        <Variance>0</Variance>
       </Pragma>
       <Pragma id="4851">
         <Name>OMPTaskDirective</Name>
@@ -258,7 +258,7 @@
           <StartLine>59</StartLine>
         </Position>
         <Callerids />
-        <Variance />
+        <Variance>0</Variance>
       </Pragma>
       <Pragma id="6672">
         <Name>OMPTaskDirective</Name>
