@@ -4,62 +4,6 @@
 
 ------------------------------------------------------------------------------------------------------
 
-SECOND PART
-
-La classe in questione è CapturedStmt, che viene creata tramite una serie di comandi come ActOnCapturedRegionStart (cfr ParseOpenMP.cpp) ovvero da HandlePragmaCaptured.
-
-In CGStmtOpenMP.cpp:
-
-CapturedStmt *CS = cast<CapturedStmt>(S.getAssociatedStmt());
-llvm::Value *Arg = GenerateCapturedStmtArgument(*CS);
-
-E
-
- // Generate microtask.
-  // int32 .omp_ptask.(int32_t arg1, void */*kmp_task_t **/arg2) {
-  //  captured_stmt(arg2->shareds);
-  // }
-
-https://github.com/clang-omp/clang/search?p=2&q=capturedstmt&ref=cmdform
-https://github.com/clang-omp/clang/search?q=ActOnCapturedRegionStart&ref=cmdform
-
-https://github.com/clang-omp/clang/blob/8c0c196df7070617d9aef862a3731a147155b595/lib/Parse/ParseOpenMP.cpp
-https://github.com/clang-omp/clang/blob/f88dfa981f0f87d407da3466394082e3367b4f86/lib/Parse/ParsePragma.cpp
-https://github.com/clang-omp/clang/blob/clang-omp/lib/CodeGen/CGDeclOpenMP.cpp
-https://github.com/clang-omp/clang/blob/clang-omp/lib/CodeGen/CGStmtOpenMP.cpp
-https://github.com/clang-omp/clang/blob/f88dfa981f0f87d407da3466394082e3367b4f86/lib/Parse/ParseStmt.cpp
-
-
-Hints:
-
-	I have to create a function decl...to do so I can take inspiration from CodeGenFunction::EmitTaskDirective():
-
-
-	llvm::Function * 	CodeGenFunction::EmitCapturedStmt (const CapturedStmt &S, CapturedRegionKind K)
-
-
-	---> TROVARE CHI DURANTE IL PARSING HA CODEGENFUNCTION <---
-
-	In alternativa provare a creare il proprio CodeGenFunction. 
-
-
-
-	-------------------------------------------------------------------------------------------------
-	*************************************************************************************************
-	-------------------------------------------------------------------------------------------------
-
-	CapturedStmt contains the list of al the captured variables!!
-
-	std::cout << s->getStmtClassName() << " " << utils::Line(s->getLocStart() ,sm) << std::endl;
-    clang::CapturedStmt *cs2 = static_cast<clang::CapturedStmt *>(as);
-	for(clang::CapturedStmt::capture_iterator I = cs2->capture_begin(); I != cs2->capture_end(); ++I){
-		clang::VarDecl *vd = I->getCapturedVar(); 
-		std::cout << vd->getNameAsString() << " - " << vd->getType().getAsString() << std::endl;
-	}
-
-	Se una variabile è definita come private..devo copiarla prima di passarla alla funzione?
-
-
 
 	-------------------------------------------------------------------------------------------------
 	*************************************************************************************************
@@ -71,4 +15,24 @@ Hints:
 
 
 
-	
+	-------------------------------------------------------------------------------------------------
+	*************************************************************************************************
+	-------------------------------------------------------------------------------------------------	
+
+	Invece di fare thread.join, potrei creare un lista di task che hanno completato, due problemi:
+
+	1 - I thread fanno attesa attiva, controllando costantemente se la lista contiene il task su cui 		sono bloccati.
+
+	2 - Sono in grado di inserire il task quando finisce? posso sapere quando un task finisce?
+		(Ultima riga di fx()?)
+
+
+	-------------------------------------------------------------------------------------------------
+	*************************************************************************************************
+	-------------------------------------------------------------------------------------------------	
+
+	Alla fine del programma devo fare una join su tutti i thread. Due casi:
+
+	1 - Ho il main...devo inserire in comando prima del return...come faccio?
+
+	2 - Non ho il main...come faccio a sapere qual'è l'ultima chiamata?

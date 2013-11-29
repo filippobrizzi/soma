@@ -3,7 +3,7 @@
     <Function>
         <Name>main</Name>
         <ReturnType>int</ReturnType>
-        <Line>16</Line>
+        <Line>15</Line>
         <Pragmas>
             <Pragma>
                 <Name>OMPParallelDirective</Name>
@@ -36,8 +36,8 @@
                     </Option>
                 </Options>
                 <Position>
-                    <StartLine>26</StartLine>
-                    <EndLine>54</EndLine>
+                    <StartLine>25</StartLine>
+                    <EndLine>53</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
@@ -61,25 +61,25 @@
                                 </Option>
                             </Options>
                             <Position>
-                                <StartLine>30</StartLine>
-                                <EndLine>46</EndLine>
+                                <StartLine>29</StartLine>
+                                <EndLine>45</EndLine>
                             </Position>
                         </Pragma>
                         <Pragma>
                             <Name>OMPForDirective</Name>
                             <Position>
-                                <StartLine>49</StartLine>
-                                <EndLine>52</EndLine>
+                                <StartLine>48</StartLine>
+                                <EndLine>51</EndLine>
                             </Position>
                             <For>
                                 <Declaration>
                                     <Type>int</Type>
                                     <LoopVariable>i</LoopVariable>
-                                    <InitValue>10</InitValue>
+                                    <InitValue>1</InitValue>
                                 </Declaration>
                                 <Condition>
                                     <Op>&lt;</Op>
-                                    <ConditionValue>100</ConditionValue>
+                                    <ConditionVariable>a</ConditionVariable>
                                 </Condition>
                                 <Increment>
                                     <Op>++</Op>

@@ -266,30 +266,38 @@ bool TransformRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     if(this->insertInclude == false) {
       this->insertInclude = true;
 
-      std::string text = 
-"class NestedBase { \n\
-  public: \n\
+      std::string text = "#include \"instancerun.h\"\n";
+/*\n\
+class ForParameter\n\
+{\n\
+public:\n\
+  int tid;\n\
+  int numThread;\n\
+  ForParameter(int tid, int numThread) : tid(tid), numThread(numThread) {}\n\
+};\n\
+\n\
+class NestedBase { \n\
+public: \n\
+  ForParameter *fp;\n\
+  int pragmaID;\n\
   virtual void callme() = 0;\n\
   void operator()() {\n\
     callme();\n\
   }\n\
 };\n\
-\n\
-class InstanceRun {\n\
-public:\n\
-  struct ScheduleOptions\n\
-  {\n\
-  };\n\
-\n\
-  static void call(ScheduleOptions opts, NestedBase & nb) {\n\
-      std::thread t(std::ref(nb));\n\
-      t.join();\n\
-  }\n\
-};\n \n";
+\n";
+*/
 
       RewritePragma.InsertText(ST, text, true, false);
     }
   }
+
+  if(sm.getFileID(ST) == sm.getMainFileID() && f->isMain()) {
+    std::string text = "InstanceRun::getInstance()->joinAllThreads();\n";
+    clang::SourceLocation endSL = f->getLocEnd();
+    RewritePragma.InsertText(endSL, text, true, false);
+  }
+
   
   return true;
 }
@@ -305,7 +313,6 @@ bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
         if(as) {
           clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
           if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0) {
-
             RewriteOMP(as);
           }
         }
@@ -322,8 +329,7 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
   unsigned pragmaLine = utils::Line(ST,sm);
 
   Node *n = getNodeforPragma(s);
-
-
+  
   std::stringstream text;
   std::stringstream textParam;
   std::stringstream textVar;
@@ -336,10 +342,12 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
   text <<
 "{\n\
   class Nested : public NestedBase {\n\
-    Nested(";
+    Nested(int pragmaID, ";
 
-  textVarConstr << " : ";
+  textVarConstr << " : pragmaID(pragmaID), ";
+
   clang::CapturedStmt *cs = static_cast<clang::CapturedStmt *>(as);
+
   for(clang::CapturedStmt::capture_iterator I = cs->capture_begin(); I != cs->capture_end(); ++I){
     clang::VarDecl *vd = I->getCapturedVar(); 
     std::string type = vd->getType().getAsString();
@@ -379,11 +387,25 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
   }
 
   text << textParam.str() << ") " << textVarConstr.str() << "{ }\n" << textVar.str() << "\n";    
-  text << "void fx(" << textParam.str() <<")\n";
-
-  RewritePragma.InsertText(ST, text.str(), true, true);
-
+  
   unsigned startLine = utils::Line(s->getLocStart(), sm);
+  if(n->forNode == NULL) {
+    text << "void fx(" << textParam.str() <<")\n";
+    RewritePragma.InsertText(ST, text.str(), true, true);
+
+  }else {
+    std::string textFor;
+    textFor = GetParallelFor(n);
+
+    text << "void fx(" << textParam.str() <<") {\n" << textFor;
+
+    clang::SourceLocation forST = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
+    RewritePragma.InsertText(forST, text.str(), true, false);
+    RewritePragma.InsertText(ST, "//", true, false);
+
+    RewritePragma.InsertText(s->getLocEnd(), "}\n", true, false);
+  }
+
   clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine - 1, 1);
   RewritePragma.InsertText(pragmaST, "//", true, false);
   
@@ -396,13 +418,12 @@ void callme() {\n\
   fx(" << textCallmeVar.str() << ");\n\
 }\n\
 };\n\
-Nested _x_(" << textNested.str() <<");\n\
-InstanceRun::call(InstanceRun::ScheduleOptions(), _x_);\n\
+Nested _x_(" << n->getStartLine() << ", " << textNested.str() <<");\n\
+InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(_x_);\n\
 }\n";
 
   unsigned endLine = utils::Line(s->getLocEnd(), sm);
   clang::SourceLocation pragmaEndST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
-    std::cout << pragmaEndST.printToString(sm) << std::endl;
 
   RewritePragma.InsertText(pragmaEndST, textAfter.str(), true, false);
 
@@ -444,4 +465,66 @@ Node *TransformRecursiveASTVisitor::recursiveNodeforPragma(Node *n, unsigned l) 
     }
   }
   return NULL;
+}
+
+
+std::string TransformRecursiveASTVisitor::GetParallelFor(Node *n) {
+
+  std::stringstream text;
+
+  ForNode *fn = n->forNode;
+
+
+//for( int i = a + fp->tid *(b - a)/ numThread; ....
+  text << "for(" << fn->loopVarType << " " << fn->loopVar << " = ";
+  if(fn->loopVarInitValSet)
+    text << fn->loopVarInitVal;
+  else
+    text << fn->loopVarInitVar;
+
+  text << " + fp->tid*(";
+  if(fn->conditionValSet)
+    text << fn->conditionVal << " - ";
+  else
+    text << fn->conditionVar << " - ";
+
+  if(fn->loopVarInitValSet)
+    text << fn->loopVarInitVal;
+  else
+    text << fn->loopVarInitVar;
+
+  text << ")/fp->numThread; "; 
+
+
+  // ....; i < a + (fp->tid + 1)*(b - a)/ numThread; ...
+  text << fn->loopVar << " " << fn->conditionOp << " ";
+
+  if(fn->loopVarInitValSet)
+    text << fn->loopVarInitVal;
+  else
+    text << fn->loopVarInitVar;
+
+  text << " + (fp->tid + 1)*(";
+  if(fn->conditionValSet)
+    text << fn->conditionVal << " - ";
+  else
+    text << fn->conditionVar << " - ";
+
+  if(fn->loopVarInitValSet)
+    text << fn->loopVarInitVal;
+  else
+    text << fn->loopVarInitVar;
+
+  text << ")/fp->numThread; "; 
+  
+
+  // ...; i ++)
+  text << fn->loopVar << " " << fn->incrementOp << " ";
+  if(fn->incrementValSet)
+    text << fn->incrementVal << ")\n";
+  else
+    text << fn->incrementVar << ")\n";
+
+  return text.str();
+
 }

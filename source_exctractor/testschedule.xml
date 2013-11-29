@@ -1,0 +1,29 @@
+<!--Non mi interessa la funzione...tanto alloco solo i pragma -->
+
+<File>
+	<NumThread>4</NumThread>
+    <Pragma>
+    	<ID>29</ID>
+    	<Threads>
+    		<ThreadID>0</ThreadID>
+    		<ThreadID>1</ThreadID>
+    	</Threada>
+    	<Barrier>
+    		<ThreadID>0</ThreadID>
+    		<ThreadID>1</ThreadID>
+    	</Barrier>
+    	<ForSplit>2</ForSplit>
+    </Pragma>
+    <Pragma>
+        <ID>29</ID>
+        <Threads>
+            <ThreadID>0</ThreadID>
+        </Threada>
+        <Barrier>
+            <ThreadID>1</ThreadID>
+        </Barrier>
+        <ForSplit>0</ForSplit>
+    </Pragma>
+</File>
+    	
+

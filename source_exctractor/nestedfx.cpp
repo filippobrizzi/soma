@@ -1,17 +1,24 @@
-// TODO: use delegates/C++11 lambda/Function to transform the ::bind into a REAL empty function pointer
-// http://stackoverflow.com/questions/527413/how-boostfunction-and-boostbind-work/527983#527983
-
-/**
- * functional dello standard C++ e di Boost vs funzioni reali vs lambda
- */
 #include <iostream>
 #include <boost/bind.hpp>
-//#include <functional>
+#include <thread>
+#include <functional>
 
+class ForParameter 
+{
+public:
+	//value from 0 to n-1
+	int tid;
+	int numThread;
+	
+	ForParameter(int tid, int numThread) : tid(tid), numThread(numThread) {}
+};
 
 class NestedBase
 {
 public:
+	ForParameter *fp;
+	unsigned pragmaID;
+
 	virtual void callme() = 0;
 	void operator()()
 	{
@@ -25,18 +32,25 @@ class InstanceRun
 public:
 	struct ScheduleOptions
 	{
+
 	};
-	InstanceRun(File scheduleFile); //read the file (xml) and create the ScheduleOptions struct.
+/*
+	thread *tl = new thread[n];
+	//thread tl[10];
+	for(int i = 0; i < n; i ++)
+		tl[i] = thread(foo, i);
 
-	vector<std::Thread> thread_list = new vector<std::Thread>(ScheduleOptions.numThread);
-	std::Vector getVectorForFunction(unsigned pid);
 
+	for(int i = 0; i < n; i ++)
+		tl[i].join();
 
-	static void call(unsigned pid, NestedBase & nb)
+*/
+	static void call(ScheduleOptions opts, NestedBase & nb)
 	{	
-		std::Thread t = getVectorForFunction(pid);
-		nb(); //transform to function pointer
-		t(nb());
+
+		nb.fp = new ForParameter(0, 2);
+    	std::thread t(std::ref(nb));
+    	t.join();
 	}	
 
 };
@@ -48,7 +62,7 @@ int main(int argc, char * argv []){
 	{
 		struct Nested: public NestedBase
 		{
-			Nested(int & x1, float x2) : x1_(x1), x2_(x2) {}
+			Nested(unsigned pragmaID, int & x1, float x2) : pragmaID(pragmaID), x1_(x1), x2_(x2) {}
 
 			int & x1_; 
 			float x2_; 
@@ -56,19 +70,25 @@ int main(int argc, char * argv []){
 			void fx(int & x1, float x2) // NAMES ARE SAME OF ORIGINAL VARIABLES
 			{
 				// inject code here
-				x1++;
+				for(int i = 0 + fp->tid * (10 - 0)/fp->numThread; i < 0 + (fp->tid+1) * (10 - 0)/fp->numThread; i ++) {
+					x1++;
+					std::cout << "PUPPA" << std::endl;
+				}
 			}
 
 			void callme()
 			{
 				fx(x1_,x2_);
+				std::cout << "PUPPA 3" << std::endl;
 			}
 
 		};
 
 		std::cout << "pre:" << b << std::endl;
-		Nested _x_(b,2.0f);
-		InstanceRun::call(pragmaLine, _x_);
+		Nested _x_(pragmaID, b,2.0f);
+		InstanceRun::call(InstanceRun::ScheduleOptions(), _x_);
+		InstanceRun::getInstance()->call(_x_);
+
 		std::cout << "post:" << b << std::endl;
 	}
 

@@ -30,7 +30,6 @@ protected:
 
 	clang::OMPExecutableDirective *pragma;
 
-	ForNode *forNode;
 
 
 /* Stmt start and end line in the source file */
@@ -54,6 +53,9 @@ protected:
 public:
 	bool profiled = false;
 	SourceLocationStruct sL;
+
+	ForNode *forNode;
+
 	
 	std::vector<Node *> *childrenVect;
 

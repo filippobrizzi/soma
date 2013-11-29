@@ -20,7 +20,7 @@
 
 class ForNode {
 
-private:
+public:
 //Loop variable
 	std::string loopVar;
 	std::string loopVarType;
@@ -48,7 +48,7 @@ private:
 	void forCondition(clang::ForStmt *fs);
 	void forIncrement(clang::ForStmt *fs);
 
-public:
+
 	ForNode(clang::ForStmt *fors);
 	void createXMLPragmaFor(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *forElement);
 

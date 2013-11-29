@@ -1,6 +1,5 @@
 //#include <string>
 
-
 class A {
 
 public:
@@ -33,7 +32,7 @@ int main() {
 			kk = &e;
 			ptr = &d;
 			a = 1;
-			//b = 2;
+			b = 2;
 			y(c);
 			d = e;
 			for(int i = 0; i < b; i ++)
@@ -46,7 +45,7 @@ int main() {
 		}
 
 		#pragma omp for
-		for (int i = 10; i < 100; ++i)
+		for (int i = 1; i < a; ++i)
 		{	
 			c++;
 		}

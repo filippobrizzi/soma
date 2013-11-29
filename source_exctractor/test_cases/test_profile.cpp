@@ -1,6 +1,5 @@
 //#include <string>
 
-
 class A {
 
 public:
@@ -10,14 +9,14 @@ public:
 
 #include "/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h"
 void y(int x){
-if( ProfileTracker x = ProfileTrackParams(11, 0)) {
+if( ProfileTracker x = ProfileTrackParams(10, 0)) {
 	x ++;
 }
 }
 
 
 int main() {
-if( ProfileTracker x = ProfileTrackParams(16, 0)) {
+if( ProfileTracker x = ProfileTrackParams(15, 0)) {
 
 	int a, b, c;
 	float d;
@@ -27,19 +26,19 @@ if( ProfileTracker x = ProfileTrackParams(16, 0)) {
 	A *bbb;
 	//std::string ss;
 //	#pragma omp parallel shared(a, b, c) private(d, bbb)
-	if( ProfileTracker x = ProfileTrackParams(16, 26))
+	if( ProfileTracker x = ProfileTrackParams(15, 25))
 	{
 		int yy;
 		double *kk;
 //		#pragma omp task 
-		if( ProfileTracker x = ProfileTrackParams(16, 30))
+		if( ProfileTracker x = ProfileTrackParams(15, 29))
 		{	
 			int x;
 			float *pp;
 			kk = &e;
 			ptr = &d;
 			a = 1;
-			//b = 2;
+			b = 2;
 			y(c);
 			d = e;
 			for(int i = 0; i < b; i ++)
@@ -52,8 +51,8 @@ if( ProfileTracker x = ProfileTrackParams(16, 0)) {
 		}
 
 //		#pragma omp for
-		if( ProfileTracker x = ProfileTrackParams(16, 49, 100 - 10))
-		for (int i = 10; i < 100; ++i)
+		if( ProfileTracker x = ProfileTrackParams(15, 48, a - 1))
+		for (int i = 1; i < a; ++i)
 		{	
 			c++;
 		}
