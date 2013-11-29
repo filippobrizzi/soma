@@ -293,9 +293,10 @@ public: \n\
   }
 
   if(sm.getFileID(ST) == sm.getMainFileID() && f->isMain()) {
-    std::string text = "InstanceRun::getInstance()->joinAllThreads();\n";
+    std::stringstream textt;
+    textt << "InstanceRun::getInstance(\"" << utils::FileName(f->getLocStart(), sm) << "\")->joinAllThreads();\n";
     clang::SourceLocation endSL = f->getLocEnd();
-    RewritePragma.InsertText(endSL, text, true, false);
+    RewritePragma.InsertText(endSL, textt.str(), true, false);
   }
 
   
@@ -342,9 +343,10 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
   text <<
 "{\n\
   class Nested : public NestedBase {\n\
+  public: \n\
     Nested(int pragmaID, ";
 
-  textVarConstr << " : pragmaID(pragmaID), ";
+  textVarConstr << " : NestedBase(pragmaID), ";
 
   clang::CapturedStmt *cs = static_cast<clang::CapturedStmt *>(as);
 
@@ -386,7 +388,7 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
     textNested << vd->getNameAsString();
   }
 
-  text << textParam.str() << ") " << textVarConstr.str() << "{ }\n" << textVar.str() << "\n";    
+  text << textParam.str() << ") " << textVarConstr.str() << "{}\n" << textVar.str() << "\n";    
   
   unsigned startLine = utils::Line(s->getLocStart(), sm);
   if(n->forNode == NULL) {

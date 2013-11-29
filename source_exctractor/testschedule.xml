@@ -12,7 +12,6 @@
     		<ThreadID>0</ThreadID>
     		<ThreadID>1</ThreadID>
     	</Barrier>
-    	<ForSplit>2</ForSplit>
     </Pragma>
     <Pragma>
         <ID>29</ID>

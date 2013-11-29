@@ -11,7 +11,7 @@
 int chartoint(const char *cc);
 int chartoint(char *cc);
 
-std::mutex mtx;
+//std::mutex mtx;
 
 class ForParameter
 {
@@ -23,12 +23,14 @@ public:
 
 class NestedBase { 
 public: 
-  ForParameter *fp;
-  int pragmaID;
-  virtual void callme() = 0;
-  void operator()() {
-    callme();
-  }
+	NestedBase(int pragmaID) : pragmaID(pragmaID) {}
+  	ForParameter *fp;
+  	int pragmaID;
+  	virtual void callme() = 0;
+  	
+  	void operator()() {
+    	callme();
+  	}
 };
 
 class InstanceRun {
@@ -70,9 +72,7 @@ public:
 				tl[schedopt[nb.pragmaID].threads[*titr]] = std::thread(std::ref(nb));
 			}
 		} else {
-		//nb.fp = new ForParameter(0, 2);
     		tl[schedopt[nb.pragmaID].threads[0]] = std::thread(std::ref(nb));
-    	//t.join();
     	}
 	}
 

@@ -1,6 +1,9 @@
 
 #include "instancerun.h"
 
+std::mutex mtx;
+
+
 InstanceRun* InstanceRun::getInstance(std::string filename) {
 	mtx.lock();
 	static InstanceRun run(filename);
@@ -14,7 +17,7 @@ InstanceRun::InstanceRun(std::string filename) {
   	if (ext == std::string::npos)
     	ext = inXML.length();
   	inXML = inXML.substr(0, ext);
-  	inXML.insert(ext, "_scheduler.xml");
+  	inXML.insert(ext, "_schedule.xml");
 
   	tinyxml2::XMLDocument doc;
  	doc.LoadFile(inXML.c_str());
@@ -43,7 +46,9 @@ InstanceRun::InstanceRun(std::string filename) {
 			threadID = threadID->NextSiblingElement("ThreadID");
 		}
 
-		tinyxml2::XMLElement *barriers = pragmaelement->FirstChildElement("Barrier")->FirstChildElement("ThreadID");
+		tinyxml2::XMLElement *barriers = pragmaelement->FirstChildElement("Barriers");
+		if(barriers != NULL)
+			barriers = barriers->FirstChildElement("ThreadID");
 		while(barriers != NULL){
 			const char *tid = barriers->GetText();
 			schedopt.barriers.push_back(chartoint(tid));
