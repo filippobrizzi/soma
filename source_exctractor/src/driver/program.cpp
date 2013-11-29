@@ -311,16 +311,41 @@ bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
       previousStmt = s;
       clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
       clang::Stmt *as = omps->getAssociatedStmt();
-        if(as) {
-          clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
-          if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0) {
-            RewriteOMP(as);
-          }
+      if(as) {
+        clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
+        if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0) {
+          RewriteOMP(as);
         }
+      }else if(strcmp(omps->getStmtClassName(), "OMPBarrierDirective") == 0){
+        RewriteBarrier(omps);
+      }
     }
   }
   return true;
 }
+
+
+void TransformRecursiveASTVisitor::RewriteBarrier(clang::OMPExecutableDirective *omps) {
+  unsigned startLine = utils::Line(omps->getLocStart(), sm);
+  std::stringstream text;
+  text <<
+"{\n\
+  class Nested : public NestedBase {\n\
+  public: \n\
+    Nested(int pragmaID) : NestedBase(pragmaID) {}\n\
+    void callme(){}\n\
+  };\n\
+  Nested _x_(" << startLine << ");\n\
+  InstanceRun::getInstance(\"" << utils::FileName(omps->getLocStart(), sm) << "\")->call(_x_);\n\
+}";
+
+  clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
+  RewritePragma.InsertText(pragmaST, text.str(), true, false);
+
+  pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine, 1);
+  RewritePragma.InsertText(pragmaST, "//", true, false);
+}
+
 
 void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
   
@@ -414,6 +439,10 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
 /*
  * ----- Insert after pragma ----
  */
+  std::stringstream textcompleted;
+  textcompleted << "InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->setCompletedPragma(" << n->getStartLine() << ");\n";
+  RewritePragma.InsertText(s->getLocEnd(), textcompleted.str(), true, false);
+
   std::stringstream textAfter;
   textAfter <<"\
 void callme() {\n\

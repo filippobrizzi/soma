@@ -11,6 +11,21 @@ InstanceRun* InstanceRun::getInstance(std::string filename) {
 	return &run;
 }
 
+
+void InstanceRun::setCompletedPragma(int pragmaID) {
+	mtx.lock();
+	completedPragma[pragmaID] = true;
+	mtx.unlock();
+}
+
+bool InstanceRun::getCompletedPragma(int pragmaID) {
+	mtx.lock();
+	bool value = completedPragma[pragmaID];
+	mtx.unlock();
+	return value;
+}
+
+
 InstanceRun::InstanceRun(std::string filename) {
 	std::string inXML (filename);
   	size_t ext = inXML.find_last_of(".");
@@ -20,7 +35,8 @@ InstanceRun::InstanceRun(std::string filename) {
   	inXML.insert(ext, "_schedule.xml");
 
   	tinyxml2::XMLDocument doc;
- 	doc.LoadFile(inXML.c_str());
+ 	//doc.LoadFile(inXML.c_str());
+ 	doc.LoadFile("test_schedule.xml");
 
 
 	const char* NumThread = doc.FirstChildElement("File")->FirstChildElement("NumThread")->GetText();
@@ -29,15 +45,17 @@ InstanceRun::InstanceRun(std::string filename) {
 
 	tinyxml2::XMLElement *pragmaelement = doc.FirstChildElement("File")->FirstChildElement("NumThread")->NextSiblingElement("Pragma");
 	while(pragmaelement != NULL) {
-
 		ScheduleOptions schedopt;
 
 		const char* pid = pragmaelement->FirstChildElement("ID")->GetText();
 		int id = chartoint(pid);
 		schedopt.pid = id;
+		completedPragma[id] = false;
 
 
-		tinyxml2::XMLElement *threadID = pragmaelement->FirstChildElement("Threads")->FirstChildElement("ThreadID");
+		tinyxml2::XMLElement *threadID = pragmaelement->FirstChildElement("Threads");
+		if(threadID != NULL)
+			threadID = threadID->FirstChildElement("ThreadID");
 		while(threadID != NULL){
 
 			const char * tid = threadID->GetText();
@@ -48,12 +66,12 @@ InstanceRun::InstanceRun(std::string filename) {
 
 		tinyxml2::XMLElement *barriers = pragmaelement->FirstChildElement("Barriers");
 		if(barriers != NULL)
-			barriers = barriers->FirstChildElement("ThreadID");
+			barriers = barriers->FirstChildElement("PragmaID");
 		while(barriers != NULL){
 			const char *tid = barriers->GetText();
 			schedopt.barriers.push_back(chartoint(tid));
 
-			barriers = barriers->NextSiblingElement("ThreadID");
+			barriers = barriers->NextSiblingElement("PragmaID");
 		}
 		
 		this->schedopt[id] = schedopt;

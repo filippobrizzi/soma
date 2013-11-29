@@ -103,6 +103,7 @@ class TransformRecursiveASTVisitor: public clang::RecursiveASTVisitor<TransformR
 
   std::vector<Root *> *rootVect;
 
+  void RewriteBarrier(clang::OMPExecutableDirective *omps);
   void RewriteOMP(clang::Stmt *s);
   Node *getNodeforPragma(clang::Stmt *s);
   Node *recursiveNodeforPragma(Node *n, unsigned l);
