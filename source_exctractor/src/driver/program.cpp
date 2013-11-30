@@ -292,14 +292,7 @@ public: \n\
     }
   }
 
-  if(sm.getFileID(ST) == sm.getMainFileID() && f->isMain()) {
-    std::stringstream textt;
-    textt << "InstanceRun::getInstance(\"" << utils::FileName(f->getLocStart(), sm) << "\")->joinAllThreads();\n";
-    clang::SourceLocation endSL = f->getLocEnd();
-    RewritePragma.InsertText(endSL, textt.str(), true, false);
-  }
 
-  
   return true;
 }
 
@@ -439,18 +432,15 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
 /*
  * ----- Insert after pragma ----
  */
-  std::stringstream textcompleted;
-  textcompleted << "InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->setCompletedPragma(" << n->getStartLine() << ");\n";
-  RewritePragma.InsertText(s->getLocEnd(), textcompleted.str(), true, false);
-
+ 
   std::stringstream textAfter;
   textAfter <<"\
 void callme() {\n\
   fx(" << textCallmeVar.str() << ");\n\
 }\n\
 };\n\
-Nested _x_(" << n->getStartLine() << ", " << textNested.str() <<");\n\
-InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(_x_);\n\
+Nested *_x_ = new Nested(" << n->getStartLine() << ", " << textNested.str() <<");\n\
+InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(*_x_);\n\
 }\n";
 
   unsigned endLine = utils::Line(s->getLocEnd(), sm);

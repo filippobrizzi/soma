@@ -46,7 +46,6 @@ class InstanceRun {
 
 	//static std::mutex mtx;
 public:
-	std::map<int, bool> completedPragma;
 	int NumThread;
 	std::thread *tl;
 
@@ -65,22 +64,11 @@ public:
     	}
 
     	int t;
-    	for(int i = 0; i < (schedopt[nb.pragmaID]).barriers.size(); i ++) {
-    		while(getCompletedPragma(schedopt[nb.pragmaID].barriers[i]) == false)
-			
+    	for(int i = 0; i < (schedopt[nb.pragmaID]).barriers.size(); i ++) {			
 			t = schedopt[schedopt[nb.pragmaID].barriers[i]].threads[0];
-			if(tl[t].joinable())
-				tl[t].join();    	
+			tl[t].join();    	
     	}
 
 	}
-	void setCompletedPragma(int pragmaID);
-	bool getCompletedPragma(int pragmaID);
 
-
-	/*void joinAllThreads() {
-		for(int i = 0; i < NumThread; i ++)
-			tl[i].join();
-	}
-*/
 };

@@ -12,20 +12,6 @@ InstanceRun* InstanceRun::getInstance(std::string filename) {
 }
 
 
-void InstanceRun::setCompletedPragma(int pragmaID) {
-	mtx.lock();
-	completedPragma[pragmaID] = true;
-	mtx.unlock();
-}
-
-bool InstanceRun::getCompletedPragma(int pragmaID) {
-	mtx.lock();
-	bool value = completedPragma[pragmaID];
-	mtx.unlock();
-	return value;
-}
-
-
 InstanceRun::InstanceRun(std::string filename) {
 	std::string inXML (filename);
   	size_t ext = inXML.find_last_of(".");
@@ -50,8 +36,6 @@ InstanceRun::InstanceRun(std::string filename) {
 		const char* pid = pragmaelement->FirstChildElement("ID")->GetText();
 		int id = chartoint(pid);
 		schedopt.pid = id;
-		completedPragma[id] = false;
-
 
 		tinyxml2::XMLElement *threadID = pragmaelement->FirstChildElement("Threads");
 		if(threadID != NULL)
