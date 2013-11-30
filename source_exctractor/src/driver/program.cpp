@@ -432,14 +432,17 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
 /*
  * ----- Insert after pragma ----
  */
- 
+   
   std::stringstream textAfter;
   textAfter <<"\
 void callme() {\n\
   fx(" << textCallmeVar.str() << ");\n\
 }\n\
 };\n\
-Nested *_x_ = new Nested(" << n->getStartLine() << ", " << textNested.str() <<");\n\
+Nested *_x_ = new Nested(" << n->getStartLine();
+  if(textNested.str().compare("") != 0)
+    textAfter << ", ";
+  textAfter << textNested.str() <<");\n\
 InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(*_x_);\n\
 }\n";
 
