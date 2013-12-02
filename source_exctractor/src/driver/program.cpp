@@ -362,9 +362,9 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
-    Nested(int pragmaID, ";
+    Nested(int pragmaID";
 
-  textVarConstr << " : NestedBase(pragmaID), ";
+  textVarConstr << " : NestedBase(pragmaID)";
 
   clang::CapturedStmt *cs = static_cast<clang::CapturedStmt *>(as);
 
@@ -373,10 +373,13 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
     std::string type = vd->getType().getAsString();
 
     if(I != cs->capture_begin()){
-      textParam << ", ";
       textCallmeVar << ", ";
       textNested << ", ";
-    }
+      textParam << ", ";
+    }else
+      text << ", ";
+
+    
 
     if(type.find("class") != std::string::npos)
       type.erase(0, 6);
@@ -401,7 +404,7 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
       textVar << type << " & " << vd->getNameAsString() << "_;\n";
     }
 
-    textVarConstr << vd->getNameAsString() << "_(" << vd->getNameAsString() << ") ";
+    textVarConstr << ", " << vd->getNameAsString() << "_(" << vd->getNameAsString() << ") ";
     textCallmeVar << vd->getNameAsString() << "_";
     textNested << vd->getNameAsString();
   }
@@ -418,12 +421,13 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
     textFor = GetParallelFor(n);
 
     text << "void fx(" << textParam.str() <<") {\n" << textFor;
-
     clang::SourceLocation forST = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
     RewritePragma.InsertText(forST, text.str(), true, false);
     RewritePragma.InsertText(ST, "//", true, false);
-
-    RewritePragma.InsertText(s->getLocEnd(), "}\n", true, false);
+    
+    unsigned endLine = utils::Line(s->getLocEnd(), sm);
+  clang::SourceLocation endforST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
+    RewritePragma.InsertText(endforST, "}\n", true, false);
   }
 
   clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine - 1, 1);

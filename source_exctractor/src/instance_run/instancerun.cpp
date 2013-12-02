@@ -3,6 +3,18 @@
 
 std::mutex mtx;
 
+void NestedBase::operator()(ForParameter *fp) {
+		std::cout << "operator(): " << pragmaID << std::endl;
+		this->fp = fp;
+  	/*	std::chrono::time_point<std::chrono::system_clock> start = InstanceRun::getInstance("")->getTimeStart();
+  		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+  		int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now-start).count();
+  		if(ActivationTime - elapsed_milliseconds > 0) {
+  			std::chrono::milliseconds dura(ActivationTime - elapsed_milliseconds);
+  			std::this_thread::sleep_for(dura);
+  		}*/
+    	callme();
+}
 
 InstanceRun* InstanceRun::getInstance(std::string filename) {
 	mtx.lock();
@@ -24,12 +36,7 @@ InstanceRun::InstanceRun(std::string filename) {
  	//doc.LoadFile(inXML.c_str());
  	doc.LoadFile("test_schedule.xml");
 
-
-	const char* NumThread = doc.FirstChildElement("File")->FirstChildElement("NumThread")->GetText();
-	this->NumThread = chartoint(NumThread);
-	this->tl = new std::thread[this->NumThread];
-
-	tinyxml2::XMLElement *pragmaelement = doc.FirstChildElement("File")->FirstChildElement("NumThread")->NextSiblingElement("Pragma");
+	tinyxml2::XMLElement *pragmaelement = doc.FirstChildElement("File")->FirstChildElement("Pragma");
 	while(pragmaelement != NULL) {
 		ScheduleOptions schedopt;
 
@@ -37,15 +44,11 @@ InstanceRun::InstanceRun(std::string filename) {
 		int id = chartoint(pid);
 		schedopt.pid = id;
 
-		tinyxml2::XMLElement *threadID = pragmaelement->FirstChildElement("Threads");
-		if(threadID != NULL)
-			threadID = threadID->FirstChildElement("ThreadID");
-		while(threadID != NULL){
-
-			const char * tid = threadID->GetText();
-			schedopt.threads.push_back(chartoint(tid));
-
-			threadID = threadID->NextSiblingElement("ThreadID");
+		schedopt.ActivationTime = 0;
+		tinyxml2::XMLElement *activationtime = pragmaelement->FirstChildElement("ActivationTime");
+		if(activationtime) {
+			const char* activationTime = activationtime->GetText();
+			schedopt.ActivationTime = chartoint(activationTime);
 		}
 
 		tinyxml2::XMLElement *barriers = pragmaelement->FirstChildElement("Barriers");
@@ -57,11 +60,20 @@ InstanceRun::InstanceRun(std::string filename) {
 
 			barriers = barriers->NextSiblingElement("PragmaID");
 		}
-		
+
+		schedopt.ForSplit = 1;
+		tinyxml2::XMLElement *forsplit = pragmaelement->FirstChildElement("ForSplit");
+		if(forsplit) {
+			const char* cforsplit = forsplit->GetText();
+			schedopt.ForSplit = chartoint(cforsplit);
+		}
+
 		this->schedopt[id] = schedopt;
 
 		pragmaelement = pragmaelement->NextSiblingElement("Pragma");
 	}
+
+	this->start = std::chrono::system_clock::now();
 }
 
 
@@ -85,4 +97,41 @@ int chartoint(const char *cc){
 int chartoint(char *cc){
 	const char *c = cc;
 	return chartoint(c);
+}
+
+
+void InstanceRun::call(NestedBase & nb) {
+		
+	runningThreads[nb.pragmaID] = new std::thread[schedopt[nb.pragmaID].ForSplit];
+	nb.ActivationTime = schedopt[nb.pragmaID].ActivationTime;
+
+	if(schedopt[nb.pragmaID].ActivationTime > 0) {
+		for(int i = 0; i < schedopt[nb.pragmaID].ForSplit; i ++) {
+			ForParameter *fp = new ForParameter(i, schedopt[nb.pragmaID].ForSplit);
+			std::cout << "CALL: " << nb.pragmaID << " with tid: " << i << " forsplit: " << schedopt[nb.pragmaID].ForSplit << std::endl;
+			runningThreads[nb.pragmaID][i] = std::thread(std::ref(nb), fp);
+		}
+	}
+
+    int t;
+//Wait first for the outer thread (parallel or task with child) so that for sure the inside threads
+//have been started.
+/*    if(schedopt[nb.pragmaID].barriers.size() > 0 && runningThreads[nb.pragmaID] != NULL){
+    	for(int i = 0; i < schedopt[nb.pragmaID].ForSplit; i ++){
+    		std::cout << "CALL join thread: " << nb.pragmaID << std::endl;
+    		runningThreads[nb.pragmaID][i].join();
+    	}
+    	runningThreads.erase(nb.pragmaID);
+    }
+*/
+    for(int i = 0; i < (schedopt[nb.pragmaID]).barriers.size(); i ++) {			
+    //	if(schedopt[nb.pragmaID].barriers.at(i) != nb.pragmaID){
+			for(int j = 0; j < schedopt[schedopt[nb.pragmaID].barriers.at(i)].ForSplit; j ++){
+				std::cout << "CALL join thread: " << schedopt[nb.pragmaID].barriers.at(i) << " " << j << std::endl;
+				runningThreads[schedopt[nb.pragmaID].barriers.at(i)][j].join();
+			}
+			runningThreads.erase(schedopt[nb.pragmaID].barriers.at(i)); 	
+    //	}
+    }
+
 }
