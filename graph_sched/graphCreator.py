@@ -4,6 +4,7 @@ import copy
 import schedule as sched
 import profiler as pro
 import threading
+import time
 
 
 """ Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output)
@@ -15,6 +16,7 @@ if __name__ == "__main__":
 	executable = sys.argv[2]
 	count = int(sys.argv[3])
 	output = sys.argv[4]
+	execution_time = int(sys.argv[5])
 
 	#runs count time the executable and aggregates the informations in executable_profile.xml. The single profile outputs are saved as profile+iter.xml
 	profile_xml = pro.profileCreator(count, executable)
@@ -74,19 +76,21 @@ if __name__ == "__main__":
 	max_flows = sched.get_core_num(profile_xml)
 	flow_list = []
 	optimal_flow = []
-	#sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows)
+	start_time = time.clock()
+	sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, start_time, execution_time)
 
-	""" works?
+	par.add_new_tasks(optimal_flow, exp_flows)
+
+	#sched.chetto(main_flow, 12 optimal_flow)
+
+	print "best solution:"
 	for flow in optimal_flow:
-		for task in flow.tasks:
-			task.id = flow.id
-	"""
-
-	#sched.chetto(main_flow, 12)
+		flow.dump("\t")
+		print "\ttime:",flow.time
 
 	#prints the flow graphs
 	if(output == "True"):
-		for g in flow_graphs:
+		for g in exp_flows:
 			sched.make_white(g)
 			par.scanGraph(g)
 

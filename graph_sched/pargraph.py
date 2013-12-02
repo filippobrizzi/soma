@@ -5,6 +5,7 @@ from random import randrange
 import copy
 import schedule as sched
 import re
+import math
 
 colors = (	"beige",  "bisque3",	"bisque4",	"blanchedalmond",	   "blue",  
 "blue1",	"blue2",	"blue3",	"blue4",	"blueviolet",
@@ -118,7 +119,7 @@ class Fx_Node(Node):
 		else:
 			print "    No input parameters"
 		if self.time != 0:
-			print "    time: ", self.time
+			print "    time: ", self.in_time
 			print "    variance: ", self.variance
 			print "    children time: ", self.children_time,"\n}\n"
 		else:
@@ -130,7 +131,7 @@ class Function():
 		self.variance = variance
 		self.pragmas = {}
 		self.children_time = float(children_time)
-		self.in_time = float(self.time)-float(self.children_time)
+		self.in_time = float(self.time) - float(self.children_time)
 	def add_pragma(self, pragma):
 		self.pragmas[pragma[0]] = (pragma[1], pragma[2], pragma[3], pragma[4], pragma[5])
 
@@ -162,7 +163,7 @@ class Flow():
 	def dump(self,prefix=""):
 		print prefix,"flow:"
 		for task in self.tasks:
-			print prefix,"\t",task.type," ",task.start_line
+			print prefix,"\t",task.type," ",task.start_line," ",task.in_time
 	def remove_task(self, task):
 		self.tasks.remove(task)
 		self.time -= task.in_time #float(task.time) - float(task.children_time)
@@ -283,7 +284,7 @@ def scan(xml_tree, pragma_graph, node, treeNode, func_pragmas, root):
 		Objchild.callerid.append(callerid)
 		Objchild.deadline = deadline
 		Objchild.children_time = children_time
-		Objchild.in_time = Objchild.time-children_time
+		Objchild.in_time = Objchild.time - children_time
 		if (time == 0):
 			child = p.Node(key, label = visual_name + "\nnot executed", root = root)
 		else:
@@ -598,6 +599,42 @@ def get_parameter(parameter):
 	else:
 		type_ = 'None'
 	return (type_, parameter.find('Var').text)
+
+def create_map(optimal_flow):
+	for_map = {}
+	for flow in optimal_flow:
+		for task in flow.tasks:
+			if "splitted" in task.type:
+				id = re.findall(r'\d+',task.type)[0]
+				if id in for_map:
+					for_map[id] += 1
+				else:
+					for_map[id] = 1
+	return for_map
+
+def add_new_tasks(optimal_flow, exp_flows):
+	for_map = create_map(optimal_flow)
+	for key in for_map:
+		node_to_replace = find_node(key, exp_flows)
+		nodes_to_add = []
+
+		for i in range(for_map[key]):
+			nodes_to_add.append(For_Node("splitted_" + node_to_replace.start_line + "." + str(i), node_to_replace.start_line, node_to_replace.init_type, node_to_replace.init_var, node_to_replace.init_value, node_to_replace.init_cond, node_to_replace.init_cond_value, node_to_replace.init_increment, node_to_replace.init_increment_value, node_to_replace.time, node_to_replace.variance, math.floor(float(node_to_replace.mean_loops) / (i + 1))))
+		
+		for parent in node_to_replace.parent:
+			parent.children.remove(node_to_replace)
+			for n in nodes_to_add:
+				parent.add(n)
+
+		for child in node_to_replace.children:
+			child.parent.remove(node_to_replace)
+			for n in nodes_to_add:
+				n.add(child) 
+
+
+
+
+
 
 
 
