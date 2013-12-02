@@ -27,11 +27,11 @@ public:
 
 	NestedBase(int pragmaID) : pragmaID(pragmaID) {}
 
-  	ForParameter *fp;  	
+  	//ForParameter *fp;  	
   	int pragmaID;
   	int ActivationTime;
   	
-  	virtual void callme() = 0;
+  	virtual void callme(ForParameter *fp) = 0;
   	
   	void operator()(ForParameter *fp);
 };

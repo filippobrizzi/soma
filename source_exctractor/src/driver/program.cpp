@@ -412,23 +412,29 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
   text << textParam.str() << ") " << textVarConstr.str() << "{}\n" << textVar.str() << "\n";    
   
   unsigned startLine = utils::Line(s->getLocStart(), sm);
-  if(n->forNode == NULL) {
-    text << "void fx(" << textParam.str() <<")\n";
-    RewritePragma.InsertText(ST, text.str(), true, true);
-
-  }else {
+  
+  if(textParam.str().compare("") == 0)
+      text << "void fx(ForParameter *fp)";
+    else
+      text << "void fx(ForParameter *fp," << textParam.str() <<")";
+  
+  if(n->forNode != NULL) {
+    
     std::string textFor;
     textFor = GetParallelFor(n);
 
-    text << "void fx(" << textParam.str() <<") {\n" << textFor;
+    text << " {\n" << textFor;
     clang::SourceLocation forST = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
     RewritePragma.InsertText(forST, text.str(), true, false);
     RewritePragma.InsertText(ST, "//", true, false);
     
     unsigned endLine = utils::Line(s->getLocEnd(), sm);
-  clang::SourceLocation endforST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
+    clang::SourceLocation endforST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
     RewritePragma.InsertText(endforST, "}\n", true, false);
+  }else {
+    RewritePragma.InsertText(ST, text.str(), true, true);
   }
+
 
   clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine - 1, 1);
   RewritePragma.InsertText(pragmaST, "//", true, false);
@@ -439,9 +445,13 @@ void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
    
   std::stringstream textAfter;
   textAfter <<"\
-void callme() {\n\
-  fx(" << textCallmeVar.str() << ");\n\
-}\n\
+void callme(ForParameter *fp) {\n";
+  if(textCallmeVar.str().compare("") == 0)
+    textAfter << "fx(fp);\n";
+  else
+    textAfter << "fx(fp, " << textCallmeVar.str() << ");\n";
+textAfter << 
+"}\n\
 };\n\
 Nested *_x_ = new Nested(" << n->getStartLine();
   if(textNested.str().compare("") != 0)

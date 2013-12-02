@@ -4,16 +4,15 @@
 std::mutex mtx;
 
 void NestedBase::operator()(ForParameter *fp) {
-		std::cout << "operator(): " << pragmaID << std::endl;
-		this->fp = fp;
-  	/*	std::chrono::time_point<std::chrono::system_clock> start = InstanceRun::getInstance("")->getTimeStart();
+	std::cout << "Thread: " << pragmaID << " tid: " << fp->tid << " forsplit " << fp->numThread << std::endl;
+  		std::chrono::time_point<std::chrono::system_clock> start = InstanceRun::getInstance("")->getTimeStart();
   		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
   		int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now-start).count();
   		if(ActivationTime - elapsed_milliseconds > 0) {
   			std::chrono::milliseconds dura(ActivationTime - elapsed_milliseconds);
   			std::this_thread::sleep_for(dura);
-  		}*/
-    	callme();
+  		}
+    	callme(fp);
 }
 
 InstanceRun* InstanceRun::getInstance(std::string filename) {
@@ -107,13 +106,13 @@ void InstanceRun::call(NestedBase & nb) {
 
 	if(schedopt[nb.pragmaID].ActivationTime > 0) {
 		for(int i = 0; i < schedopt[nb.pragmaID].ForSplit; i ++) {
-			ForParameter *fp = new ForParameter(i, schedopt[nb.pragmaID].ForSplit);
-			std::cout << "CALL: " << nb.pragmaID << " with tid: " << i << " forsplit: " << schedopt[nb.pragmaID].ForSplit << std::endl;
-			runningThreads[nb.pragmaID][i] = std::thread(std::ref(nb), fp);
+			//ForParameter *fp = new ForParameter(i, schedopt[nb.pragmaID].ForSplit);
+			//ForParameter fp(i, schedopt[nb.pragmaID].ForSplit);
+			std::cout << "CALL thread: " << nb.pragmaID << " with tid: " << i << " forsplit: " << schedopt[nb.pragmaID].ForSplit << std::endl;
+			runningThreads[nb.pragmaID][i] = std::thread(std::ref(nb), new ForParameter(i, schedopt[nb.pragmaID].ForSplit));
 		}
 	}
 
-    int t;
 //Wait first for the outer thread (parallel or task with child) so that for sure the inside threads
 //have been started.
 /*    if(schedopt[nb.pragmaID].barriers.size() > 0 && runningThreads[nb.pragmaID] != NULL){
@@ -127,7 +126,6 @@ void InstanceRun::call(NestedBase & nb) {
     for(int i = 0; i < (schedopt[nb.pragmaID]).barriers.size(); i ++) {			
     //	if(schedopt[nb.pragmaID].barriers.at(i) != nb.pragmaID){
 			for(int j = 0; j < schedopt[schedopt[nb.pragmaID].barriers.at(i)].ForSplit; j ++){
-				std::cout << "CALL join thread: " << schedopt[nb.pragmaID].barriers.at(i) << " " << j << std::endl;
 				runningThreads[schedopt[nb.pragmaID].barriers.at(i)][j].join();
 			}
 			runningThreads.erase(schedopt[nb.pragmaID].barriers.at(i)); 	
