@@ -6,24 +6,25 @@ using namespace clang;
 ClangCompiler::ClangCompiler(int argc, char **argv) {
 
   DiagnosticOptions diagnosticOptions;
-  compiler.createDiagnostics();
+  compiler_.createDiagnostics();
 
-  // Create an invocation that passes any flags to preprocessor
+  /* Create an invocation that passes any flags to preprocessor */
   CompilerInvocation *Invocation = new CompilerInvocation;
   CompilerInvocation::CreateFromArgs(*Invocation, argv + 1, argv + argc,
-                                      compiler.getDiagnostics());
-  compiler.setInvocation(Invocation);
+                                      compiler_.getDiagnostics());
+  compiler_.setInvocation(Invocation);
 
-  // Set default target triple
+  /* Set default target triple */
   llvm::IntrusiveRefCntPtr<TargetOptions> pto( new TargetOptions());
   pto->Triple = llvm::sys::getDefaultTargetTriple();
-  llvm::IntrusiveRefCntPtr<TargetInfo> pti(TargetInfo::CreateTargetInfo(compiler.getDiagnostics(), pto.getPtr()));
-  compiler.setTarget(pti.getPtr());
+  llvm::IntrusiveRefCntPtr<TargetInfo> pti(TargetInfo::CreateTargetInfo(compiler_.getDiagnostics(), pto.getPtr()));
+  compiler_.setTarget(pti.getPtr());
 
-  compiler.createFileManager();
-  compiler.createSourceManager(compiler.getFileManager());
+  compiler_.createFileManager();
+  compiler_.createSourceManager(compiler_.getFileManager());
 
-  HeaderSearchOptions &headerSearchOptions = compiler.getHeaderSearchOpts();
+  /* Add default search path for the compiler */
+  HeaderSearchOptions &headerSearchOptions = compiler_.getHeaderSearchOpts();
 
   headerSearchOptions.AddPath("/usr/local/include",
 	          clang::frontend::Angled,
@@ -58,7 +59,7 @@ ClangCompiler::ClangCompiler(int argc, char **argv) {
             false);
 
 
- // Allow C++ code to get rewritten
+  /* Allow C++ code to get rewritten */
   clang::LangOptions langOpts;
   langOpts.GNUMode = 1; 
   langOpts.CXXExceptions = 1; 
@@ -69,15 +70,15 @@ ClangCompiler::ClangCompiler(int argc, char **argv) {
                               clang::IK_CXX,
                               clang::LangStandard::lang_cxx0x);
 
-  compiler.createPreprocessor();
-  compiler.getPreprocessorOpts().UsePredefines = false;
+  compiler_.createPreprocessor();
+  compiler_.getPreprocessorOpts().UsePredefines = false;
 
-  compiler.createASTContext();
+  compiler_.createASTContext();
 
-  	// Get filename
+  /* Initialize the compiler and the source manager with a file to process */
   std::string fileName(argv[argc - 1]);  
-  const FileEntry *pFile = compiler.getFileManager().getFile(fileName);
-  compiler.getSourceManager().createMainFileID(pFile);
-  compiler.getDiagnosticClient().BeginSourceFile(compiler.getLangOpts(), &compiler.getPreprocessor());
+  const FileEntry *pFile = compiler_.getFileManager().getFile(fileName);
+  compiler_.getSourceManager().createMainFileID(pFile);
+  compiler_.getDiagnosticClient().BeginSourceFile(compiler_.getLangOpts(), &compiler_.getPreprocessor());
 
 }

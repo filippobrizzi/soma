@@ -2,73 +2,75 @@
 #include "driver/program.h"
 
 
-void Program::ParseSourceCode(std::string fileName) {
+void Program::ParseSourceCode(std::string file_name) {
 
-  // Convert <file>.c to <file_profile>.c
-  std::string outNameProfile (fileName);
-  size_t ext = outNameProfile.rfind(".");
+  /* Convert <file>.c to <file_profile>.c */
+  std::string out_filename_profile (file_name);
+  size_t ext = out_filename_profile.rfind(".");
   if (ext == std::string::npos)
-  	ext = outNameProfile.length();
-  outNameProfile.insert(ext, "_profile");
+  	ext = out_filename_profile.length();
+  out_filename_profile.insert(ext, "_profile");
 
-  llvm::errs() << "Output to: " << outNameProfile << "\n";
-  std::string OutErrorInfo;
-  llvm::raw_fd_ostream outFileProfile(outNameProfile.c_str(), OutErrorInfo, 0);
+  llvm::errs() << "Output to: " << out_filename_profile << "\n";
+  std::string out_error_info;
+  llvm::raw_fd_ostream out_file_profile(out_filename_profile.c_str(), out_error_info, 0);
 
-  clang::Rewriter rewriteProfiling;
-  rewriteProfiling.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
+  /* Create the rewriter object to create the profiling file */
+  clang::Rewriter rewrite_profiling;
+  rewrite_profiling.setSourceMgr(ccompiler_.getSourceManager(), ccompiler_.getLangOpts());
   
-  ProfilingASTConsumer astConsumer(rewriteProfiling, ccompiler.getSourceManager());
-  // Parse the AST
-  clang::ParseAST(ccompiler.getPreprocessor(), &astConsumer, ccompiler.getASTContext());
-	ccompiler.getDiagnosticClient().EndSourceFile();
+  ProfilingASTConsumer ast_consumer(rewrite_profiling, ccompiler_.getSourceManager());
+  /* Parse the AST with the custom ASTConsumer */
+  clang::ParseAST(ccompiler_.getPreprocessor(), &ast_consumer, ccompiler_.getASTContext());
+	ccompiler_.getDiagnosticClient().EndSourceFile();
 
-	this->pragmaList = new std::vector<clang::OMPExecutableDirective *>(astConsumer.rv.pragmaList);
-	this->functionList = new std::vector<clang::FunctionDecl *>(astConsumer.rv.functionList);
+  /* Save the pragma and function list */
+	pragma_list_ = new std::vector<clang::OMPExecutableDirective *>(ast_consumer.rv.pragma_list_);
+	function_list_ = new std::vector<clang::FunctionDecl *>(ast_consumer.rv.function_list_);
 
-
-  // Now output rewritten source code
-	const clang::RewriteBuffer *RewriteBufProfiling = rewriteProfiling.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());  	
-  outFileProfile << std::string(RewriteBufProfiling->begin(), RewriteBufProfiling->end());
-  outFileProfile.close();
-
+  /*Output rewritten source code into a new file */
+	const clang::RewriteBuffer *rewrite_buf_profiling = rewrite_profiling.getRewriteBufferFor(ccompiler_.getSourceManager().getMainFileID());  	
+  out_file_profile << std::string(rewrite_buf_profiling->begin(), rewrite_buf_profiling->end());
+  out_file_profile.close();
 
 }
 
 
-
+/*
+ * ---- Insert the call to the profilefunction tracker to track the execution time of each funcion.
+ */
 bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {     
     
-    clang::SourceLocation ST = f->getLocStart();
+  clang::SourceLocation start_src_loc = f->getLocStart();
 
-/*
- * ---- Insert the call to the profilefunction tracker to track the execution time of each funcion ----
- * (l'if è necessario perchè non prenda in considerazione funzioni dichiarate negli include files)
- */
-  if(sm.getFileID(ST) == sm.getMainFileID() && f->hasBody() == true) {
+  /* Skip function belonging to external include file and not defined function */
+  if(sm.getFileID(start_src_loc) == sm.getMainFileID() && f->hasBody() == true) {
   	
-    functionList.insert(functionList.end(), f);
-/*
- * ---- Include the path to ProfileTracker.h ----
- */
-    if(this->insertInclude == false) {
-      std::string text = "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
-      RewriteProfiling.InsertText(ST, text, true, false);
-      this->insertInclude = true;
+    function_list_.push_back(f);
+
+    /* Include the path to ProfileTracker.h */
+    if(include_inserted_ == false) {
+      std::string text_include = "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
+      rewrite_profiling_.InsertText(start_src_loc, text_include, true, false);
+      include_inserted_ = true;
     } 
 
-    ST = f->getBody()->getLocStart();
-  	unsigned startLine = utils::Line(ST, sm);
-    clang::SourceLocation newSL = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
-    std::stringstream text2;
-    text2 << "if( ProfileTracker x = ProfileTrackParams(" << startLine << ", 0)) {\n";
-    RewriteProfiling.InsertText(newSL, text2.str(), true, false);
+    start_src_loc = f->getBody()->getLocStart();
+  	unsigned start_line = utils::Line(start_src_loc, sm);
+    clang::SourceLocation new_start_src_loc = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
+    std::stringstream text_profiling;
+    text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << star_line << ", 0)) {\n";
+    
+    /* Insert the if in the first line of the function definition */
+    rewrite_profiling.InsertText(new_start_src_loc, text_profiling.str(), true, false);
 
-    clang::SourceLocation endSL = f->getLocEnd();
-    std::stringstream text3;
-    text3 << "}\n";
-    RewriteProfiling.InsertText(endSL, text3.str(), true, false);
+    clang::SourceLocation end_src_loc = f->getLocEnd();
+    std::stringstream text_end_bracket;
+    text_end_bracket << "}\n";
+    /* Close the if bracket at the end of the function */
+    rewrite_profiling.InsertText(end_src_loc, text_end_bracket.str(), true, false);
   }
+
   return true; 
 }
 
@@ -76,27 +78,20 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
 
 bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
 
-	clang::SourceLocation ST = s->getLocStart();
-	if(sm.getFileID(ST) == sm.getMainFileID()) {
+	clang::SourceLocation start_src_loc = s->getLocStart();
+	if(sm.getFileID(start_src_loc) == sm.getMainFileID()) {
+      /* We want just the OpenMP stmt and no duplicate */
   		if (clang::isa<clang::OMPExecutableDirective>(s) && s != previousStmt) {
-  			previousStmt = s;
-  			clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
-  			pragmaList.insert(pragmaList.end(), omps);
-  			clang::Stmt *as = omps->getAssociatedStmt();
-        if(as) {
-          clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
-          //In the case of #omp parallel for we have to go down two level befor finding the ForStmt 
-  		    if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0)
-            
-            RewriteProfile(cs);
-
-          std::cout << s->getStmtClassName() << " " << utils::Line(s->getLocStart() ,sm) << std::endl;
-          clang::CapturedStmt *cs2 = static_cast<clang::CapturedStmt *>(as);
-          for(clang::CapturedStmt::capture_iterator I = cs2->capture_begin(); I != cs2->capture_end(); ++I){
-            clang::VarDecl *vd = I->getCapturedVar(); 
-            std::cout << vd->getNameAsString() << " - " << vd->getType().getAsString() << std::endl;
-          }
-          std::cout << std::endl;
+  			previous_stmt_ = s;
+  			clang::OMPExecutableDirective *omp_stmt = static_cast<clang::OMPExecutableDirective *>(s);
+  			pragma_list_.push_back(omp_stmt);
+  			
+        clang::Stmt *associated_stmt = omp_stmt->getAssociatedStmt();
+        if(associated_stmt) {
+          clang::Stmt *captured_stmt = static_cast<clang::CapturedStmt *>(associated_stmt)->getCapturedStmt();
+          /* In the case of #omp parallel for we have to go down two level befor finding the ForStmt */
+  		    if(strcmp(captured_stmt->getStmtClassName(), "OMPForDirective") != 0)
+            RewriteProfiling(captured_stmt);
         }
       }
   	}
@@ -105,122 +100,128 @@ bool ProfilingRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
 }
 
 
-void ProfilingRecursiveASTVisitor::RewriteProfile(clang::Stmt *s) {
+void ProfilingRecursiveASTVisitor::RewriteProfiling(clang::Stmt *s) {
   	
-  	clang::SourceLocation ST = s->getLocStart();
-  	unsigned pragmaLine = utils::Line(ST,sm);
-  	unsigned functionLine = getFunctionLine(s->getLocStart());
+  	clang::SourceLocation start_src_loc = s->getLocStart();
+  	unsigned pragma_start_line = utils::Line(start_src_loc,sm);
+  	unsigned function_start_line = GetFunctionLineForPragma(s->getLocStart());
 
-    std::stringstream text;
+    std::stringstream text_profiling;
     if(clang::isa<clang::ForStmt>(s)) {
-      std::string conditionVar = forCondition(s);
+      std::string condition_var_value = ForConditionVarValue(s);
       //std::string conditionVar = "";
-      text << "if( ProfileTracker x = ProfileTrackParams(" << functionLine << ", " << pragmaLine << ", " << conditionVar << "))\n";
-      RewriteProfiling.InsertText(ST, text.str(), true, true);
+      text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << function_start_line << ", " << pragma_start_line << ", " << condition_var_value << "))\n";
+      rewrite_profiling_.InsertText(start_src_loc, text_profiling.str(), true, true);
 
     } else {
-	    text << "if( ProfileTracker x = ProfileTrackParams(" << functionLine << ", " << pragmaLine << "))\n";
-      RewriteProfiling.InsertText(ST, text.str(), true, true);
+	    text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << functionLine << ", " << pragmaLine << "))\n";
+      rewrite_profiling_.InsertText(start_src_loc, text_profiling.str(), true, true);
     }
 
-/*
- * ---- Comment the pragma ----
- */
-    unsigned startLine = utils::Line(s->getLocStart(), sm);
-    clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine - 1, 1);
-    RewriteProfiling.InsertText(pragmaST, "//", true, false);
-
+    /* Comment the pragma in the profiling file */
+    clang::SourceLocation pragma_start_src_loc = sm.translateLineCol(sm.getMainFileID(), pragma_start_line - 1, 1);
+    rewrite_profiling_.InsertText(pragma_start_src_loc, "//", true, false);
 }
 
 
 
 
-std::string ProfilingRecursiveASTVisitor::forCondition(const clang::Stmt *s) {
-	const clang::ForStmt *fS = static_cast<const clang::ForStmt *>(s);
-  const clang::Expr *cE = fS->getCond();
-  const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(cE);
-  std::string startValue, endValue;
+std::string ProfilingRecursiveASTVisitor::ForConditionVarValue(const clang::Stmt *s) {
+	
+  const clang::ForStmt *for_stmt = static_cast<const clang::ForStmt *>(s);
+  const clang::Expr *condition_expr = for_stmt->getCond();
+  const clang::BinaryOperator *binary_op = static_cast<const clang::BinaryOperator *>(condition_expr);
+  
+  std::string start_cond_var_value, end_cond_var_value;
 
 /*
- *  Conditional end value
+ *  Condition end value
  */
-  const clang::Expr *rEx = bO->getRHS();
-  if(strcmp(rEx->getStmtClassName(), "IntegerLiteral") == 0) {
-    const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(rEx);
-    std::stringstream text;
-    text << iL->getValue().getZExtValue();
-    //return text.str();
-    endValue = text.str();
+  const clang::Expr *right_expr = binary_op->getRHS();
 
-  } else if(strcmp(rEx->getStmtClassName(), "ImplicitCastExpr") == 0) {
-  	const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(rEx->child_begin()));
-  	const clang::NamedDecl *nD = dRE->getFoundDecl();
+  if(strcmp(right_expr->getStmtClassName(), "IntegerLiteral") == 0) {
+    const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(right_expr);
+    std::stringstream text_end_value;
+    text_end_value << int_literal->getValue().getZExtValue();
+    //return text.str();
+    end_cond_var_value = text.str();
+
+  } else if(strcmp(right_expr->getStmtClassName(), "ImplicitCastExpr") == 0) {
+  	const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(right_expr->child_begin()));
+  	const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
   	//return nD->getNameAsString(); 
-    endValue = nD->getNameAsString();
+    end_cond_var_value = named_decl->getNameAsString();
   }
 
 /*
- * Conditional start value
+ * Condition start value
  */
 
-  if(strcmp(fS->child_begin()->getStmtClassName(), "DeclStmt") == 0) {
-    const clang::DeclStmt *dS = static_cast<const clang::DeclStmt *>(*(fS->child_begin()));
-    const clang::Decl *d = dS->getSingleDecl();
+/*
+ *  for (int i = ...)
+ */
+  if(strcmp(for_stmt->child_begin()->getStmtClassName(), "DeclStmt") == 0) {
+    const clang::DeclStmt *decl_stmt = static_cast<const clang::DeclStmt *>(*(for_stmt->child_begin()));
+    const clang::Decl *decl = decl_stmt->getSingleDecl();
+
 /*
  *  for (... = 0)
  */
-    if(strcmp(dS->child_begin()->getStmtClassName(), "IntegerLiteral") == 0) {      
-      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(*(dS->child_begin())); 
-      std::stringstream text;
-      text << iL->getValue().getZExtValue();
-      //return text.str();
-      startValue = text.str();/*
+    if(strcmp(decl_stmt->child_begin()->getStmtClassName(), "IntegerLiteral") == 0) {      
+      const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(*(decl_stmt->child_begin())); 
+      std::stringstream text_star_value;
+      text_star_value << int_literal->getValue().getZExtValue();
+      start_cond_var_value = text_star_value.str();
+
+/*
  *  for (... = a)
  */
-    }else if (strcmp(dS->child_begin()->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(dS->child_begin()->child_begin()));
-      const clang::NamedDecl *nD = dRE->getFoundDecl();
-      startValue = nD->getNameAsString();
+    }else if (strcmp(decl_stmt->child_begin()->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(decl_stmt->child_begin()->child_begin()));
+      const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+      start_cond_var_value = named_decl->getNameAsString();
     }
   }
 /*
  *  for ( i = ...)
  */
-  else if(strcmp(fS->child_begin()->getStmtClassName(), "BinaryOperator") == 0) {
-    const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(*(fS->child_begin())); 
-    const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(bO->child_begin()));
+  else if(strcmp(for_stmt->child_begin()->getStmtClassName(), "BinaryOperator") == 0) {
+    const clang::BinaryOperator *binary_op = static_cast<const clang::BinaryOperator *>(*(for_stmt->child_begin())); 
+    const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(binary_op->child_begin()));
 /*
  *  for( ... = 0)
  */
-    clang::ConstStmtIterator stI = bO->child_begin();
-    stI ++;
-    if(strcmp(stI->getStmtClassName(), "IntegerLiteral") == 0) {
-      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(*stI);
-      startValue = iL->getValue().getZExtValue();      
+    clang::ConstStmtIterator stmt_itr = binary_op->child_begin();
+    stmt_itr ++;
+    if(strcmp(stmt_itr->getStmtClassName(), "IntegerLiteral") == 0) {
+      const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(*stmt_itr);
+      start_cond_var_value = int_literal->getValue().getZExtValue();      
 /*
  *  for ( ... = a)
  */
-    } else if (strcmp(stI->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(stI->child_begin()));
-      const clang::NamedDecl *nD = dRE->getFoundDecl();
-      startValue = nD->getNameAsString();
+    } else if (strcmp(stmt_itr->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(stmt_itr->child_begin()));
+      const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+      start_cond_var_value = named_decl->getNameAsString();
     }
   }
-  endValue.append(" - ");
-  endValue.append(startValue);
-  return endValue;
+  end_cond_var_value.append(" - ");
+  end_cond_var_value.append(start_cond_var_value);
+  return end_cond_var_value;
 }
 
-unsigned ProfilingRecursiveASTVisitor::getFunctionLine(clang::SourceLocation sl) {
+unsigned ProfilingRecursiveASTVisitor::GetFunctionLineForPragma(clang::SourceLocation sl) {
 
-	unsigned pragmaLine = utils::Line(sl, sm);
-	unsigned startFuncLine, endFuncLine;
-	std::vector<clang::FunctionDecl *>::iterator fitr;
-	for(fitr = functionList.begin(); fitr != functionList.end(); ++ fitr) {
-		startFuncLine = utils::Line((*fitr)->getSourceRange().getBegin(), sm);
-		endFuncLine = utils::Line((*fitr)->getSourceRange().getEnd(), sm);
-		if(pragmaLine < endFuncLine && pragmaLine > startFuncLine)
-			return startFuncLine;
+	unsigned pragma_line = utils::Line(sl, sm);
+	
+  unsigned start_func_line, end_func_line;
+	std::vector<clang::FunctionDecl *>::iterator func_itr;
+
+	for(func_itr = function_list_.begin(); func_itr != function_list_.end(); ++ func_itr) {
+		start_func_line = utils::Line((*func_itr)->getSourceRange().getBegin(), sm);
+		end_func_line = utils::Line((*func_itr)->getSourceRange().getEnd(), sm);
+		if(pragma_line < end_func_line && pragma_line > start_func_line)
+			return start_func_line;
 	}
 
 	return 0;
@@ -230,274 +231,253 @@ unsigned ProfilingRecursiveASTVisitor::getFunctionLine(clang::SourceLocation sl)
  * -------------------------------------------------------------------------------------------------------------------
  */
 
-void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *rootVect) {
+void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *root_vect) {
 
- // Convert <file>.c to <file_transformed>.c
-  std::string outNamePragma (fileName);
-  size_t ext = outNamePragma.rfind(".");
+  /* Convert <file>.c to <file_transformed>.c */
+  std::string out_name_pragma (fileName);
+  size_t ext = out_name_pragma.rfind(".");
   if (ext == std::string::npos)
-    ext = outNamePragma.length();
-  outNamePragma.insert(ext, "_tranformed");
+    ext = out_name_pragma.length();
+  out_name_pragma.insert(ext, "_tranformed");
 
-  llvm::errs() << "Output to: " << outNamePragma << "\n";
-  std::string OutErrorInfo;
-  llvm::raw_fd_ostream outFilePragma(outNamePragma.c_str(), OutErrorInfo, 0);  
+  llvm::errs() << "Output to: " << out_name_pragma << "\n";
+  std::string out_error_info;
+  llvm::raw_fd_ostream out_file_pragma(out_name_pragma.c_str(), out_error_info, 0);  
 
-  clang::Rewriter rewritePragma;
-  rewritePragma.setSourceMgr(ccompiler.getSourceManager(), ccompiler.getLangOpts());
+  clang::Rewriter rewrite_pragma;
+  rewrite_pragma.setSourceMgr(ccompiler_.getSourceManager(), ccompiler_.getLangOpts());
 
-  TransformASTConsumer tastConsumer(rewritePragma, rootVect, ccompiler.getSourceManager());
+  TransformASTConsumer t_ast_consumer(rewrite_pragma, root_vect, ccompiler_.getSourceManager());
   
-  // Parse the AST
+  /* Parse the AST */
+  clang::ParseAST(ccompiler_.getPreprocessor(), &t_ast_c_onsumer, ccompiler_.getASTContext());
+  ccompiler_.getDiagnosticClient().EndSourceFile();
 
-  clang::ParseAST(ccompiler.getPreprocessor(), &tastConsumer, ccompiler.getASTContext());
-  ccompiler.getDiagnosticClient().EndSourceFile();
-
-  const clang::RewriteBuffer *RewriteBufPragma = rewritePragma.getRewriteBufferFor(ccompiler.getSourceManager().getMainFileID());
-  outFilePragma << std::string(RewriteBufPragma->begin(), RewriteBufPragma->end());
-  outFilePragma.close();
+  const clang::RewriteBuffer *rewrite_buff_pragma = rewrite_pragma.getRewriteBufferFor(ccompiler_.getSourceManager().getMainFileID());
+  out_file_pragma << std::string(rewrite_buff_pragma->begin(), rewrite_buff_pragma->end());
+  out_file_pragma.close();
 }
 
 
 bool TransformRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {     
-  clang::SourceLocation ST = f->getLocStart();
+  clang::SourceLocation f_start_src_loc = f->getLocStart();
 
-  if(sm.getFileID(ST) == sm.getMainFileID() && !clang::isa<clang::CXXMethodDecl>(f)) {
-    if(this->insertInclude == false) {
-      this->insertInclude = true;
+  if(sm.getFileID(f_start_src_loc) == sm.getMainFileID() && !clang::isa<clang::CXXMethodDecl>(f)) {
+    if(include_inserted_ == false) {
+      include_inserted_ = true;
 
-      std::string text = "#include \"instancerun.h\"\n";
-/*\n\
-class ForParameter\n\
-{\n\
-public:\n\
-  int tid;\n\
-  int numThread;\n\
-  ForParameter(int tid, int numThread) : tid(tid), numThread(numThread) {}\n\
-};\n\
-\n\
-class NestedBase { \n\
-public: \n\
-  ForParameter *fp;\n\
-  int pragmaID;\n\
-  virtual void callme() = 0;\n\
-  void operator()() {\n\
-    callme();\n\
-  }\n\
-};\n\
-\n";
-*/
+      std::string text_include = "#include \"instancerun.h\"\n";
 
-      RewritePragma.InsertText(ST, text, true, false);
+      rewrite_pragma_.InsertText(f_start_src_loc, text_include, true, false);
     }
   }
-
 
   return true;
 }
 
 bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   
-  clang::SourceLocation ST = s->getLocStart();
-  if(sm.getFileID(ST) == sm.getMainFileID()) {
-    if (clang::isa<clang::OMPExecutableDirective>(s) && s != previousStmt) {
-      previousStmt = s;
-      clang::OMPExecutableDirective *omps = static_cast<clang::OMPExecutableDirective *>(s);
-      clang::Stmt *as = omps->getAssociatedStmt();
-      if(as) {
-        clang::Stmt *cs = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
-        if(strcmp(cs->getStmtClassName(), "OMPForDirective") != 0) {
-          RewriteOMP(as);
-        }
-      }else if(strcmp(omps->getStmtClassName(), "OMPBarrierDirective") == 0){
-        RewriteBarrier(omps);
-      }
+  clang::SourceLocation s_start_stc_loc = s->getLocStart();
+  /* Visit only stmt in the source file (not in included file) and that are pragma stmt */
+  if(sm.getFileID(s_start_stc_loc) == sm.getMainFileID && clang::isa<clang::OMPExecutableDirective>(s) && s != previousStmt) {
+    previous_stmt_ = s;
+    clang::OMPExecutableDirective *omp_stmt = static_cast<clang::OMPExecutableDirective *>(s);
+    clang::Stmt *associated_stmt = omp_stmt->getAssociatedStmt();
+    if(associated_stmt) {
+      clang::Stmt *captured_stmt = static_cast<clang::CapturedStmt *>(associated_stmt)->getCapturedStmt();
+      if(strcmp(captured_stmt->getStmtClassName(), "OMPForDirective") != 0)
+        RewriteOMPPragma(associated_stmt);
+
+    }else if(strcmp(omp_stmt->getStmtClassName(), "OMPBarrierDirective") == 0){
+        RewriteOMPBarrier(omp_stmt);
     }
   }
   return true;
 }
 
 
-void TransformRecursiveASTVisitor::RewriteBarrier(clang::OMPExecutableDirective *omps) {
-  unsigned startLine = utils::Line(omps->getLocStart(), sm);
-  std::stringstream text;
-  text <<
+void TransformRecursiveASTVisitor::RewriteOMPBarrier(clang::OMPExecutableDirective *omp_stmt) {
+  unsigned stmt_start_line = utils::Line(omp_stmt->getLocStart(), sm);
+  
+  std::stringstream text_barrier;
+  text_barrier <<
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
     Nested(int pragmaID) : NestedBase(pragmaID) {}\n\
-    void callme(){}\n\
+    void callme(ForParameter *fp){}\n\
   };\n\
-  Nested _x_(" << startLine << ");\n\
-  InstanceRun::getInstance(\"" << utils::FileName(omps->getLocStart(), sm) << "\")->call(_x_);\n\
+  Nested _x_(" << stmt_start_line << ");\n\
+  InstanceRun::getInstance(\"" << utils::FileName(omp_stmt->getLocStart(), sm) << "\")->call(_x_);\n\
 }";
 
-  clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
-  RewritePragma.InsertText(pragmaST, text.str(), true, false);
+  clang::SourceLocation pragma_start_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_start_line + 1, 1);
+  rewrite_pragma_.InsertText(pragma_start_src_loc, text_barrier.str(), true, false);
 
-  pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine, 1);
-  RewritePragma.InsertText(pragmaST, "//", true, false);
+  pragma_start_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_start_line, 1);
+  rewrite_pragma_.InsertText(pragma_start_src_loc, "//", true, false);
 }
 
 
-void TransformRecursiveASTVisitor::RewriteOMP(clang::Stmt *as) {
+void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt) {
   
-  clang::Stmt *s = static_cast<clang::CapturedStmt *>(as)->getCapturedStmt();
+  clang::Stmt *s = static_cast<clang::CapturedStmt *>(associated_stmt)->getCapturedStmt();
 
-  clang::SourceLocation ST = s->getLocStart();
-  unsigned pragmaLine = utils::Line(ST,sm);
+  clang::SourceLocation stmt_start_src_loc = s->getLocStart();
+  unsigned pragma_start_line = utils::Line(stmt_start_src_loc, sm);
 
-  Node *n = getNodeforPragma(s);
+  Node *n = GetNodeObjForPragma(s);
   
   std::stringstream text;
-  std::stringstream textParam;
-  std::stringstream textVar;
-  std::stringstream textCallmeVar;
-  std::stringstream textNested;
-  std::stringstream textVarConstr;
-/*
- * ----- Insert before pragma ----
- */
+  std::stringstream text_constructor_params;
+  std::stringstream text_class_var;
+  std::stringstream text_fx_var;
+  std::stringstream text_constructor_var;
+  std::stringstream text_constructor;
+
+/* Insert before pragma */
   text <<
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
     Nested(int pragmaID";
 
-  textVarConstr << " : NestedBase(pragmaID)";
+  text_constructor << " : NestedBase(pragmaID)";
 
-  clang::CapturedStmt *cs = static_cast<clang::CapturedStmt *>(as);
+  clang::CapturedStmt *captured_stmt = static_cast<clang::CapturedStmt *>(associated_stmt);
+  /* Iterate over all the variable used inside a pragma but defined outside. These variable have to be passed to
+     the newly created function */ 
+  for(clang::CapturedStmt::capture_iterator capture_var_itr = captured_stmt->capture_begin(); capture_var_itr != captured_stmt->capture_end(); ++capture_var_itr){
+    clang::VarDecl *var_decl = capture_var_itr->getCapturedVar(); 
+    std::string var_type = var_decl->getType().getAsString();
 
-  for(clang::CapturedStmt::capture_iterator I = cs->capture_begin(); I != cs->capture_end(); ++I){
-    clang::VarDecl *vd = I->getCapturedVar(); 
-    std::string type = vd->getType().getAsString();
-
-    if(I != cs->capture_begin()){
-      textCallmeVar << ", ";
-      textNested << ", ";
-      textParam << ", ";
+    if(capture_var_itr != cs->capture_begin()){
+      text_fx_var << ", ";
+      text_constructor_var << ", ";
+      text_constructor_params << ", ";
     }else
       text << ", ";
 
-    
+    if(var_type.find("class") != std::string::npos)
+      var_type.erase(0, 6);
 
-    if(type.find("class") != std::string::npos)
-      type.erase(0, 6);
+    if(n->option_vect_->find("private") != n->option_vect_->end()) {
+      if(n->option_vect_->find("private")->second.find(var_decl->getNameAsString()) != n->option_vect_->find("private")->second.end() 
+            || var_type.find("*") != std::string::npos){
 
-    if(n->optionVect->find("private") != n->optionVect->end()) {
-      if(n->optionVect->find("private")->second.find(vd->getNameAsString()) != n->optionVect->find("private")->second.end() 
-            || type.find("*") != std::string::npos){
-
-        textParam << type << " " << vd->getNameAsString();
-        textVar << type << " " << vd->getNameAsString() << "_;\n";
+        text_constructor_params << var_type << " " << var_decl->getNameAsString();
+        text_class_var << var_type << " " << var_decl->getNameAsString() << "_;\n";
 
       }else{
-        textParam << type << " & " << vd->getNameAsString();
-        textVar << type << " & " << vd->getNameAsString() << "_;\n";
+        text_constructor_params << var_type << " & " << var_decl->getNameAsString();
+        text_class_var << var_type << " & " << var_decl->getNameAsString() << "_;\n";
       }
-    }else if(type.find("*") != std::string::npos) {
-      textParam << type << " " << vd->getNameAsString();
-      textVar << type << " " << vd->getNameAsString() << "_;\n";
+    }else if(var_type.find("*") != std::string::npos) {
+      text_constructor_params << var_type << " " << var_decl->getNameAsString();
+      text_class_var << var_type << " " << var_decl->getNameAsString() << "_;\n";
 
     }else {
-      textParam << type << " & " << vd->getNameAsString();
-      textVar << type << " & " << vd->getNameAsString() << "_;\n";
+      text_constructor_params << var_type << " & " << var_decl->getNameAsString();
+      text_class_var << var_type << " & " << var_decl->getNameAsString() << "_;\n";
     }
 
-    textVarConstr << ", " << vd->getNameAsString() << "_(" << vd->getNameAsString() << ") ";
-    textCallmeVar << vd->getNameAsString() << "_";
-    textNested << vd->getNameAsString();
+    text_constructor << ", " << var_decl->getNameAsString() << "_(" << var_decl->getNameAsString() << ") ";
+    text_fx_var << var_decl->getNameAsString() << "_";
+    text_constructor_var << var_decl->getNameAsString();
   }
 
-  text << textParam.str() << ") " << textVarConstr.str() << "{}\n" << textVar.str() << "\n";    
+  text << text_constructor_params.str() << ") " << text_constructor.str() << "{}\n" << text_class_var.str() << "\n";    
   
-  unsigned startLine = utils::Line(s->getLocStart(), sm);
+  unsigned stmt_start_line = utils::Line(s->getLocStart(), sm);
   
-  if(textParam.str().compare("") == 0)
+  if(text_constructor_params.str().compare("") == 0)
       text << "void fx(ForParameter *fp)";
     else
-      text << "void fx(ForParameter *fp," << textParam.str() <<")";
+      text << "void fx(ForParameter *fp," << text_constructor_params.str() <<")";
   
-  if(n->forNode != NULL) {
+  if(n->for_node_ != NULL) {
     
-    std::string textFor;
-    textFor = GetParallelFor(n);
+    std::string text_for;
+    text_for = RewriteOMPFor(n);
 
-    text << " {\n" << textFor;
-    clang::SourceLocation forST = sm.translateLineCol(sm.getMainFileID(), startLine + 1, 1);
-    RewritePragma.InsertText(forST, text.str(), true, false);
-    RewritePragma.InsertText(ST, "//", true, false);
+    text << " {\n" << text_for;
+    clang::SourceLocation for_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_start_line + 1, 1);
+    rewrite_pragma_.InsertText(for_src_loc, text.str(), true, false);
+    rewrite_pragma_.InsertText(stmt_start_src_loc, "//", true, false);
     
-    unsigned endLine = utils::Line(s->getLocEnd(), sm);
-    clang::SourceLocation endforST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
-    RewritePragma.InsertText(endforST, "}\n", true, false);
+    unsigned stmt_end_line = utils::Line(s->getLocEnd(), sm);
+    clang::SourceLocation for_end_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_end_line + 1, 1);
+    rewrite_pragma_.InsertText(for_end_src_loc, "}\n", true, false);
   }else {
-    RewritePragma.InsertText(ST, text.str(), true, true);
+    rewrite_pragma_.InsertText(stmt_start_src_loc, text.str(), true, true);
   }
 
-
-  clang::SourceLocation pragmaST = sm.translateLineCol(sm.getMainFileID(), startLine - 1, 1);
-  RewritePragma.InsertText(pragmaST, "//", true, false);
+  /* Comment the pragma */
+  clang::SourceLocation pragma_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_start_line - 1, 1);
+  rewrite_pragma_.InsertText(pragma_src_loc, "//", true, false);
   
 /*
  * ----- Insert after pragma ----
  */
    
-  std::stringstream textAfter;
-  textAfter <<"\
+  std::stringstream text_after_pragma;
+  text_after_pragma <<"\
 void callme(ForParameter *fp) {\n";
-  if(textCallmeVar.str().compare("") == 0)
-    textAfter << "fx(fp);\n";
+
+  if(text_fx_var.str().compare("") == 0)
+    text_after_pragma << "fx(fp);\n";
   else
-    textAfter << "fx(fp, " << textCallmeVar.str() << ");\n";
-textAfter << 
+    text_after_pragma << "fx(fp, " << text_fx_var.str() << ");\n";
+
+text_after_pragma << 
 "}\n\
 };\n\
 Nested *_x_ = new Nested(" << n->getStartLine();
-  if(textNested.str().compare("") != 0)
-    textAfter << ", ";
-  textAfter << textNested.str() <<");\n\
+  
+  if(text_constructor_var.str().compare("") != 0)
+    text_after_pragma << ", ";
+  
+  text_after_pragma << text_constructor_var.str() <<");\n\
 InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(*_x_);\n\
 }\n";
 
-  unsigned endLine = utils::Line(s->getLocEnd(), sm);
-  clang::SourceLocation pragmaEndST = sm.translateLineCol(sm.getMainFileID(), endLine + 1, 1);
+  unsigned stmt_end_line = utils::Line(s->getLocEnd(), sm);
+  clang::SourceLocation pragma_end_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_end_line + 1, 1);
 
-  RewritePragma.InsertText(pragmaEndST, textAfter.str(), true, false);
-
+  rewrite_pragma_.InsertText(pragma_end_src_loc, text_after_pragma.str(), true, false);
 
 }
 
 
 
-Node *TransformRecursiveASTVisitor::getNodeforPragma(clang::Stmt *s){
+Node *TransformRecursiveASTVisitor::GetNodeObjForPragma(clang::Stmt *s){
 
-  clang::SourceLocation ST = s->getLocStart();
-  unsigned l = utils::Line(ST, sm);
+  clang::SourceLocation stmt_start_src_loc = s->getLocStart();
+  unsigned stmt_start_line = utils::Line(stmt_start_src_loc, sm);
 
-  std::vector<Root *>::iterator ritr;
-  for(ritr = rootVect->begin(); ritr != rootVect->end(); ritr ++) {
-    if((*ritr)->getFunctionLineStart() < utils::Line(ST, sm) && (*ritr)->getFunctionLineEnd() > utils::Line(ST, sm))
+  std::vector<Root *>::iterator root_itr;
+  for(root_itr = root_vect_->begin(); root_itr != root_vect_->end(); root_itr ++) {
+    if((*root_itr)->getFunctionLineStart() < utils::Line(stmt_start_src_loc, sm) && (*root_itr)->getFunctionLineEnd() > utils::Line(stmt_start_src_loc, sm))
       break;
   }
   
-  std::vector<Node *>::iterator nitr;
+  std::vector<Node *>::iterator node_itr;
   Node * n;
-  for(nitr = (*ritr)->childrenVect->begin(); nitr != (*ritr)->childrenVect->end(); nitr ++) {
-    n = recursiveNodeforPragma(*nitr, l);
+  for(node_itr = (*root_itr)->childrenVect->begin(); node_itr != (*root_itr)->childrenVect->end(); node_itr ++) {
+    n = RecursiveGetNodeObjforPragma(*node_itr, stmt_start_line);
     if(n != NULL)
       return n;
   }
   return NULL;
 }
 
-Node *TransformRecursiveASTVisitor::recursiveNodeforPragma(Node *n, unsigned l) {
+Node *TransformRecursiveASTVisitor::RecursiveGetNodeObjforPragma(Node *n, unsigned stmt_start_line) {
   Node *nn;
-  if(n->getStartLine() == l){
+  if(n->getStartLine() == stmt_start_line){
         return n;
-  }else if(n->childrenVect != NULL) {
-    for(std::vector<Node *>::iterator nitr = n->childrenVect->begin(); nitr != n->childrenVect->end(); ++ nitr) {
-      nn = recursiveNodeforPragma(*nitr, l);
+  }else if(n->children_vect_ != NULL) {
+    for(std::vector<Node *>::iterator node_itr = n->children_vect_->begin(); node_itr != n->children_vect_->end(); ++ node_itr) {
+      nn = recursiveNodeforPragma(*node_itr, stmt_start_line);
       if(nn != NULL)
         return nn;
     }
@@ -506,63 +486,63 @@ Node *TransformRecursiveASTVisitor::recursiveNodeforPragma(Node *n, unsigned l) 
 }
 
 
-std::string TransformRecursiveASTVisitor::GetParallelFor(Node *n) {
+std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
 
-  std::stringstream text;
+  std::stringstream text_for;
 
-  ForNode *fn = n->forNode;
+  ForNode *for_node = n->for_node_;
 
 
-//for( int i = a + fp->tid *(b - a)/ numThread; ....
-  text << "for(" << fn->loopVarType << " " << fn->loopVar << " = ";
-  if(fn->loopVarInitValSet)
-    text << fn->loopVarInitVal;
+  /* for( int i = a + fp->tid *(b - a)/ numThread; .... */
+  text_for << "for(" << for_node->loop_var_type_ << " " << for_node->loop_var_ << " = ";
+  if(for_node->loop_var_init_val_set_)
+    text_for << for_node->loop_var_init_val_;
   else
-    text << fn->loopVarInitVar;
+    text_for << for_node->loop_var_init_var_;
 
-  text << " + fp->tid*(";
-  if(fn->conditionValSet)
-    text << fn->conditionVal << " - ";
+  text_for << " + fp->tid*(";
+  if(for_node->condition_val_set_)
+    text_for << for_node->condition_val_ << " - ";
   else
-    text << fn->conditionVar << " - ";
+    text_for << for_node->condition_var_ << " - ";
 
-  if(fn->loopVarInitValSet)
-    text << fn->loopVarInitVal;
+  if(for_node->loop_var_init_val_set_)
+    text_for << for_node->loop_var_init_val_;
   else
-    text << fn->loopVarInitVar;
+    text_for << for_node->loop_var_init_var_;
 
-  text << ")/fp->numThread; "; 
+  text_for << ")/fp->numThread; "; 
 
 
-  // ....; i < a + (fp->tid + 1)*(b - a)/ numThread; ...
-  text << fn->loopVar << " " << fn->conditionOp << " ";
+  /* ....; i < a + (fp->tid + 1)*(b - a)/ numThread; ... */
+  text_for << for_node->loop_var_ << " " << for_node->condition_op_ << " ";
 
-  if(fn->loopVarInitValSet)
-    text << fn->loopVarInitVal;
+  if(for_node->loop_var_init_val_set_)
+    text_for << for_node->loop_var_init_val_;
   else
-    text << fn->loopVarInitVar;
+    text_for << for_node->loop_var_init_var_;
 
-  text << " + (fp->tid + 1)*(";
-  if(fn->conditionValSet)
-    text << fn->conditionVal << " - ";
+  text_for << " + (fp->tid + 1)*(";
+  if(for_node->condition_val_set_)
+    text_for << for_node->condition_val_ << " - ";
   else
-    text << fn->conditionVar << " - ";
+    text_for << for_node->condition_var_ << " - ";
 
-  if(fn->loopVarInitValSet)
-    text << fn->loopVarInitVal;
+  if(for_node->loop_var_init_val_set_)
+    text_for << for_node->loop_var_init_val_;
   else
-    text << fn->loopVarInitVar;
+    text_for << for_node->loop_var_init_var_;
 
-  text << ")/fp->numThread; "; 
+  text_for << ")/fp->numThread; "; 
   
 
-  // ...; i ++)
-  text << fn->loopVar << " " << fn->incrementOp << " ";
-  if(fn->incrementValSet)
-    text << fn->incrementVal << ")\n";
+  /* ...; i ++) */
+  text_for << for_node->loop_var_ << " " << for_node->increment_op_ << " ";
+  if(for_node->increment_val_set_)
+    text_for << for_node->increment_val_ << ")\n";
   else
-    text << fn->incrementVar << ")\n";
+    text_for << for_node->increment_var_ << ")\n";
 
-  return text.str();
+  return text_for.str();
 
 }

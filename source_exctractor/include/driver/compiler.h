@@ -13,10 +13,14 @@
 
 
 //TODO make the class non copiable
+/*
+ * ---- Custom class to instantiate an object of clang::CompilerInstance with the options and the file
+ * 		passed with argv.
+ */
 class ClangCompiler {
 
 private:
-	clang::CompilerInstance compiler;
+	clang::CompilerInstance compiler_;
 
 public:
 	ClangCompiler(int argc, char **argv);

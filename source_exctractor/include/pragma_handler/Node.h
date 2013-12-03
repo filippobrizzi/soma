@@ -26,41 +26,38 @@ struct FunctionInfo {
 
 class Node {
 
-protected:
+private:
 
-	clang::OMPExecutableDirective *pragma;
-
-
+	clang::OMPExecutableDirective *pragma_;
 
 /* Stmt start and end line in the source file */
-	std::string fileName;
-	int startLine, startColumn;
-	int endLine, endColumn;
+	std::string file_name_;
+	int start_line_, start_column_;
+	int end_line_, end_column_;
 
 /*Pragma name with all the parameters */
-	std::string pragmaName;
+	std::string pragma_name_;
 	
 
 /*Line number of the function that contains this pragma */
-	FunctionInfo fI;
+	FunctionInfo funct_info_;
 
 /* Variables to construct the tree */
-	Node *parentNode;
+	Node *parent_node_;
 
 /* Function to exctract all the parameters of the pragma */
 	void setPragmaClauses(clang::SourceManager& sm);
 
 public:
-	bool profiled = false;
-	SourceLocationStruct sL;
+	bool profiled_ = false;
+	SourceLocationStruct src_loc_;
 
-	ForNode *forNode;
+	ForNode *for_node_;
 
-	
-	std::vector<Node *> *childrenVect;
+	std::vector<Node *> *children_vect_;
 
-	typedef std::map<std::string, std::string> varList;
-	std::map<std::string, varList> *optionVect;
+	typedef std::map<std::string, std::string> var_list_;
+	std::map<std::string, varList> *option_vect_;
 
 	Node(clang::OMPExecutableDirective *pragma, clang::FunctionDecl *fd, clang::SourceManager& sm);
 

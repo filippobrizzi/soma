@@ -9,30 +9,32 @@ int main(int argc, char **argv) {
 		llvm::errs() << "Usage: Source_exctractor [<options>] <filename>\n";
      	return 1;
 	}
-
+/*
+ * ---- Create a clang::compiler object and launch the parser saving the pragma stmt. 
+ * 		Rewrite the sourcecode adding profiling call.
+ */
 	Program program(argc, argv);
 
-	std::vector<Root *> *rootVect = CreateTree(program.getPragmaList(), program.getFunctionList(), program.ccompiler.getSourceManager());
-	
-	createXML(rootVect, argv[argc - 1]);
+/*
+ * ---- With the information exctracted by the parser create a linked list tree of objects containing
+ *		all the necessary information of the pragmas.
+ */
+	std::vector<Root *> *root_vect = CreateTree(program.getPragmaList(), program.getFunctionList(), program.ccompiler.getSourceManager());
 
-	for(std::vector<Root *>::iterator itr = rootVect->begin(); itr != rootVect->end(); ++itr) 
+/*
+ * ---- Using the tree above create an xml file containing the pragma info. This file is used to produce the scheduler.
+ */
+	createXML(root_vect, argv[argc - 1]);
+
+	for(std::vector<Root *>::iterator itr = root_vect->begin(); itr != root_vect->end(); ++itr) 
 		(*itr)->visitTree();
 
-	Program program2(argc, argv, rootVect);
+/*
+ * ---- Parse the sourcecode and rewrite it substituting pragmas with function calls. This new file
+ * 		will be used with the scheduler to produce the final output.
+ */
+	Program program2(argc, argv, root_vect);
+	
 	return 0;
 }
 
-
-
-/*for(itr = program.getPragmaList()->begin(); itr != program.getPragmaList()->end(); ++ itr) {
-		std::cout << (*itr)->getStmtClassName() << " - " << (*itr)->getLocStart().printToString(program.ccompiler.getSourceManager())  << std::endl;
-    	clang::Stmt *s = static_cast<clang::CapturedStmt *>((*itr)->getAssociatedStmt())->getCapturedStmt();
-    	
-      	if(s != NULL){
-       		if(strcmp(s->getStmtClassName(), "OMPForDirective") != 0) {
-          		std::cout << s->getStmtClassName() << " - " << s->getLocStart().printToString(program.ccompiler.getSourceManager()) << " to " << s->getLocEnd().printToString(program.ccompiler.getSourceManager()) << std::endl;
-    	  	}
-      	}
-	}
-	*/

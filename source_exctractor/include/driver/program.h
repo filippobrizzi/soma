@@ -14,77 +14,95 @@
 #include <string>
 #include <iostream>
 
+/*
+ * ---- Instantiate a compiler object and start the parser. 
+ */
 class Program {
+/* Contains the list of all the pragmas in the source code */
+std::vector<clang::OMPExecutableDirective *> *pragma_list_;
+/* Contains the list of all the functions defined in the source code (for profiling pourpuse) */
+std::vector<clang::FunctionDecl *> *function_list_;
 
-std::vector<clang::OMPExecutableDirective *> *pragmaList;
-std::vector<clang::FunctionDecl *> *functionList;
-
-
+/* To create the profiling code and the list of pragmas */
 void ParseSourceCode(std::string fileName);
-void ParseSourceCode(std::string fileName, std::vector<Root *> *rootVect);
+/* To create the final source code to be used with the scheduler */
+void ParseSourceCode(std::string fileName, std::vector<Root *> *root_vect);
 
 public:
-	Program(int argc, char **argv) : ccompiler(argc, argv), pragmaList(NULL), functionList(NULL) {
+  /* To create the profiling code and the list of pragmas */
+	Program(int argc, char **argv) : ccompiler_(argc, argv), pragma_list_(NULL), function_list_(NULL) {
 		ParseSourceCode(argv[argc - 1]);
 	}
 
-  Program(int argc,char **argv, std::vector<Root *> *rootVect) : ccompiler(argc, argv), pragmaList(NULL), functionList(NULL) {
-    ParseSourceCode(argv[argc - 1], rootVect);
+  /* To create the final source code to be used with the scheduler */
+  Program(int argc,char **argv, std::vector<Root *> *root_vect) : ccompiler(argc, argv), pragma_list_(NULL), function_list_(NULL) {
+    ParseSourceCode(argv[argc - 1], root_vect);
   }
 	
-	std::vector<clang::OMPExecutableDirective *> *getPragmaList() { return pragmaList; }
-	std::vector<clang::FunctionDecl *> *getFunctionList() { return functionList; }
+	std::vector<clang::OMPExecutableDirective *> *getPragmaList() { return pragma_list_; }
+	std::vector<clang::FunctionDecl *> *getFunctionList() { return function_list_; }
 
-	ClangCompiler ccompiler;
+	ClangCompiler ccompiler_;
 };
 
 
-
+/*
+ * ---- Recursively visit the AST of the source code to exctract the pragmas and rewrite it
+ *      adding profile call.
+ */
 class ProfilingRecursiveASTVisitor: public clang::RecursiveASTVisitor<ProfilingRecursiveASTVisitor> {
 
-  clang::Rewriter &RewriteProfiling;
+  /* Class to rewrite the code */
+  clang::Rewriter &rewrite_profiling_;
   
   const clang::SourceManager& sm;
 
-  bool insertInclude;
-  clang::Stmt *previousStmt;
+  bool include_inserted_;
+  clang::Stmt *previous_stmt_;
 
-  void RewriteProfile(clang::Stmt *s);
-  std::string forCondition(const clang::Stmt *s);
-  unsigned getFunctionLine(clang::SourceLocation sl);
-  //clang::FunctionDecl *EmitFunction(clang::Stmt *s);
+  /* Add profiling call to a pragma stmt */
+  void RewriteProfiling(clang::Stmt *s);
+  /* Given a ForStmt retrieve the value of the condition variable, to know how many cycles will
+     do the for */
+  std::string ForConditionVarValue(const clang::Stmt *s);
+  /* For a given stmt retrive the line of the function where it is defined */
+  unsigned GetFunctionLineForPragma(clang::SourceLocation sl);
 
 public:
-  ProfilingRecursiveASTVisitor(clang::Rewriter &RProfiling, const clang::SourceManager& sm) : 
-          RewriteProfiling(RProfiling), sm(sm), insertInclude(false), previousStmt(NULL) { }
+  ProfilingRecursiveASTVisitor(clang::Rewriter &r_profiling, const clang::SourceManager& sm) : 
+          RewriteProfiling(r_profiling), sm(sm), include_inserted_(false), previous_stmt_(NULL) { }
   
+  /* This function is called for each stmt in the AST */
   bool VisitStmt(clang::Stmt *s);
+  /* This function is called for each function in the AST */
   bool VisitFunctionDecl(clang::FunctionDecl *f);
 
-  std::vector<clang::OMPExecutableDirective *> pragmaList;
-  std::vector<clang::FunctionDecl *> functionList;
+  std::vector<clang::OMPExecutableDirective *> pragma_list_;
+  std::vector<clang::FunctionDecl *> function_list_;
     
 };
 
-
+/*
+ * ---- Is responible to call ProfilingRecurseASTVisitor.
+ */
 class ProfilingASTConsumer : public clang::ASTConsumer { 
 public:
 
-  ProfilingASTConsumer(clang::Rewriter &RProfiling, const clang::SourceManager& sm) : 
-          rv(RProfiling, sm) { }
+  ProfilingASTConsumer(clang::Rewriter &r_profiling, const clang::SourceManager& sm) : 
+          rv(r_profiling, sm) { }
   
+  /* Traverse the AST invoking the RecursiveASTVisitor functions */
   virtual bool HandleTopLevelDecl(clang::DeclGroupRef d) {
     typedef clang::DeclGroupRef::iterator iter;
     for (iter b = d.begin(), e = d.end(); b != e; ++b) {
-      rv.TraverseDecl(*b);
+      recursive_visitor.TraverseDecl(*b);
     } 
     return true; 
   }
 
-  ProfilingRecursiveASTVisitor rv;
-  std::vector<clang::OMPExecutableDirective *> pragmaList;
-  std::vector<clang::FunctionDecl *> functionList;
-
+  ProfilingRecursiveASTVisitor recursive_visitor;
+  std::vector<clang::OMPExecutableDirective *> pragma_list_;
+  std::vector<clang::FunctionDecl *> function_list_;
 };
 
 /*
@@ -92,32 +110,44 @@ public:
  * --------------------------------------------------------------------------------------------------
  */
 
+
+/*
+ * ---- Recursively visit the AST and repleace each pragma with a function call.
+ */
 class TransformRecursiveASTVisitor: public clang::RecursiveASTVisitor<TransformRecursiveASTVisitor> {
 
-  clang::Rewriter &RewritePragma;
+  clang::Rewriter &rewrite_pragma_;
   
   const clang::SourceManager& sm;
 
-  clang::Stmt *previousStmt;
-  bool insertInclude;
+  /* Needed because the parse retrive twice each pragma stmt */
+  clang::Stmt *previous_stmt_;
+  /* Check if the inlude command has been already inserted*/
+  bool include_inserted_;
 
-  std::vector<Root *> *rootVect;
+  std::vector<Root *> *root_vect_;
 
-  void RewriteBarrier(clang::OMPExecutableDirective *omps);
-  void RewriteOMP(clang::Stmt *s);
-  Node *getNodeforPragma(clang::Stmt *s);
-  Node *recursiveNodeforPragma(Node *n, unsigned l);
-  std::string GetParallelFor(Node *n);
+  void RewriteOMPPragma(clang::Stmt *associated_stmt);
+  void RewriteOMPBarrier(clang::OMPExecutableDirective *omp_stmt);
+  std::string RewriteOMPFor(Node *n);
+  
+  /* Given a pragma stmt retrive the Node object that contains all its info */
+  Node *GetNodeObjForPragma(clang::Stmt *s);
+  /* Called by GetNodeObjForPragma is used because the Node objs are saved in a tree */
+  Node *RecursiveGetNodeObjforPragma(Node *n, unsigned stmt_start_line);
+
 
 public:
-  TransformRecursiveASTVisitor(clang::Rewriter &RPragma, std::vector<Root *> *rootVect, const clang::SourceManager& sm) : 
-          RewritePragma(RPragma), rootVect(rootVect), sm(sm), insertInclude(false), previousStmt(NULL) { }
+  TransformRecursiveASTVisitor(clang::Rewriter &r_pragma_, std::vector<Root *> *root_vect, const clang::SourceManager& sm) : 
+          RewritePragma(r_pragma_), root_vect_(root_vect), sm(sm), include_inserted_(false), previous_stmt_(NULL) { }
   
   bool VisitStmt(clang::Stmt *s);
   bool VisitFunctionDecl(clang::FunctionDecl *f);
 };
 
-
+/*
+ * ---- Responsible to invoke TransformRecursiveASTVisitor.
+ */
 class TransformASTConsumer : public clang::ASTConsumer { 
 public:
 
@@ -127,10 +157,10 @@ public:
   virtual bool HandleTopLevelDecl(clang::DeclGroupRef d) {
     typedef clang::DeclGroupRef::iterator iter;
     for (iter b = d.begin(), e = d.end(); b != e; ++b) {
-      rv.TraverseDecl(*b);
+      recursive_visitor.TraverseDecl(*b);
     } 
     return true; 
   }
 
-  TransformRecursiveASTVisitor rv;
+  TransformRecursiveASTVisitor recursive_visitor;
 };
