@@ -3,276 +3,265 @@
 #include "pragma_handler/ForNode.h"
 
 
-ForNode::ForNode(clang::ForStmt *fors) {
-  this->loopVarType = "";
-  this->loopVarInitValSet = false;
+ForNode::ForNode(clang::ForStmt *for_stmt) {
+  loop_var_type_ = "";
+  loop_var_init_val_set_ = false;
 
-  this->loopVarInitVar = "";
+  loop_var_init_var_ = "";
 
-  this->conditionValSet = false;
-  this->conditionVar = "";
+  condition_val_set_ = false;
+  condition_var_ = "";
 
-  this->incrementValSet = false;
-  this->incrementVar = "";
+  increment_val_set_ = false;
+  increment_var_ = "";
 
-  forSetParameters(fors);
+  ExtractForParameters(for_stmt);
 }
 
 
-void ForNode::forSetParameters(clang::ForStmt *fs) {
+void ForNode::ExtractForParameters(clang::ForStmt *for_stmt) {
   
-  this->forInitialization(fs);
-  this->forCondition(fs);
-  this->forIncrement(fs);
+  ExtractForInitialization(for_stmt);
+  ExtractForCondition(for_stmt);
+  ExtractForIncrement(for_stmt);
 
 }
 
 
-void ForNode::forInitialization(clang::ForStmt *fs) {
+void ForNode::ExtractForInitialization(clang::ForStmt *for_stmt) {
 /*
 * Initialization of the loop variable
 */
 
-  // for(int i = ....)
-  if(strcmp(fs->child_begin()->getStmtClassName(), "DeclStmt") == 0) {
-    const clang::DeclStmt *dS = static_cast<const clang::DeclStmt *>(*(fs->child_begin()));
-    const clang::Decl *d = dS->getSingleDecl();
-/*    
- *  Return the name of the variable
- */
-    const clang::NamedDecl *nD = static_cast<const clang::NamedDecl *>(d);            
-    this->loopVar = nD->getNameAsString();
+  /* for(int i = ....) */
+  if(strcmp(for_stmt->child_begin()->getStmtClassName(), "DeclStmt") == 0) {
+    const clang::DeclStmt *decl_stmt = static_cast<const clang::DeclStmt *>(*(for_stmt->child_begin()));
+    const clang::Decl *decl = decl_stmt->getSingleDecl();
     
-/*    
- *  Return the type of the variable
- */   
-    const clang::ValueDecl *vD = static_cast<const clang::ValueDecl *>(nD);
-    this->loopVarType = vD->getType().getAsString();
+    /* Return the name of the variable */
+    const clang::NamedDecl *named_decl = static_cast<const clang::NamedDecl *>(decl);            
+    loop_var_ = named_decl->getNameAsString();
+    
+    /* Return the type of the variable */  
+    const clang::ValueDecl *vale_decl = static_cast<const clang::ValueDecl *>(named_decl);
+    loop_var_type_ = vale_decl->getType().getAsString();
 
-/*
- *  for (... = 0)
- */
-    if(strcmp(dS->child_begin()->getStmtClassName(), "IntegerLiteral") == 0) {      
-      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(*(dS->child_begin())); 
-      this->loopVarInitVal = iL->getValue().getZExtValue();
-      this->loopVarInitValSet = true;
-/*
- *  for (... = a)
- */
-    }else if (strcmp(dS->child_begin()->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(dS->child_begin()->child_begin()));
-      const clang::NamedDecl *nD = dRE->getFoundDecl();
-      this->loopVarInitVar = nD->getNameAsString();
+    /* for (... = 0) */
+    if(strcmp(decl_stmt->child_begin()->getStmtClassName(), "IntegerLiteral") == 0) {      
+      const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(*(decl_stmt->child_begin())); 
+      loop_var_init_val_ = int_literal->getValue().getZExtValue();
+      loop_var_init_val_set_ = true;
+    
+    /* for (... = a) */
+    }else if (strcmp(decl_stmt->child_begin()->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(decl_stmt->child_begin()->child_begin()));
+      const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+      loop_var_init_var_ = named_decl->getNameAsString();
     }
-  }
-/*
- *  for ( i = ...)
- */
-  else if(strcmp(fs->child_begin()->getStmtClassName(), "BinaryOperator") == 0) {
-    const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(*(fs->child_begin())); 
-    const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(bO->child_begin()));
+
+  /* for ( i = ...) */
+  }else if(strcmp(for_stmt->child_begin()->getStmtClassName(), "BinaryOperator") == 0) {
+    const clang::BinaryOperator *binary_op = static_cast<const clang::BinaryOperator *>(*(for_stmt->child_begin())); 
+    const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(binary_op->child_begin()));
     
     //Return the name of the variable
-    const clang::NamedDecl *nD = dRE->getFoundDecl();
-    this->loopVar = nD->getNameAsString();
+    const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+    loop_var_ = named_decl->getNameAsString();
     
-/*
- *  for( ... = 0)
- */
-    clang::ConstStmtIterator stI = bO->child_begin();
-    stI ++;
-    if(strcmp(stI->getStmtClassName(), "IntegerLiteral") == 0) {
-      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(*stI);
-      this->loopVarInitVal = iL->getValue().getZExtValue();
-      this->loopVarInitValSet = true;      
+    /* for( ... = 0) */
+    clang::ConstStmtIterator stmt_itr = binary_op->child_begin();
+    stmt_itr ++;
+    if(strcmp(stmt_itr->getStmtClassName(), "IntegerLiteral") == 0) {
+      const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(*stmt_itr);
+      loop_var_init_val_ = int_literal->getValue().getZExtValue();      
+      loop_var_init_val_set_ = true;      
 
-/*
- *  for ( ... = a)
- */
-    } else if (strcmp(stI->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(stI->child_begin()));
-      const clang::NamedDecl *nD = dRE->getFoundDecl();
-      this->loopVarInitVar = nD->getNameAsString();
+    /* for ( ... = a) */
+    } else if (strcmp(stmt_itr->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(stmt_itr->child_begin()));
+      const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+      loop_var_init_var_ = named_decl->getNameAsString();
     }
   }
 }
 
 
-void ForNode::forCondition(clang::ForStmt *fs) {
+void ForNode::ExtractForCondition(clang::ForStmt *for_stmt) {
 
-  const clang::Expr *cE = fs->getCond();
-  const clang::BinaryOperator *bO = static_cast<const clang::BinaryOperator *>(cE);
+  const clang::Expr *condition_expr = for_stmt->getCond();
+  const clang::BinaryOperator *binary_op = static_cast<const clang::BinaryOperator *>(condition_expr);
   
-/*
- *  Conditional funcion
- */
-  this->conditionOp = bO->getOpcodeStr();
+  /* Conditional funcion */
+  condition_op_ = binary_op->getOpcodeStr();
+
+  /* Conditional value */
+  const clang::Expr *right_expr = binary_op->getRHS();
+
+  if(strcmp(right_expr->getStmtClassName(), "IntegerLiteral") == 0) {
+    const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(right_expr);
+    condition_val_ = int_literal->getValue().getZExtValue();
+    condition_val_set_ = true;
+
+  }else if(strcmp(right_expr->getStmtClassName(), "ImplicitCastExpr") == 0) {
+    const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(right_expr->child_begin()));
+    const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
 
 /*
- *  Conditional value
- */
-  const clang::Expr *rEx = bO->getRHS();
-
-  if(strcmp(rEx->getStmtClassName(), "IntegerLiteral") == 0) {
-    const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(rEx);
-    this->conditionVal = iL->getValue().getZExtValue();
-    this->conditionValSet = true;
-
-  } else if(strcmp(rEx->getStmtClassName(), "ImplicitCastExpr") == 0) {
-    const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(rEx->child_begin()));
-    const clang::NamedDecl *nD = dRE->getFoundDecl();
-/*
- * ---- PROBLEM: If the variable is not definedi inside the block (which block?)
+ * ---- PROBLEM: If the variable is not defined inside the block (which block?)
  * ----          the NameDecl * is != NULL, but when you try to exctract the name -> segmentation fault!!
  */
-    this->conditionVar = nD->getNameAsString();
+    condition_var_ = named_decl->getNameAsString();
   
- 
   }
 }
 
 
 
 
-void ForNode::forIncrement(clang::ForStmt *fs) {
+void ForNode::ExtractForIncrement(clang::ForStmt *for_stmt) {
   
-  const clang::Expr *cI = fs->getInc();
+  const clang::Expr *increment_expr = for_stmt->getInc();
 
-  if(strcmp(cI->getStmtClassName(), "UnaryOperator") == 0) {
-    const clang::UnaryOperator *uO =  static_cast<const clang::UnaryOperator *>(cI);
-    this->incrementOp = uO->getOpcodeStr(uO->getOpcode());
+  if(strcmp(increment_expr->getStmtClassName(), "UnaryOperator") == 0) {
+    const clang::UnaryOperator *unary_op =  static_cast<const clang::UnaryOperator *>(increment_expr);
+    increment_op_ = unary_op->getOpcodeStr(unary_op->getOpcode());
 
-  }else if(strcmp(cI->getStmtClassName(), "CompoundAssignOperator") == 0) {
-    const clang::CompoundAssignOperator *cAO = static_cast<const clang::CompoundAssignOperator *>(cI);
-    this->incrementOp = cAO->getOpcodeStr();
-    const clang::Expr *rEx = cAO->getRHS();
+  }else if(strcmp(increment_expr->getStmtClassName(), "CompoundAssignOperator") == 0) {
+    const clang::CompoundAssignOperator *compound_op = static_cast<const clang::CompoundAssignOperator *>(increment_expr);
+    increment_op_ = compound_op->getOpcodeStr();
+    const clang::Expr *right_expr = compound_op->getRHS();
 
-    if(strcmp(rEx->getStmtClassName(), "IntegerLiteral") == 0) {
-      const clang::IntegerLiteral *iL = static_cast<const clang::IntegerLiteral *>(rEx);
-      this->incrementVal = iL->getValue().getZExtValue();
-      this->incrementValSet = true;
+    if(strcmp(right_expr->getStmtClassName(), "IntegerLiteral") == 0) {
+      const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(right_expr);
+      increment_val_set_ = int_literal->getValue().getZExtValue();
+      increment_val_set_ = true;
 
-    }else if(strcmp(rEx->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *dRE = static_cast<const clang::DeclRefExpr *>(*(rEx->child_begin()));
-      const clang::NamedDecl *nD = dRE->getFoundDecl();
-      this->incrementVar = nD->getNameAsString();  
+    }else if(strcmp(right_expr->getStmtClassName(), "ImplicitCastExpr") == 0) {
+      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(right_expr->child_begin()));
+      const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+      increment_var_ = named_decl->getNameAsString();  
     }
   }
 
 }
 
 
-void ForNode::printFor() {
-
-//Initialization
-  std::cout << "for( " << this->loopVarType << " " << this->loopVar << " = ";
-  if(this->loopVarInitValSet == true)
-     std::cout << this->loopVarInitVal << "; ";
-  else
-    std::cout << this->loopVarInitVar << "; ";
-
-//Condition
-  std::cout << this->loopVar << " " << this->conditionOp << " ";
-  if(this->conditionValSet == true)
-    std::cout << this->conditionVal << "; ";
-  else
-    std::cout << this->conditionVar << "; ";
-
-//Increment
-  std::cout << this->loopVar << " " << this->incrementOp;
-  if(this->incrementValSet == true)
-    std::cout << " " << this->incrementVal << ";)" << std::endl;
-  else
-    std::cout << this->incrementVar << ";)" << std::endl;
-
-}
 
 
-
-void ForNode::createXMLPragmaFor(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *forElement) {
+void ForNode::CreateXMLPragmaFor(tinyxml2::XMLDocument *xml_doc, tinyxml2::XMLElement *for_element) {
 
 /*
  * ----- DECLARATION -----
  */ 
-  tinyxml2::XMLElement *declarationElement = doc->NewElement("Declaration");
-  forElement->InsertEndChild(declarationElement);
+  tinyxml2::XMLElement *declaration_element = xml_doc->NewElement("Declaration");
+  for_element->InsertEndChild(declaration_element);
 
-  tinyxml2::XMLElement *typeElement = doc->NewElement("Type");
-  declarationElement->InsertEndChild(typeElement);
-  tinyxml2::XMLText* nameTypeText = doc->NewText(this->loopVarType.c_str());
-  typeElement->InsertEndChild(nameTypeText);
+  tinyxml2::XMLElement *type_element = xml_doc->NewElement("Type");
+  declaration_element->InsertEndChild(type_element);
+  tinyxml2::XMLText* type_text = xml_doc->NewText(loop_var_type_.c_str());
+  type_element->InsertEndChild(type_text);
 
-  tinyxml2::XMLElement *loopVarElement = doc->NewElement("LoopVariable");
-  declarationElement->InsertEndChild(loopVarElement);
-  tinyxml2::XMLText* nameLoopVarText = doc->NewText(this->loopVar.c_str());
-  loopVarElement->InsertEndChild(nameLoopVarText);
+  tinyxml2::XMLElement *loop_var_element = xml_doc->NewElement("LoopVariable");
+  declaration_element->InsertEndChild(loop_var_element);
+  tinyxml2::XMLText* loop_var_text = xml_doc->NewText(loop_var_.c_str());
+  loop_var_element->InsertEndChild(loop_var_text);
 
-  if(this->loopVarInitValSet == true) {
-    tinyxml2::XMLElement *initValElement = doc->NewElement("InitValue");
-    declarationElement->InsertEndChild(initValElement);
-    char loopVarInitVal[100];
-    sprintf(loopVarInitVal, "%d", this->loopVarInitVal);
-    tinyxml2::XMLText* nameInitValText = doc->NewText(loopVarInitVal);
-    initValElement->InsertEndChild(nameInitValText);
+  if(loop_var_init_val_set_ == true) {
+    tinyxml2::XMLElement *init_val_element = xml_doc->NewElement("InitValue");
+    declaration_element->InsertEndChild(init_val_element);
+    char loop_var_init_val[100];
+    sprintf(loop_var_init_val, "%d", loop_var_init_val_);
+    tinyxml2::XMLText* init_val_text = xml_doc->NewText(loop_var_init_val);
+    init_val_element->InsertEndChild(init_val_text);
   }else {
-    tinyxml2::XMLElement *initVarElement = doc->NewElement("InitVariable");
-    declarationElement->InsertEndChild(initVarElement);
-    tinyxml2::XMLText* nameInitVarText = doc->NewText(this->loopVarInitVar.c_str());
-    initVarElement->InsertEndChild(nameInitVarText);
+    tinyxml2::XMLElement *init_var_element = xml_doc->NewElement("InitVariable");
+    declaration_element->InsertEndChild(init_var_element);
+    tinyxml2::XMLText* init_var_text = xml_doc->NewText(loop_var_init_var_.c_str());
+    init_var_element->InsertEndChild(init_var_text);
   }
 
 /*
  * ---- CONDITION -----
  */ 
-  tinyxml2::XMLElement *conditionElement = doc->NewElement("Condition");
-  forElement->InsertAfterChild(declarationElement, conditionElement); 
+  tinyxml2::XMLElement *condition_element = xml_doc->NewElement("Condition");
+  for_element->InsertAfterChild(declaration_element, condition_element); 
   
-  tinyxml2::XMLElement *conditionOpElement = doc->NewElement("Op");
-  conditionElement->InsertEndChild(conditionOpElement);
-  tinyxml2::XMLText* conditionOpText = doc->NewText(this->conditionOp.c_str());
-  conditionOpElement->InsertEndChild(conditionOpText);
+  tinyxml2::XMLElement *condition_op_element = xml_doc->NewElement("Op");
+  condition_element->InsertEndChild(condition_op_element);
+  tinyxml2::XMLText* condition_op_text = xml_doc->NewText(condition_op_.c_str());
+  condition_op_element->InsertEndChild(condition_op_text);
 
-  if(this->conditionValSet == true) {
-    tinyxml2::XMLElement *conditionValElement = doc->NewElement("ConditionValue");
-    conditionElement->InsertEndChild(conditionValElement);
-    char conditionVal[100];
-    sprintf(conditionVal, "%d", this->conditionVal);
-    tinyxml2::XMLText* conditionValText = doc->NewText(conditionVal);
-    conditionValElement->InsertEndChild(conditionValText);
+  if(condition_val_set_ == true) {
+    tinyxml2::XMLElement *condition_val_element = xml_doc->NewElement("ConditionValue");
+    condition_element->InsertEndChild(condition_val_element);
+    char condition_val[100];
+    sprintf(condition_val, "%d", condition_val_);
+    tinyxml2::XMLText* condition_val_text = xml_doc->NewText(condition_val);
+    condition_val_element->InsertEndChild(condition_val_text);
+  
   }else {
-    tinyxml2::XMLElement *conditionVarElement = doc->NewElement("ConditionVariable");
-    conditionElement->InsertEndChild(conditionVarElement);
-    tinyxml2::XMLText* conditionVarText = doc->NewText(this->conditionVar.c_str());
-    conditionVarElement->InsertEndChild(conditionVarText);
+    tinyxml2::XMLElement *condition_var_element = xml_doc->NewElement("ConditionVariable");
+    condition_element->InsertEndChild(condition_var_element);
+    tinyxml2::XMLText* condition_var_text = xml_doc->NewText(condition_var_.c_str());
+    condition_var_element->InsertEndChild(condition_var_text);
   }
 
 /*
  * ---- INCREMENT ----
  */
-  tinyxml2::XMLElement *incrementElement = doc->NewElement("Increment");
-  forElement->InsertAfterChild(conditionElement, incrementElement); 
+  tinyxml2::XMLElement *increment_element = xml_doc->NewElement("Increment");
+  for_element->InsertAfterChild(condition_element, increment_element); 
 
-  tinyxml2::XMLElement *incrementOpElement = doc->NewElement("Op");
-  incrementElement->InsertEndChild(incrementOpElement);
-  tinyxml2::XMLText* incrementOpText = doc->NewText(this->incrementOp.c_str());
-  incrementOpElement->InsertEndChild(incrementOpText);
+  tinyxml2::XMLElement *increment_op_element = xml_doc->NewElement("Op");
+  increment_element->InsertEndChild(increment_op_element);
+  tinyxml2::XMLText* increment_op_text = xml_doc->NewText(increment_op_.c_str());
+  increment_op_element->InsertEndChild(increment_op_text);
 
-  if(this->incrementValSet == true) {
-    tinyxml2::XMLElement *incrementValElement = doc->NewElement("IncrementValue");
-    incrementElement->InsertEndChild(incrementValElement);
-    char incrementVal[100];
-    sprintf(incrementVal, "%d", this->incrementVal);
-    tinyxml2::XMLText* incrementValText = doc->NewText(incrementVal);
-    incrementValElement->InsertEndChild(incrementValText);
+  if(increment_val_set_ == true) {
+    tinyxml2::XMLElement *increment_val_element = xml_doc->NewElement("IncrementValue");
+    increment_element->InsertEndChild(increment_val_element);
+    char increment_val[100];
+    sprintf(increment_val, "%d", increment_val_);
+    tinyxml2::XMLText* increment_val_text = xml_doc->NewText(increment_val);
+    increment_val_element->InsertEndChild(increment_val_text);
 
-  }else if(this->incrementVar.compare("") != 0) {
-    tinyxml2::XMLElement *incrementVarElement = doc->NewElement("IncrementVariable");
-    incrementElement->InsertEndChild(incrementVarElement);
-    tinyxml2::XMLText* incrementVarText = doc->NewText(this->incrementVar.c_str());
-    incrementVarElement->InsertEndChild(incrementVarText);
+  }else if(increment_var_.compare("") != 0) {
+    tinyxml2::XMLElement *increment_var_element = xml_doc->NewElement("IncrementVariable");
+    increment_element->InsertEndChild(increment_var_element);
+    tinyxml2::XMLText* increment_var_text = xml_doc->NewText(increment_var_.c_str());
+    increment_var_element->InsertEndChild(increment_var_text);
   }
 
 
 }
 
+
+
+
+
+
+void ForNode::printFor() {
+
+//Initialization
+  std::cout << "for( " << this->loop_var_type_ << " " << this->loop_var_ << " = ";
+  if(this->loop_var_init_val_set_ == true)
+     std::cout << this->loop_var_init_val_ << "; ";
+  else
+    std::cout << this->loop_var_init_var_ << "; ";
+
+//Condition
+  std::cout << this->loop_var_ << " " << this->condition_op_ << " ";
+  if(this->condition_val_set_ == true)
+    std::cout << this->condition_val_ << "; ";
+  else
+    std::cout << this->condition_var_ << "; ";
+
+//Increment
+  std::cout << this->loop_var_ << " " << this->increment_op_;
+  if(this->increment_val_set_ == true)
+    std::cout << " " << this->increment_val_ << ";)" << std::endl;
+  else
+    std::cout << this->increment_var_ << ";)" << std::endl;
+
+}
 

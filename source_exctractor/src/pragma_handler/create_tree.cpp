@@ -3,50 +3,53 @@
 #include "pragma_handler/create_tree.h"
 
 
-std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pragmaList,
-								std::vector<clang::FunctionDecl *> *functionList, clang::SourceManager &sm) {
+std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pragma_list,
+								std::vector<clang::FunctionDecl *> *function_list, clang::SourceManager &sm) {
 
-	clang::FunctionDecl *functionDecl = NULL;
-	std::vector<Root *> *rootVect = new std::vector<Root *>();
+	clang::FunctionDecl *function_decl = NULL;
+  clang::FunctionDecl *function_decl_tmp = NULL;
+	std::vector<Root *> *root_vect = new std::vector<Root *>();
 	
-  std::vector<clang::OMPExecutableDirective *>::iterator itr;
+  std::vector<clang::OMPExecutableDirective *>::iterator omp_itr;
 
-	for(itr = pragmaList->begin(); itr != pragmaList->end(); ++ itr) {    
+	for(omp_itr = pragma_list->begin(); omp_itr != pragma_list->end(); ++ omp_itr) {    
 
-    clang::FunctionDecl *fd = getFunctionForPragma(*itr, functionList, sm);
-    Node * n = new Node(*itr, fd, sm);
+    function_decl_tmp = GetFunctionForPragma(*omp_itr, function_list, sm);
+    Node * n = new Node(*omp_itr, function_decl_tmp, sm);
 
-    if((*itr)->getAssociatedStmt())
-      if(strcmp((*itr)->getStmtClassName(), "OMPParallelDirective") == 0 && utils::Line((*itr)->getAssociatedStmt()->getLocStart(), sm) == utils::Line((*itr)->getAssociatedStmt()->getLocEnd(), sm))
-        itr++;
+    if((*omp_itr)->getAssociatedStmt())
+      if(strcmp((*omp_itr)->getStmtClassName(), "OMPParallelDirective") == 0 && utils::Line((*omp_itr)->getAssociatedStmt()->getLocStart(), sm) == utils::Line((*omp_itr)->getAssociatedStmt()->getLocEnd(), sm))
+        omp_itr++;
     
-    if(fd != functionDecl) {
-      functionDecl = fd;
+    if(function_decl_tmp != function_decl) {
+      function_decl = function_decl_tmp;
       Root *root = new Root(n, n->getParentFunctionInfo());
       n->setParentNode(NULL);
       root->setLastNode(n);
-      rootVect->insert(rootVect->end(), root);
+      root_vect->push_back(root);
 
     }else {
-      buildTree(rootVect->back(), n);
-      rootVect->back()->setLastNode(n);
+      BuildTree(root_vect->back(), n);
+      root_vect->back()->setLastNode(n);
     }
   }
-  return rootVect;
+  return root_vect;
 }
 
 
-clang::FunctionDecl *getFunctionForPragma(clang::OMPExecutableDirective *pragma, 
-										  std::vector<clang::FunctionDecl *> *functionList, 
+clang::FunctionDecl *GetFunctionForPragma(clang::OMPExecutableDirective *pragma_stmt, 
+										  std::vector<clang::FunctionDecl *> *function_list, 
 										  clang::SourceManager &sm) {
-	unsigned startFuncLine, endFuncLine;
-	unsigned pragmaLine = utils::Line(pragma->getLocStart(), sm);
-	std::vector<clang::FunctionDecl *>::iterator fitr;
-	for(fitr = functionList->begin(); fitr != functionList->end(); ++ fitr) {
-		startFuncLine = utils::Line((*fitr)->getSourceRange().getBegin(), sm);
-		endFuncLine = utils::Line((*fitr)->getSourceRange().getEnd(), sm);
-		if(pragmaLine < endFuncLine && pragmaLine > startFuncLine)
-			return (*fitr);
+	
+  unsigned funct_start_line, funct_end_line;
+	unsigned pragma_start_line = utils::Line(pragma_stmt->getLocStart(), sm);
+	std::vector<clang::FunctionDecl *>::iterator funct_itr;
+
+	for(funct_itr = function_list->begin(); funct_itr != function_list->end(); ++ funct_itr) {
+		funct_start_line = utils::Line((*funct_itr)->getSourceRange().getBegin(), sm);
+		funct_end_line = utils::Line((*funct_itr)->getSourceRange().getEnd(), sm);
+		if(pragma_start_line < funct_end_line && pragma_start_line > funct_start_line)
+			return (*funct_itr);
 	}
 	return NULL;
 }
@@ -58,24 +61,24 @@ clang::FunctionDecl *getFunctionForPragma(clang::OMPExecutableDirective *pragma,
  *          of the father ..... of the previous node. (This is due to the fact that the list of pragmas is ordered based
             on starting line of the associated stmt).
  */ 
-void buildTree(Root *root, Node *n) {
+void BuildTree(Root *root, Node *n) {
 
-  Node *lastNode = root->getLastNode();
+  Node *last_node = root->getLastNode();
   bool annidation;
 
-  while(lastNode != NULL) {
-    annidation = checkAnnidation(lastNode, n);
+  while(last_node != NULL) {
+    annidation = CheckAnnidation(last_node, n);
 
     if(annidation == true) {
-      lastNode->addChildNode(n);
-      n->setParentNode(lastNode);
+      last_node->AddChildNode(n);
+      n->setParentNode(last_node);
       return;
 
     }else 
-      lastNode = lastNode->getParentNode();
+      last_node = last_node->getParentNode();
   }
 
-  root->addChildNode(n);
+  root->AddChildNode(n);
   n->setParentNode(NULL);
 }
 
@@ -83,7 +86,7 @@ void buildTree(Root *root, Node *n) {
  * ---- Check if n is annidated inside parent: to be annidated it is enough that n->endLine < parent->endLine 
  * (for sure n->startLine < parent->startLine because pragmas are ordered based on their starting line)
  */ 
-bool checkAnnidation(Node *parent, Node *n) {
+bool CheckAnnidation(Node *parent, Node *n) {
 
   if(n->getEndLine() < parent->getEndLine())  
     return true;

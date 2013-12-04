@@ -35,7 +35,7 @@ public:
 	}
 
   /* To create the final source code to be used with the scheduler */
-  Program(int argc,char **argv, std::vector<Root *> *root_vect) : ccompiler(argc, argv), pragma_list_(NULL), function_list_(NULL) {
+  Program(int argc,char **argv, std::vector<Root *> *root_vect) : ccompiler_(argc, argv), pragma_list_(NULL), function_list_(NULL) {
     ParseSourceCode(argv[argc - 1], root_vect);
   }
 	
@@ -70,7 +70,7 @@ class ProfilingRecursiveASTVisitor: public clang::RecursiveASTVisitor<ProfilingR
 
 public:
   ProfilingRecursiveASTVisitor(clang::Rewriter &r_profiling, const clang::SourceManager& sm) : 
-          RewriteProfiling(r_profiling), sm(sm), include_inserted_(false), previous_stmt_(NULL) { }
+          rewrite_profiling_(r_profiling), sm(sm), include_inserted_(false), previous_stmt_(NULL) { }
   
   /* This function is called for each stmt in the AST */
   bool VisitStmt(clang::Stmt *s);
@@ -89,18 +89,18 @@ class ProfilingASTConsumer : public clang::ASTConsumer {
 public:
 
   ProfilingASTConsumer(clang::Rewriter &r_profiling, const clang::SourceManager& sm) : 
-          rv(r_profiling, sm) { }
+          recursive_visitor_(r_profiling, sm) { }
   
   /* Traverse the AST invoking the RecursiveASTVisitor functions */
   virtual bool HandleTopLevelDecl(clang::DeclGroupRef d) {
     typedef clang::DeclGroupRef::iterator iter;
     for (iter b = d.begin(), e = d.end(); b != e; ++b) {
-      recursive_visitor.TraverseDecl(*b);
+      recursive_visitor_.TraverseDecl(*b);
     } 
     return true; 
   }
 
-  ProfilingRecursiveASTVisitor recursive_visitor;
+  ProfilingRecursiveASTVisitor recursive_visitor_;
   std::vector<clang::OMPExecutableDirective *> pragma_list_;
   std::vector<clang::FunctionDecl *> function_list_;
 };
@@ -139,7 +139,7 @@ class TransformRecursiveASTVisitor: public clang::RecursiveASTVisitor<TransformR
 
 public:
   TransformRecursiveASTVisitor(clang::Rewriter &r_pragma_, std::vector<Root *> *root_vect, const clang::SourceManager& sm) : 
-          RewritePragma(r_pragma_), root_vect_(root_vect), sm(sm), include_inserted_(false), previous_stmt_(NULL) { }
+          rewrite_pragma_(r_pragma_), root_vect_(root_vect), sm(sm), include_inserted_(false), previous_stmt_(NULL) { }
   
   bool VisitStmt(clang::Stmt *s);
   bool VisitFunctionDecl(clang::FunctionDecl *f);
@@ -152,15 +152,15 @@ class TransformASTConsumer : public clang::ASTConsumer {
 public:
 
   TransformASTConsumer(clang::Rewriter &RPragma, std::vector<Root *> *rootVect, const clang::SourceManager& sm) : 
-          rv(RPragma, rootVect, sm) { }
+          recursive_visitor_(RPragma, rootVect, sm) { }
   
   virtual bool HandleTopLevelDecl(clang::DeclGroupRef d) {
     typedef clang::DeclGroupRef::iterator iter;
     for (iter b = d.begin(), e = d.end(); b != e; ++b) {
-      recursive_visitor.TraverseDecl(*b);
+      recursive_visitor_.TraverseDecl(*b);
     } 
     return true; 
   }
 
-  TransformRecursiveASTVisitor recursive_visitor;
+  TransformRecursiveASTVisitor recursive_visitor_;
 };

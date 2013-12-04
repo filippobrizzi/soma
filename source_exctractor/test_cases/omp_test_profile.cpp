@@ -6,7 +6,7 @@ public:
   float* y(int i, int *c);
 };
 
-#include "/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h"
+#include "/home/pippo/Documents/Project/soma/source_exctractor/src/profile_tracker/ProfileTracker.h"
 float* X::y (int i, int *c) {
 if( ProfileTracker x = ProfileTrackParams(9, 0)) {
 	int a = i;

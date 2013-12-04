@@ -26,12 +26,12 @@ public:
 	ClangCompiler(int argc, char **argv);
 	
 	//clang::CompilerInstance getCompilerInstance() { return compiler; }
-	clang::SourceManager &getSourceManager() { return compiler.getSourceManager(); }
-	clang::DiagnosticConsumer getDiagnosticClient() { return compiler.getDiagnosticClient(); }
-	clang::LangOptions getLangOpts() { return compiler.getLangOpts(); }
-	clang::Preprocessor &getPreprocessor() { return compiler.getPreprocessor(); }
-	clang::ASTContext &getASTContext() { return compiler.getASTContext(); }
-	clang::FileManager &getFileManager() { return compiler.getFileManager(); }
+	clang::SourceManager &getSourceManager() { return compiler_.getSourceManager(); }
+	clang::DiagnosticConsumer getDiagnosticClient() { return compiler_.getDiagnosticClient(); }
+	clang::LangOptions getLangOpts() { return compiler_.getLangOpts(); }
+	clang::Preprocessor &getPreprocessor() { return compiler_.getPreprocessor(); }
+	clang::ASTContext &getASTContext() { return compiler_.getASTContext(); }
+	clang::FileManager &getFileManager() { return compiler_.getFileManager(); }
 
 	//ProfilingASTConsumer astConsumer2;
 };

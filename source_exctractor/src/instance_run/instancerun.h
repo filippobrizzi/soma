@@ -13,50 +13,52 @@
 int chartoint(const char *cc);
 int chartoint(char *cc);
 
-//class InstanceRun;
 
 class ForParameter {
 public:
-	int tid;
-  	int numThread;
-  	ForParameter(int tid, int numThread) : tid(tid), numThread(numThread) {}
+	int thread_id_;
+  	int num_threads_;
+  	ForParameter(int thread_id, int num_threads) : thread_id_(thread_id), num_threads_(num_threads) {}
 };
 
 class NestedBase { 
 public: 
 
-	NestedBase(int pragmaID) : pragmaID(pragmaID) {}
+	NestedBase(int pragma_id) : pragma_id_(pragma_id) {}
 
-  	//ForParameter *fp;  	
-  	int pragmaID;
-  	int ActivationTime;
+  	int pragma_id_;
+  	int activation_time_;
   	
-  	virtual void callme(ForParameter *fp) = 0;
+  	virtual void callme(ForParameter *for_param) = 0;
   	
-  	void operator()(ForParameter *fp);
+  	void operator()(ForParameter *for_param);
 };
 
 class InstanceRun {
 	
 	struct ScheduleOptions {
-		int pid;
-		int ActivationTime;
-		int ForSplit;
-		//std::vector<int> threads;
-		std::vector<int> barriers;
+		int pragma_id_;
+		int activation_time_;
+		/* In case of a parallel for, indicates in how many threads to split the for */
+		int for_split_;
+
+		/* List of pragma_id_ to wait before completing the task */
+		std::vector<int> barriers_;
 	};
 
-	InstanceRun(std::string filename);
+	InstanceRun(std::string file_name);
 
-	std::chrono::time_point<std::chrono::system_clock> start;
+	/* Start time of the whole program. It is used to know when to activate task */
+	std::chrono::time_point<std::chrono::system_clock> program_start_time_;
 public:
-	
-	std::map<int, std::thread *> runningThreads;
-	std::map<int, ScheduleOptions> schedopt;
+	/* List of the pragma that are currently running. When a pragma completes it is deleted from the map */
+	std::map<int, std::thread *> running_threads_;
+	/* Contains the schedule options for each pragma in the program */
+	std::map<int, ScheduleOptions> sched_opt_;
 
-	static InstanceRun* getInstance(std::string filename);
+	static InstanceRun* getInstance(std::string file_name);
 
-	void call(NestedBase & nb);
-	std::chrono::time_point<std::chrono::system_clock> getTimeStart() { return start; };
+	void call(NestedBase & nested_base);
+	std::chrono::time_point<std::chrono::system_clock> getTimeStart() { return program_start_time_; };
 
 };

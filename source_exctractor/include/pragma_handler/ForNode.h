@@ -21,41 +21,37 @@
 class ForNode {
 
 public:
-//Loop variable
-	std::string loopVar;
-	std::string loopVarType;
+	/* Loop variable */
+	std::string loop_var_;
+	std::string loop_var_type_;
 
-//Loop variable initial value: (number or variable)
-	int loopVarInitVal;
-	bool loopVarInitValSet;
-	std::string loopVarInitVar;
+	/* Loop variable initial value: (number or variable) */
+	int loop_var_init_val_;
+	bool loop_var_init_val_set_;
+	std::string loop_var_init_var_;
 
-//Loop condition
-	std::string conditionOp;
-	int conditionVal;
-	bool conditionValSet;
-	std::string conditionVar;
+	/* Loop condition */
+	std::string condition_op_;
+	int condition_val_;
+	bool condition_val_set_;
+	std::string condition_var_;
 
-//Loop increment
-	std::string incrementOp;
-	int incrementVal;
-	bool incrementValSet;
-	std::string incrementVar;
+	/* Loop increment */
+	std::string increment_op_;
+	int increment_val_;
+	bool increment_val_set_;
+	std::string increment_var_;
 
-	void forSetParameters(clang::ForStmt *fs);
+	void ExtractForParameters(clang::ForStmt *for_stmt);
 
-	void forInitialization(clang::ForStmt *fs);
-	void forCondition(clang::ForStmt *fs);
-	void forIncrement(clang::ForStmt *fs);
+	void ExtractForInitialization(clang::ForStmt *for_stmt);
+	void ExtractForCondition(clang::ForStmt *for_stmt);
+	void ExtractForIncrement(clang::ForStmt *for_stmt);
 
 
-	ForNode(clang::ForStmt *fors);
-	void createXMLPragmaFor(tinyxml2::XMLDocument *doc, tinyxml2::XMLElement *forElement);
+	ForNode(clang::ForStmt *for_stmt);
+	void CreateXMLPragmaFor(tinyxml2::XMLDocument *xml_doc, tinyxml2::XMLElement *for_element);
 
 	void printFor();
-
-//	~ForNode();
-
-	
 
 };

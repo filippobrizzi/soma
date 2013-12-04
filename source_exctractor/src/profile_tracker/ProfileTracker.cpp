@@ -1,20 +1,20 @@
-#include "/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h"
+#include "ProfileTracker.h"
 
 
 /*
  * ---- PROFILE TRACKER LOG ----
  */
 ProfileTrackerLog::ProfileTrackerLog () {
-	top = NULL;
-	log_file.open(logFile);
-	log_file << "<LogFile>" << std::endl;
-	writeArchitecturesSpec();
+	current_pragma_executing_ = NULL;
+	log_file_.open(log_file);
+	log_file_ << "<LogFile>" << std::endl;
+	WriteArchitecturesSpec();
 }
 
-void ProfileTrackerLog::writeArchitecturesSpec() {
-	log_file << "	<Hardware ";
-	log_file << "NumberofCores=\"" << std::thread::hardware_concurrency() << "\" ";
-  	log_file << "MemorySize=\"" << getTotalSystemMemory() << "\"/>" << std::endl;
+void ProfileTrackerLog::WriteArchitecturesSpec() {
+	log_file_ << "	<Hardware ";
+	log_file_ << "NumberofCores=\"" << std::thread::hardware_concurrency() << "\" ";
+  	log_file_ << "MemorySize=\"" << getTotalSystemMemory() << "\"/>" << std::endl;
 }	
 
 size_t ProfileTrackerLog::getTotalSystemMemory() {
@@ -24,19 +24,18 @@ size_t ProfileTrackerLog::getTotalSystemMemory() {
 }
 
 ProfileTrackerLog* ProfileTrackerLog::getInstance() {
-
     static ProfileTrackerLog log;
     return &log;
 }
 
 ProfileTrackerLog::~ProfileTrackerLog() {
-	log_file << "</LogFile>" << std::endl;
-	log_file.close();
+	log_file_ << "</LogFile>" << std::endl;
+	log_file_.close();
 }
 
-ProfileTracker *ProfileTrackerLog::replaceTop(ProfileTracker *top) {
-	ProfileTracker *tmp = this->top;
-	this->top = top;
+ProfileTracker *ProfileTrackerLog::ReplaceCurrentPragma(ProfileTracker *current_pragma_executing) {
+	ProfileTracker *tmp = current_pragma_executing_;
+	current_pragma_executing_ = current_pragma_executing;
 	return tmp;
 }
 
@@ -45,64 +44,63 @@ ProfileTracker *ProfileTrackerLog::replaceTop(ProfileTracker *top) {
  * ---- PROFILE TRACKER ----
  */
 ProfileTracker::ProfileTracker(const ProfileTrackParams & p) {
-	last = ProfileTrackerLog::getInstance()->replaceTop(this);
+	previous_pragma_executed_ = ProfileTrackerLog::getInstance()->ReplaceCurrentPragma(this);
 	
-	childrenElapsed = 0;	
+	children_elapsed_time_ = 0;	
 
-	_pragmaLine = p.pragmaLine;
-	_functID = p.functID;
-	nset = p.nset;
+	pragma_line_ = p.pragma_line_;
+	funct_id_ = p.funct_id_;
+	num_for_iteration_set_ = p.num_for_iteration_;
 
-	if(nset)
-		n = p.n;
+	if(num_for_iteration_set_)
+		num_for_iteration_ = p.num_for_iteration_;
 
-	time(&startTime);
+	time(&start_time_);
 }
 
 ProfileTracker::~ProfileTracker() {
-	time(&endTime);
-	elapsedTime = difftime(endTime, startTime);
-	if(last) {
-		last->childrenElapsed += elapsedTime;
+	time(&end_time_);
+	elapsed_time_ = difftime(end_time_, start_time_);
+	if(previous_pragma_executed_) {
+		previous_pragma_executed_->children_elapsed_time_ += elapsed_time_;
 	}	
-	ProfileTrackerLog::getInstance()->replaceTop(last);
-	//ProfileTrackerLog::getInstance()->top = last;
+	ProfileTrackerLog::getInstance()->ReplaceCurrentPragma(previous_pragma_executed_);
 
-	if(_pragmaLine == 0)
-		printFunction();
+	if(pragma_line_ == 0)
+		PrintFunction();
 	else
-		printPragma();
+		PrintPragma();
 
 }
  
-void ProfileTracker::printPragma() {
-	ProfileTrackerLog::getInstance()->log_file << "	<Pragma" \
-											 << " fid=\"" << _functID << "\" pid=\"" << _pragmaLine << "\" ";
-	if(last) {
-		if( last->_pragmaLine != 0)
-			ProfileTrackerLog::getInstance()->log_file << "callerid=\"" << last->_pragmaLine << "\" "; 
+void ProfileTracker::PrintPragma() {
+	ProfileTrackerLog::getInstance()->log_file_ << "	<Pragma" \
+											 << " fid=\"" << funct_id_ << "\" pid=\"" << pragma_line_ << "\" ";
+	if(previous_pragma_executed_) {
+		if(previous_pragma_executed_->pragma_line_ != 0)
+			ProfileTrackerLog::getInstance()->log_file_ << "callerid=\"" << previous_pragma_executed_->pragma_line_ << "\" "; 
 		else 
-			ProfileTrackerLog::getInstance()->log_file << "callerid=\"" << last->_functID << "\" "; 
+			ProfileTrackerLog::getInstance()->log_file_ << "callerid=\"" << previous_pragma_executed_->funct_id_ << "\" "; 
 	}
-	ProfileTrackerLog::getInstance()->log_file << "elapsedTime=\"" << elapsedTime << "\" " \
-											   << "childrenTime=\"" << childrenElapsed << "\"";
-	if(nset)
-	 	ProfileTrackerLog::getInstance()->log_file << " loops=\"" << n << "\"";
-	ProfileTrackerLog::getInstance()->log_file << "/>" << std::endl; 
+	ProfileTrackerLog::getInstance()->log_file_ << "elapsedTime=\"" << elapsed_time_ << "\" " \
+											   << "childrenTime=\"" << children_elapsed_time_ << "\"";
+	if(num_for_iteration_set_)
+	 	ProfileTrackerLog::getInstance()->log_file_ << " loops=\"" << num_for_iteration_ << "\"";
+	ProfileTrackerLog::getInstance()->log_file_ << "/>" << std::endl; 
 
 }
 
-void ProfileTracker::printFunction() {
-	ProfileTrackerLog::getInstance()->log_file << "	<Function" \
-												 << " fid=\"" << _functID << "\" ";
-	if(last) {
-		if( last->_pragmaLine != 0)
-			ProfileTrackerLog::getInstance()->log_file << "callerid=\"" << last->_pragmaLine << "\" "; 
+void ProfileTracker::PrintFunction() {
+	ProfileTrackerLog::getInstance()->log_file_ << "	<Function" \
+												 << " fid=\"" << funct_id_ << "\" ";
+	if(previous_pragma_executed_) {
+		if(previous_pragma_executed_->pragma_line_ != 0)
+			ProfileTrackerLog::getInstance()->log_file_ << "callerid=\"" << previous_pragma_executed_->pragma_line_ << "\" "; 
 		else 
-			ProfileTrackerLog::getInstance()->log_file << "callerid=\"" << last->_functID << "\" "; 
+			ProfileTrackerLog::getInstance()->log_file_ << "callerid=\"" << previous_pragma_executed_->funct_id_ << "\" "; 
 	}
-	ProfileTrackerLog::getInstance()->log_file << "elapsedTime=\"" << elapsedTime <<  "\" " \
-											   << "childrenTime=\"" << childrenElapsed <<"\"/>" << std::endl; 
+	ProfileTrackerLog::getInstance()->log_file_ << "elapsedTime=\"" << elapsed_time_ <<  "\" " \
+											   << "childrenTime=\"" << children_elapsed_time_ << "\"/>" << std::endl; 
 
 
 }

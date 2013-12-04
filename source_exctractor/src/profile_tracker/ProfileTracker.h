@@ -6,17 +6,22 @@
 #include <unistd.h>
 
 
-#define logFile "log_file.xml"
+#define log_file "log_file.xml"
 
 
 struct ProfileTrackParams {
-	ProfileTrackParams(int functID, int pragmaLine) : functID(functID) ,pragmaLine(pragmaLine),nset(false) {}
-	ProfileTrackParams(int functID, int pragmaLine, int n) : functID(functID) ,pragmaLine(pragmaLine), n(n), nset(true) {}
 
-	int functID; 
-	int pragmaLine;
-	int n;
-	bool nset;
+	ProfileTrackParams(int funct_id, int pragma_line)
+		: funct_id_(funct_id) ,pragma_line_(pragma_line), num_for_iteration_set_(false) {}
+	/* Costructor for parallel for */
+	ProfileTrackParams(int funct_id, int pragma_line, int n) 
+		: funct_id_(funct_id), pragma_line_(pragma_line), num_for_iteration_(n), num_for_iteration_set_(true) {}
+
+	int funct_id_; 
+	int pragma_line_;
+	/* In the case of a parallel for this variable saves the number of the iteration of the for */
+	int num_for_iteration_;
+	bool num_for_iteration_set_;
 };
 
 /*
@@ -24,28 +29,34 @@ struct ProfileTrackParams {
  */
 class ProfileTracker {
 
-	time_t startTime;
-	time_t endTime;
+	time_t start_time_;
+	time_t end_time_;
 
 
-	int n;
-	bool nset;
+	int num_for_iteration_;
+	bool num_for_iteration_set_;
 
-	void printPragma();
-	void printFunction();
+	/* These functions print the result of the profiling in a log file */
+	void PrintPragma();
+	void PrintFunction();
 
 public:
-	int _pragmaLine;
-	int _functID;
+	int pragma_line_;
+	int funct_id_;
 
-	double elapsedTime;
-	double childrenElapsed;
+	double elapsed_time_;
+	/* Time spent by the children of the current pragma or function */
+	double children_elapsed_time_;
 	
-	ProfileTracker *last;
+	/* Keeps track of which function/pragma has invoked the current function/pragma */
+	ProfileTracker *previous_pragma_executed_;
 
+	/* In the costructor a timer is started */
 	ProfileTracker(const ProfileTrackParams & p);
+	/* In the destructor the timer is stopped and the elapsed time is written in the log file */
 	~ProfileTracker();
 
+	/* This is necessary to allow to create an object inside the declaration of an if stmt */
 	operator bool() const  { return true; }
 };
 
@@ -54,21 +65,24 @@ public:
  */
 class ProfileTrackerLog {
 
-	ProfileTracker *top;
+	/* Keeps track of which function/pragma has invoked the current function/pragma */
+	ProfileTracker *current_pragma_executing_;
 
-
+	/* Create the log file and write in it the hardware spec */
 	ProfileTrackerLog ();
 
-	void writeArchitecturesSpec();
+	void WriteArchitecturesSpec();
 	size_t getTotalSystemMemory();    
 
 public:
-	std::ofstream log_file;
-
+	/* File where the log is written */
+	std::ofstream log_file_;
 
 	static ProfileTrackerLog* getInstance();
-
-	ProfileTracker *replaceTop(ProfileTracker *top);
+	/* Substitute the pointer of the current pragma in execution and return the previous value */
+	ProfileTracker *ReplaceCurrentPragma(ProfileTracker *current_pragma_executing_);
+	
+	/* Save and close the log file */
 	~ProfileTrackerLog();
 
 };

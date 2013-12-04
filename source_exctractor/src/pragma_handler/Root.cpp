@@ -3,96 +3,93 @@
 
 //#include "ProfileTracker.h"
 
-Root::Root(Node *n, FunctionInfo fI) {
+Root::Root(Node *n, FunctionInfo funct_info) {
 
-	this->childrenVect = new std::vector<Node *>();
-	this->childrenVect->insert(this->childrenVect->end(), n);
+	children_vect_ = new std::vector<Node *>();
+	children_vect_->push_back(n);
 
-	this->lastNode = n;
-  this->fI = fI;
+	last_node_ = n;
+  function_info_ = funct_info;
 }
 
 
 
-void Root::visitTree() {
+void Root::CreateXMLFunction(tinyxml2::XMLDocument *xml_doc) {
 
-	Node *n;
+  tinyxml2::XMLElement *function_element = xml_doc->NewElement("Function");
+  xml_doc->LastChild()->InsertEndChild(function_element);
 
-  std::cout << "FUNCTION INFO " << std::endl;
+  tinyxml2::XMLElement *name_element = xml_doc->NewElement("Name");
+  function_element->InsertEndChild(name_element); 
+  tinyxml2::XMLText* name_text = xml_doc->NewText(function_info_.function_name_.c_str());
+  name_element->InsertEndChild(name_text);
 
-  std::cout << "Name = " << fI.parentFunctionName << "  ReturnType = " << fI.parentFunctionReturnType << std::endl;
-
-	for(std::vector<Node *>::iterator itn = this->childrenVect->begin(); itn != this->childrenVect->end(); itn ++) {
-    (*itn)->getPragmaInfo();
-   	(*itn)->printNode();
-   	std::cout << std::endl;
-    		
-   	(*itn)->visitNodeChildren();
-
-		}
-	} 
-
-
-
-void Root::createXMLFunction(tinyxml2::XMLDocument *doc) {
-
-  tinyxml2::XMLElement *functionElement = doc->NewElement("Function");
-  doc->LastChild()->InsertEndChild(functionElement);
-
-  tinyxml2::XMLElement *nameElement = doc->NewElement("Name");
-  functionElement->InsertEndChild(nameElement); 
-  tinyxml2::XMLText* nameText = doc->NewText(this->fI.parentFunctionName.c_str());
-  nameElement->InsertEndChild(nameText);
-
-  if(fI.parentFunctionClassName.compare("") != 0){
-    tinyxml2::XMLElement *classNameElement = doc->NewElement("ClassName");
-    functionElement->InsertEndChild(classNameElement); 
-    tinyxml2::XMLText* classNameText = doc->NewText(this->fI.parentFunctionClassName.c_str());
-    classNameElement->InsertEndChild(classNameText);
+  if(function_info_.function_class_name_.compare("") != 0){
+    tinyxml2::XMLElement *class_name_element = xml_doc->NewElement("ClassName");
+    function_element->InsertEndChild(class_name_element); 
+    tinyxml2::XMLText* class_name_text = xml_doc->NewText(function_info_.function_class_name_.c_str());
+    class_name_element->InsertEndChild(class_name_text);
   }
     
-  tinyxml2::XMLElement *typeElement = doc->NewElement("ReturnType");
-  functionElement->InsertEndChild(typeElement);
-  tinyxml2::XMLText* typeText = doc->NewText(this->fI.parentFunctionReturnType.c_str());
-  typeElement->InsertEndChild(typeText);
+  tinyxml2::XMLElement *return_type_element = xml_doc->NewElement("ReturnType");
+  function_element->InsertEndChild(return_type_element);
+  tinyxml2::XMLText* return_type_text = xml_doc->NewText(function_info_.function_return_type_.c_str());
+  return_type_element->InsertEndChild(return_type_text);
 
-  if(this->fI.nParams > 0) {
-    tinyxml2::XMLElement *parametersElement = doc->NewElement("Parameters");
-    functionElement->InsertEndChild(parametersElement);
+  if(function_info_.num_params_ > 0) {
+    tinyxml2::XMLElement *parameters_element = xml_doc->NewElement("Parameters");
+    function_element->InsertEndChild(parameters_element);
 
-    for(int i = 0; i < this->fI.nParams; i ++) {
-      tinyxml2::XMLElement *parameterElement = doc->NewElement("Parameter");
-      parametersElement->InsertEndChild(parameterElement);
+    for(int i = 0; i < function_info_.num_params_; i ++) {
+      tinyxml2::XMLElement *parameter_element = xml_doc->NewElement("Parameter");
+      parameters_element->InsertEndChild(parameter_element);
 
-      tinyxml2::XMLElement *typeElement = doc->NewElement("Type");
-      parameterElement->InsertEndChild(typeElement);
-      tinyxml2::XMLText* paramTypeText = doc->NewText(this->fI.parentFunctionParameter[i][0].c_str());
-      typeElement->InsertEndChild(paramTypeText);
+      tinyxml2::XMLElement *type_element = xml_doc->NewElement("Type");
+      parameter_element->InsertEndChild(type_element);
+      tinyxml2::XMLText* param_type_text = xml_doc->NewText(function_info_.function_parameters_[i][0].c_str());
+      type_element->InsertEndChild(param_type_text);
 
-      tinyxml2::XMLElement *paramNameElement = doc->NewElement("Name");
-      parameterElement->InsertEndChild(paramNameElement);
-      tinyxml2::XMLText* paramNameText = doc->NewText(this->fI.parentFunctionParameter[i][1].c_str());
-      paramNameElement->InsertEndChild(paramNameText);
+      tinyxml2::XMLElement *param_name_element = xml_doc->NewElement("Name");
+      parameter_element->InsertEndChild(param_name_element);
+      tinyxml2::XMLText* param_name_text = xml_doc->NewText(function_info_.function_parameters_[i][1].c_str());
+      param_name_element->InsertEndChild(param_name_text);
 
     }
   }
 
-  tinyxml2::XMLElement *lineElement = doc->NewElement("Line");
-  functionElement->InsertEndChild(lineElement); 
+  tinyxml2::XMLElement *line_element = xml_doc->NewElement("Line");
+  function_element->InsertEndChild(line_element); 
   char line[100];
-  sprintf(line, "%d", this->fI.parentFunctionLine);
-  tinyxml2::XMLText* lineText = doc->NewText(line);
-  lineElement->InsertEndChild(lineText);
+  sprintf(line, "%d", function_info_.function_start_line_);
+  tinyxml2::XMLText* line_text = xml_doc->NewText(line);
+  line_element->InsertEndChild(line_text);
 
 
-  tinyxml2::XMLElement *pragmasElement = doc->NewElement("Pragmas");
-  functionElement->InsertEndChild(pragmasElement);
+  tinyxml2::XMLElement *pragmas_element = xml_doc->NewElement("Pragmas");
+  function_element->InsertEndChild(pragmas_element);
 
-  for(std::vector<Node *>::iterator itn = this->childrenVect->begin(); itn != this->childrenVect->end(); ++ itn) {
-    (*itn)->createXMLPragma(doc, pragmasElement);
+  for(std::vector<Node *>::iterator node_itr = children_vect_->begin(); node_itr != children_vect_->end(); ++ node_itr) {
+    (*node_itr)->CreateXMLPragmaNode(xml_doc, pragmas_element);
   }
 
 }
 
 
 
+void Root::VisitTree() {
+
+  Node *n;
+
+  std::cout << "FUNCTION INFO " << std::endl;
+
+  std::cout << "Name = " << function_info_.function_name_ << "  ReturnType = " << function_info_.function_return_type_ << std::endl;
+
+  for(std::vector<Node *>::iterator itn = this->children_vect_->begin(); itn != this->children_vect_->end(); itn ++) {
+    (*itn)->getPragmaInfo();
+    (*itn)->printNode();
+    std::cout << std::endl;
+        
+    (*itn)->visitNodeChildren();
+
+    }
+  } 

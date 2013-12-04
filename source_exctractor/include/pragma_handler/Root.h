@@ -9,24 +9,24 @@
  */
 class Root {
 private:	
-	FunctionInfo fI;
+	FunctionInfo function_info_;
 
-	Node *lastNode;
+	Node *last_node_;
 
 public:
-	Root(Node *n, FunctionInfo fI);
+	Root(Node *n, FunctionInfo funct_info);
 
-	std::vector<Node *> *childrenVect;
+	std::vector<Node *> *children_vect_;
 
-	void setLastNode(Node *n) {this->lastNode = n; };
-	Node* getLastNode() { return this->lastNode; };
+	void setLastNode(Node *n) {last_node_ = n; };
+	Node* getLastNode() { return last_node_; };
 
-	void addChildNode(Node *n) { this->childrenVect->insert(this->childrenVect->end(), n); };
+	void AddChildNode(Node *n) { children_vect_->push_back(n); };
 
-	void createXMLFunction(tinyxml2::XMLDocument *doc);
+	void CreateXMLFunction(tinyxml2::XMLDocument *xml_doc);
 	
-	unsigned getFunctionLineStart(){ return fI.parentFunctionLine; }
-	unsigned getFunctionLineEnd() {return fI.parentFunctionLineEnd; }
+	unsigned getFunctionLineStart(){ return function_info_.function_start_line_; }
+	unsigned getFunctionLineEnd() {return function_info_.function_end_line_; }
 
-	void visitTree(); 
+	void VisitTree(); 
 };

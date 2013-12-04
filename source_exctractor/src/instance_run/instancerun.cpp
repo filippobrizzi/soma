@@ -3,76 +3,76 @@
 
 std::mutex mtx;
 
-void NestedBase::operator()(ForParameter *fp) {
-	std::cout << "Thread: " << pragmaID << " tid: " << fp->tid << " forsplit " << fp->numThread << std::endl;
-  		std::chrono::time_point<std::chrono::system_clock> start = InstanceRun::getInstance("")->getTimeStart();
+void NestedBase::operator()(ForParameter *for_param) {
+	std::cout << "Thread: " << pragma_id_ << " tid: " << for_param->thread_id_ << " forsplit " << for_param->num_threads_ << std::endl;
+  		std::chrono::time_point<std::chrono::system_clock> program_start_time = InstanceRun::getInstance("")->getTimeStart();
   		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-  		int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now-start).count();
-  		if(ActivationTime - elapsed_milliseconds > 0) {
-  			std::chrono::milliseconds dura(ActivationTime - elapsed_milliseconds);
-  			std::this_thread::sleep_for(dura);
+  		int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - program_start_time).count();
+  		if(activation_time_ - elapsed_milliseconds > 0) {
+  			std::chrono::milliseconds duration(activation_time_ - elapsed_milliseconds);
+  			std::this_thread::sleep_for(duration);
   		}
-    	callme(fp);
+    	callme(for_param);
 }
 
-InstanceRun* InstanceRun::getInstance(std::string filename) {
+InstanceRun* InstanceRun::getInstance(std::string file_name) {
 	mtx.lock();
-	static InstanceRun run(filename);
+	static InstanceRun run(file_name);
 	mtx.unlock();
 	return &run;
 }
 
 
-InstanceRun::InstanceRun(std::string filename) {
-	std::string inXML (filename);
-  	size_t ext = inXML.find_last_of(".");
+InstanceRun::InstanceRun(std::string file_name) {
+	std::string in_xml_file (file_name);
+  	size_t ext = in_xml_file.find_last_of(".");
   	if (ext == std::string::npos)
-    	ext = inXML.length();
-  	inXML = inXML.substr(0, ext);
-  	inXML.insert(ext, "_schedule.xml");
+    	ext = in_xml_file.length();
+  	in_xml_file = in_xml_file.substr(0, ext);
+  	in_xml_file.insert(ext, "_schedule.xml");
 
-  	tinyxml2::XMLDocument doc;
- 	//doc.LoadFile(inXML.c_str());
- 	doc.LoadFile("test_schedule.xml");
+  	tinyxml2::XMLDocument xml_doc;
+ 	//xml_doc.LoadFile(in_xml_file.c_str());
+ 	xml_doc.LoadFile("test_schedule.xml");
 
-	tinyxml2::XMLElement *pragmaelement = doc.FirstChildElement("File")->FirstChildElement("Pragma");
-	while(pragmaelement != NULL) {
-		ScheduleOptions schedopt;
+	tinyxml2::XMLElement *pragma_element = xml_doc.FirstChildElement("File")->FirstChildElement("Pragma");
+	while(pragma_element != NULL) {
+		ScheduleOptions sched_opt;
 
-		const char* pid = pragmaelement->FirstChildElement("ID")->GetText();
-		int id = chartoint(pid);
-		schedopt.pid = id;
+		const char* pragma_id = pragma_element->FirstChildElement("ID")->GetText();
+		int id = chartoint(pragma_id);
+		sched_opt.pragma_id_ = id;
 
-		schedopt.ActivationTime = 0;
-		tinyxml2::XMLElement *activationtime = pragmaelement->FirstChildElement("ActivationTime");
-		if(activationtime) {
-			const char* activationTime = activationtime->GetText();
-			schedopt.ActivationTime = chartoint(activationTime);
+		sched_opt.activation_time_ = 0;
+		tinyxml2::XMLElement *activation_time_element = pragma_element->FirstChildElement("ActivationTime");
+		if(activation_time_element) {
+			const char* activation_time = activation_time_element->GetText();
+			sched_opt.activation_time_ = chartoint(activation_time);
 		}
 
-		tinyxml2::XMLElement *barriers = pragmaelement->FirstChildElement("Barriers");
-		if(barriers != NULL)
-			barriers = barriers->FirstChildElement("PragmaID");
-		while(barriers != NULL){
-			const char *tid = barriers->GetText();
-			schedopt.barriers.push_back(chartoint(tid));
+		tinyxml2::XMLElement *barriers_element = pragma_element->FirstChildElement("Barriers");
+		if(barriers_element != NULL)
+			barriers_element = barriers_element->FirstChildElement("PragmaID");
+		while(barriers_element != NULL){
+			const char *thread_id = barriers_element->GetText();
+			sched_opt.barriers_.push_back(chartoint(thread_id));
 
-			barriers = barriers->NextSiblingElement("PragmaID");
+			barriers_element = barriers_element->NextSiblingElement("PragmaID");
 		}
 
-		schedopt.ForSplit = 1;
-		tinyxml2::XMLElement *forsplit = pragmaelement->FirstChildElement("ForSplit");
-		if(forsplit) {
-			const char* cforsplit = forsplit->GetText();
-			schedopt.ForSplit = chartoint(cforsplit);
+		sched_opt.for_split_ = 1;
+		tinyxml2::XMLElement *for_split_element = pragma_element->FirstChildElement("ForSplit");
+		if(for_split_element) {
+			const char* for_split = for_split_element->GetText();
+			sched_opt.for_split_ = chartoint(for_split);
 		}
 
-		this->schedopt[id] = schedopt;
+		sched_opt_[id] = sched_opt;
 
-		pragmaelement = pragmaelement->NextSiblingElement("Pragma");
+		pragma_element = pragma_element->NextSiblingElement("Pragma");
 	}
 
-	this->start = std::chrono::system_clock::now();
+	program_start_time_ = std::chrono::system_clock::now();
 }
 
 
@@ -99,17 +99,14 @@ int chartoint(char *cc){
 }
 
 
-void InstanceRun::call(NestedBase & nb) {
+void InstanceRun::call(NestedBase & nested_b) {
 		
-	runningThreads[nb.pragmaID] = new std::thread[schedopt[nb.pragmaID].ForSplit];
-	nb.ActivationTime = schedopt[nb.pragmaID].ActivationTime;
+	running_threads_[nested_b.pragma_id_] = new std::thread[sched_opt_[nested_b.pragma_id_].for_split_];
+	nested_b.activation_time_ = sched_opt_[nested_b.pragma_id_].activation_time_;
 
-	if(schedopt[nb.pragmaID].ActivationTime > 0) {
-		for(int i = 0; i < schedopt[nb.pragmaID].ForSplit; i ++) {
-			//ForParameter *fp = new ForParameter(i, schedopt[nb.pragmaID].ForSplit);
-			//ForParameter fp(i, schedopt[nb.pragmaID].ForSplit);
-			std::cout << "CALL thread: " << nb.pragmaID << " with tid: " << i << " forsplit: " << schedopt[nb.pragmaID].ForSplit << std::endl;
-			runningThreads[nb.pragmaID][i] = std::thread(std::ref(nb), new ForParameter(i, schedopt[nb.pragmaID].ForSplit));
+	if(sched_opt_[nested_b.pragma_id_].activation_time_ > 0) {
+		for(int i = 0; i < sched_opt_[nested_b.pragma_id_].for_split_; i ++) {
+			running_threads_[nested_b.pragma_id_][i] = std::thread(std::ref(nested_b), new ForParameter(i, sched_opt_[nested_b.pragma_id_].for_split_));
 		}
 	}
 
@@ -123,13 +120,13 @@ void InstanceRun::call(NestedBase & nb) {
     	runningThreads.erase(nb.pragmaID);
     }
 */
-    for(int i = 0; i < (schedopt[nb.pragmaID]).barriers.size(); i ++) {			
-    //	if(schedopt[nb.pragmaID].barriers.at(i) != nb.pragmaID){
-			for(int j = 0; j < schedopt[schedopt[nb.pragmaID].barriers.at(i)].ForSplit; j ++){
-				runningThreads[schedopt[nb.pragmaID].barriers.at(i)][j].join();
-			}
-			runningThreads.erase(schedopt[nb.pragmaID].barriers.at(i)); 	
-    //	}
+    for(int i = 0; i < (sched_opt_[nested_b.pragma_id_]).barriers_.size(); i ++) {
+    	
+    	int pragma_id = sched_opt_[nested_b.pragma_id_].barriers_.at(i);
+		for(int j = 0; j < sched_opt_[pragma_id].for_split_; j ++){
+			running_threads_[pragma_id][j].join();
+		}
+		running_threads_.erase(pragma_id); 	
     }
 
 }

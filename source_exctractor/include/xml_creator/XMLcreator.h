@@ -1,5 +1,5 @@
 
 #include "pragma_handler/create_tree.h"
 
-void createXML(std::vector<Root *> *rootVect, char *fileName);
+void CreateXML(std::vector<Root *> *root_vect, char *file_name);
 
