@@ -1,0 +1,80 @@
+<Schedule>
+  <Cores num="4" />
+  <Pragma id="28">
+    <Thread>0</Thread>
+    <Start_time>0</Start_time>
+    <Deadline>7.0</Deadline>
+  </Pragma>
+  <Pragma id="35">
+    <Thread>0</Thread>
+    <Start_time>0</Start_time>
+    <Deadline>8.0</Deadline>
+  </Pragma>
+  <Pragma id="40">
+    <Thread>0</Thread>
+    <Start_time>0</Start_time>
+    <Deadline>8.0</Deadline>
+  </Pragma>
+  <Pragma id="42">
+    <Thread>0</Thread>
+    <Start_time>0</Start_time>
+    <Deadline>11.0</Deadline>
+  </Pragma>
+  <Pragma id="83">
+    <Thread>0</Thread>
+    <Start_time>11.0</Start_time>
+    <Deadline>11.0</Deadline>
+  </Pragma>
+  <Pragma id="85">
+    <Thread>0</Thread>
+    <Start_time>11.0</Start_time>
+    <Deadline>12.0</Deadline>
+  </Pragma>
+  <Pragma id="48">
+    <Thread>1</Thread>
+    <Start_time>8.0</Start_time>
+    <Deadline>11.0</Deadline>
+  </Pragma>
+  <Pragma id="59">
+    <Thread>1</Thread>
+    <Start_time>8.0</Start_time>
+    <Deadline>9.0</Deadline>
+  </Pragma>
+  <Pragma id="61">
+    <Thread>1</Thread>
+    <Start_time>8.0</Start_time>
+    <Deadline>11.0</Deadline>
+  </Pragma>
+  <Pragma id="66">
+    <Thread>2</Thread>
+    <Start_time>9.0</Start_time>
+    <Deadline>10.0</Deadline>
+  </Pragma>
+  <Pragma id="9">
+    <Thread>0</Thread>
+    <Start_time>10.0</Start_time>
+    <Deadline>10.0</Deadline>
+  </Pragma>
+  <Pragma id="15">
+    <Thread>2</Thread>
+    <Start_time>10.0</Start_time>
+    <Deadline>11.0</Deadline>
+  </Pragma>
+  <Pragma id="21">
+    <Thread>2</Thread>
+    <Start_time>10.0</Start_time>
+    <Deadline>11.0</Deadline>
+    <Thread>3</Thread>
+  </Pragma>
+  <Pragma id="76">
+    <Thread>2</Thread>
+    <Start_time>8.0</Start_time>
+    <Deadline>11.0</Deadline>
+  </Pragma>
+  <Pragma id="54">
+    <Thread>0</Thread>
+    <Start_time>0</Start_time>
+    <Deadline>11.0</Deadline>
+    <Thread>1</Thread>
+  </Pragma>
+</Schedule>

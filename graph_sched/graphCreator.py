@@ -79,20 +79,27 @@ if __name__ == "__main__":
 	start_time = time.clock()
 	sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, start_time, execution_time)
 
-	par.add_new_tasks(optimal_flow, exp_flows)
+	par.add_new_tasks(optimal_flow, main_flow)
 
-	#sched.chetto(main_flow, 12 optimal_flow)
+	sched.chetto(main_flow, 12, optimal_flow)
 
+	
 	print "best solution:"
 	for flow in optimal_flow:
 		flow.dump("\t")
 		print "\ttime:",flow.time
+	
 
-	#prints the flow graphs
-	if(output == "True"):
-		for g in exp_flows:
-			sched.make_white(g)
-			par.scanGraph(g)
+	
+	sched.make_white(main_flow)
+	#sched.print_schedule(main_flow)
+	
+	sched.create_schedule(main_flow, len(optimal_flow))
+
+
+	if output == 'True':
+		sched.make_white(main_flow)
+		par.scanGraph(main_flow)
 
 	
 

@@ -45,7 +45,8 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 			id = 0
 			#print "newflowset:"
 			for flow in flow_list:
-				flow.id = id
+				for task in flow.tasks:
+					task.id = id
 				id += 1
 				optimal_flow.append(copy.deepcopy(flow))
 				#flow.dump("\t")
@@ -131,17 +132,17 @@ def chetto_arrival(node, optimal_flow):
 			if child.arrival == None and all_set(child) == True:
 				(a, d) = get_max(child, optimal_flow)
 				child.arrival = max(a, d)
-			chetto_arrival(child)
+			chetto_arrival(child, optimal_flow)
 
 
 def get_max(node, optimal_flow):
 	maximum_a = 0
 	maximum_d = 0
 	for p in node.parent:
-		if p.arrival > maximum_a and get_id(p, optimal_flow) == get_id(node, optimal_flow):
+		if p.arrival > maximum_a and p.id == node.id:
 			maximum_a = p.arrival
-		if p.deadline > maximum_d and get_id(p, optimal_flow) != get_id(node, optimal_flow):
-			maximum_d = p.deadline
+		if p.d > maximum_d and p.id != node.id:
+			maximum_d = p.d
 	return (maximum_a, maximum_d)
 
 #checks if all the parent nodes have the arrival times set
@@ -157,6 +158,56 @@ def get_id(node, optimal_flow):
 		for task in flow.tasks:
 			if node.type == task.type:
 				return flow.id
+
+def print_schedule(graph):
+	for node in graph.children:
+		if node.color == 'white':
+			node.color = 'black'
+			print node.type," @ ", node.start_line
+			print "\t start: ", node.arrival
+			print "\t deadline: ", node.d
+			print "\t flow: ", node.id
+			print_schedule(node)
+
+def create_schedule(graph, num_cores):
+	mapped = []
+	schedule = ET.Element('Schedule')
+	cores = ET.SubElement(schedule, 'Cores')
+	cores.attrib['num'] = str(num_cores)
+	task_list = generate_task(graph)
+	tree = ET.ElementTree(schedule)
+	for task in task_list:
+		if 'splitted' in task.type:
+			serialize_splitted(task, schedule, mapped)
+		elif 'BARRIER' not in task.type:
+			pragma = ET.SubElement(schedule, 'Pragma')
+			pragma.attrib['id'] = str(task.start_line)
+			thread = ET.SubElement(pragma, 'Thread')
+			thread.text = str(task.id)
+			start = ET.SubElement(pragma, 'Start_time')
+			start.text = str(task.arrival)
+			end = ET.SubElement(pragma, 'Deadline')
+			end.text = str(task.d)
+	par.indent(tree.getroot())			
+	tree.write('schedule.xml')
+
+def serialize_splitted(task, schedule, mapped):
+	if task.start_line not in mapped:
+		pragma = ET.SubElement(schedule, 'Pragma')
+		pragma.attrib['id'] = str(task.start_line)
+		thread = ET.SubElement(pragma, 'Thread')
+		thread.text = str(task.id)
+		start = ET.SubElement(pragma, 'Start_time')
+		start.text = str(task.arrival)
+		end = ET.SubElement(pragma, 'Deadline')
+		end.text = str(task.d)
+		mapped.append(task.start_line)
+	else:
+		for p in schedule.findall("Pragma"):
+			if p.attrib['id'] == str(task.start_line):
+				thread = ET.SubElement(p, 'Thread')
+				thread.text = str(task.id)
+			
 
 
 

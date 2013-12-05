@@ -68,6 +68,7 @@ class Node(object):
 					for i in self.options:
 						print "        ",i[0]," ",i[1]
 			print "     chetto deadline :", self.d
+			print "     chetto arrival :", self.arrival
 		else:
 			print "pragma node: ", self.type, "\n    start_line: ", self.start_line
 		print
@@ -86,6 +87,7 @@ class For_Node(Node):
     def myself(self):
 		print "for node: ", self.type, "\n    start_line: ", self.start_line, "\n    endl_line: ", self.end_line, "\n    init_type:", self.init_type, "\n    init_var: ", self.init_var, "\n    init_value: ", self.init_value,"\n    init_condition: ", self.init_cond, "\n    init_condition_value: ", self.init_cond_value, "\n    init_increment_type: ", self.init_increment,"\n    init_increment: ", self.init_increment_value, "\n    mean_loops:", self.mean_loops
 		print "     chetto deadline :", self.d
+		print "     chetto arrival :", self.arrival
 		if(len(self.options) != 0):
 			print "    Options:"
 			for i in self.options:
@@ -110,6 +112,7 @@ class Fx_Node(Node):
 	def myself(self):
 		print "function node: ", self.type, "() {\n    line: ", self.start_line, "\n    return type: ", self.returnType
 		print "     chetto deadline :", self.d
+		print "     chetto arrival :", self.arrival
 		if(len(self.arguments) != 0):
 			print "    Parameters: "
 			i = 0
@@ -163,10 +166,16 @@ class Flow():
 	def dump(self,prefix=""):
 		print prefix,"flow:"
 		for task in self.tasks:
-			print prefix,"\t",task.type," ",task.start_line," ",task.in_time
+			print prefix, "\t", task.type, " ", task.start_line, " ", task.in_time
 	def remove_task(self, task):
 		self.tasks.remove(task)
 		self.time -= task.in_time #float(task.time) - float(task.children_time)
+
+class Task():
+	def __init__(self, count, id):
+		self.count = count
+		self.id = []
+		self.id.append(id)
 
 
 def scanGraph(node):
@@ -564,6 +573,12 @@ def find_node(node, flow_graphs):
 		if tmp_node != None :
 			return tmp_node
 
+def find_node2(node, flow_graphs):
+	tmp_node = find_sub_node(node, flow_graphs) 
+	if tmp_node != None :
+		return tmp_node
+
+
 def find_sub_node(node, function):
 	for child in function.children:
 		if (child.start_line) == node and ('BARRIER' not in child.type):
@@ -607,24 +622,26 @@ def create_map(optimal_flow):
 			if "splitted" in task.type:
 				id = re.findall(r'\d+',task.type)[0]
 				if id in for_map:
-					for_map[id] += 1
+					for_map[id].count += 1
+					for_map[id].id.append(task.id)
 				else:
-					for_map[id] = 1
+					for_map[id] = Task(1, task.id)
 	return for_map
 
-def add_new_tasks(optimal_flow, exp_flows):
+def add_new_tasks(optimal_flow, main_flow):
 	for_map = create_map(optimal_flow)
 	for key in for_map:
-		node_to_replace = find_node(key, exp_flows)
+		node_to_replace = find_node2(key, main_flow)
 		nodes_to_add = []
 
-		for i in range(for_map[key]):
+		for i in range(for_map[key].count):
 			nodes_to_add.append(For_Node("splitted_" + node_to_replace.start_line + "." + str(i), node_to_replace.start_line, node_to_replace.init_type, node_to_replace.init_var, node_to_replace.init_value, node_to_replace.init_cond, node_to_replace.init_cond_value, node_to_replace.init_increment, node_to_replace.init_increment_value, node_to_replace.time, node_to_replace.variance, math.floor(float(node_to_replace.mean_loops) / (i + 1))))
 		
 		for parent in node_to_replace.parent:
 			parent.children.remove(node_to_replace)
 			for n in nodes_to_add:
 				parent.add(n)
+				n.id = for_map[key].id.pop(0)
 
 		for child in node_to_replace.children:
 			child.parent.remove(node_to_replace)
