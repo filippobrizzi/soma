@@ -3,15 +3,15 @@
 
 std::mutex mtx;
 
-void NestedBase::operator()(ForParameter *for_param) {
-	std::cout << "Thread: " << pragma_id_ << " tid: " << for_param->thread_id_ << " forsplit " << for_param->num_threads_ << std::endl;
-  		std::chrono::time_point<std::chrono::system_clock> program_start_time = InstanceRun::getInstance("")->getTimeStart();
+void NestedBase::operator()(ForParameter for_param) {
+	std::cout << "Thread: " << pragma_id_ << " tid: " << for_param.thread_id_ << " forsplit " << for_param.num_threads_ << std::endl;
+  		/*std::chrono::time_point<std::chrono::system_clock> program_start_time = InstanceRun::getInstance("")->getTimeStart();
   		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
   		int elapsed_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - program_start_time).count();
   		if(activation_time_ - elapsed_milliseconds > 0) {
   			std::chrono::milliseconds duration(activation_time_ - elapsed_milliseconds);
   			std::this_thread::sleep_for(duration);
-  		}
+  		}*/
     	callme(for_param);
 }
 
@@ -99,14 +99,15 @@ int chartoint(char *cc){
 }
 
 
-void InstanceRun::call(NestedBase & nested_b) {
+void InstanceRun::call(std::shared_ptr<NestedBase> nested_b) {
 		
-	running_threads_[nested_b.pragma_id_] = new std::thread[sched_opt_[nested_b.pragma_id_].for_split_];
-	nested_b.activation_time_ = sched_opt_[nested_b.pragma_id_].activation_time_;
+	running_threads_[nested_b->pragma_id_] = new std::thread[sched_opt_[nested_b->pragma_id_].for_split_];
+	nested_b->activation_time_ = sched_opt_[nested_b->pragma_id_].activation_time_;
 
-	if(sched_opt_[nested_b.pragma_id_].activation_time_ > 0) {
-		for(int i = 0; i < sched_opt_[nested_b.pragma_id_].for_split_; i ++) {
-			running_threads_[nested_b.pragma_id_][i] = std::thread(std::ref(nested_b), new ForParameter(i, sched_opt_[nested_b.pragma_id_].for_split_));
+ 	bool isBarrier = sched_opt_[nested_b->pragma_id_].activation_time_ == 0;
+	if(!isBarrier) {
+		for(int i = 0; i < sched_opt_[nested_b->pragma_id_].for_split_; i ++) {
+			running_threads_[nested_b->pragma_id_][i] = std::thread(nested_b, ForParameter(i, sched_opt_[nested_b->pragma_id_].for_split_));
 		}
 	}
 
@@ -120,9 +121,9 @@ void InstanceRun::call(NestedBase & nested_b) {
     	runningThreads.erase(nb.pragmaID);
     }
 */
-    for(int i = 0; i < (sched_opt_[nested_b.pragma_id_]).barriers_.size(); i ++) {
+    for(int i = 0; i < (sched_opt_[nested_b->pragma_id_]).barriers_.size(); i ++) {
     	
-    	int pragma_id = sched_opt_[nested_b.pragma_id_].barriers_.at(i);
+    	int pragma_id = sched_opt_[nested_b->pragma_id_].barriers_.at(i);
 		for(int j = 0; j < sched_opt_[pragma_id].for_split_; j ++){
 			running_threads_[pragma_id][j].join();
 		}

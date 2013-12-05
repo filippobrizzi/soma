@@ -305,10 +305,9 @@ void TransformRecursiveASTVisitor::RewriteOMPBarrier(clang::OMPExecutableDirecti
   class Nested : public NestedBase {\n\
   public: \n\
     Nested(int pragmaID) : NestedBase(pragmaID) {}\n\
-    void callme(ForParameter *for_param){}\n\
+    void callme(ForParameter for_param){}\n\
   };\n\
-  Nested _x_(" << stmt_start_line << ");\n\
-  InstanceRun::getInstance(\"" << utils::FileName(omp_stmt->getLocStart(), sm) << "\")->call(_x_);\n\
+  InstanceRun::getInstance(\"" << utils::FileName(omp_stmt->getLocStart(), sm) << "\")->call(std::make_shared<Nested>(" << stmt_start_line << "));\n\
 }";
 
   clang::SourceLocation pragma_start_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_start_line + 1, 1);
@@ -391,9 +390,9 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
   unsigned stmt_start_line = utils::Line(s->getLocStart(), sm);
   
   if(text_constructor_params.str().compare("") == 0)
-      text << "void fx(ForParameter *for_param)";
+      text << "void fx(ForParameter for_param)";
     else
-      text << "void fx(ForParameter *for_param," << text_constructor_params.str() <<")";
+      text << "void fx(ForParameter for_param," << text_constructor_params.str() <<")";
   
   if(n->for_node_ != NULL) {
     
@@ -422,7 +421,7 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
    
   std::stringstream text_after_pragma;
   text_after_pragma <<"\
-void callme(ForParameter *for_param) {\n";
+void callme(ForParameter for_param) {\n";
 
   if(text_fx_var.str().compare("") == 0)
     text_after_pragma << "fx(for_param);\n";
@@ -432,13 +431,11 @@ void callme(ForParameter *for_param) {\n";
 text_after_pragma << 
 "}\n\
 };\n\
-Nested *_x_ = new Nested(" << n->getStartLine();
-  
+InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(std::make_shared<Nested>(" << n->getStartLine();
   if(text_constructor_var.str().compare("") != 0)
-    text_after_pragma << ", ";
-  
-  text_after_pragma << text_constructor_var.str() <<");\n\
-InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(*_x_);\n\
+      text_after_pragma << ", ";
+    
+    text_after_pragma << text_constructor_var.str() <<"));\n\
 }\n";
 
   unsigned stmt_end_line = utils::Line(s->getLocEnd(), sm);
@@ -500,7 +497,7 @@ std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
   else
     text_for << for_node->loop_var_init_var_;
 
-  text_for << " + for_param->thread_id_*(";
+  text_for << " + for_param.thread_id_*(";
   if(for_node->condition_val_set_)
     text_for << for_node->condition_val_ << " - ";
   else
@@ -511,7 +508,7 @@ std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
   else
     text_for << for_node->loop_var_init_var_;
 
-  text_for << ")/for_param->num_threads_; "; 
+  text_for << ")/for_param.num_threads_; "; 
 
 
   /* ....; i < a + (for_param->thread_id_ + 1)*(b - a)/ num_threads_; ... */
@@ -522,7 +519,7 @@ std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
   else
     text_for << for_node->loop_var_init_var_;
 
-  text_for << " + (for_param->thread_id_ + 1)*(";
+  text_for << " + (for_param.thread_id_ + 1)*(";
   if(for_node->condition_val_set_)
     text_for << for_node->condition_val_ << " - ";
   else
@@ -533,7 +530,7 @@ std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
   else
     text_for << for_node->loop_var_init_var_;
 
-  text_for << ")/for_param->num_threads_; "; 
+  text_for << ")/for_param.num_threads_; "; 
   
 
   /* ...; i ++) */
