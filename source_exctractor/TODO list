@@ -24,3 +24,6 @@
 	1 - Controllare che un job non fatta join su un job che ancora non ha eseguito. Che succede se fa 		join su un thread che ha già finito?
 
 	2 - Dovremmo fare un Queue<Job> per ogni thread nella thread pool. In questo modo possiamo 				effettivamente dividere l'esecuzione in flow distinti.
+
+	3 - Come facciamo a far terminare il while(true). Dovremmo passargli un job speciale...ma quando..		abbimo visto che è impossibile passare qualcosa alla fine del main() c'è il problema del return.
+		Si potrebbe però fare nel distruttore di ThreadPool...si passa ad ogni thread un job speciale e poi si fa la join.
