@@ -173,7 +173,7 @@ def create_schedule(graph, num_cores):
 	mapped = []
 	schedule = ET.Element('Schedule')
 	cores = ET.SubElement(schedule, 'Cores')
-	cores.attrib['num'] = str(num_cores)
+	cores.text = str(num_cores)
 	task_list = generate_task(graph)
 	tree = ET.ElementTree(schedule)
 	for task in task_list:
@@ -181,21 +181,40 @@ def create_schedule(graph, num_cores):
 			serialize_splitted(task, schedule, mapped)
 		elif 'BARRIER' not in task.type:
 			pragma = ET.SubElement(schedule, 'Pragma')
-			pragma.attrib['id'] = str(task.start_line)
-			thread = ET.SubElement(pragma, 'Thread')
+			id = ET.SubElement(pragma, 'id')
+			id.text = str(task.start_line)
+			pragma_type = ET.SubElement(pragma, 'Type')
+			pragma_type.text = str(task.type)
+			threads = ET.SubElement(pragma, 'Threads')
+			thread = ET.SubElement(threads, 'Thread')
 			thread.text = str(task.id)
 			start = ET.SubElement(pragma, 'Start_time')
 			start.text = str(task.arrival)
 			end = ET.SubElement(pragma, 'Deadline')
 			end.text = str(task.d)
+		if len(task.children) > 1:
+			l = []
+			barrier = ET.SubElement(pragma, 'Barrier')
+			first = ET.SubElement(barrier, 'id')
+			first.text = str(task.start_line)
+			for c in task.children:
+				if c.start_line not in l:
+					tmp_id = ET.SubElement(barrier, 'id')
+					tmp_id.text = str(c.start_line)
+					l.append(c.start_line)
+
 	par.indent(tree.getroot())			
 	tree.write('schedule.xml')
 
 def serialize_splitted(task, schedule, mapped):
 	if task.start_line not in mapped:
 		pragma = ET.SubElement(schedule, 'Pragma')
-		pragma.attrib['id'] = str(task.start_line)
-		thread = ET.SubElement(pragma, 'Thread')
+		id = ET.SubElement(pragma, 'id')
+		id.text = str(task.start_line)
+		pragma_type = ET.SubElement(pragma, 'Type')
+		pragma_type.text = 'OMPForDirective'
+		threads = ET.SubElement(pragma, 'Threads')
+		thread = ET.SubElement(threads, 'Thread')
 		thread.text = str(task.id)
 		start = ET.SubElement(pragma, 'Start_time')
 		start.text = str(task.arrival)
@@ -204,8 +223,9 @@ def serialize_splitted(task, schedule, mapped):
 		mapped.append(task.start_line)
 	else:
 		for p in schedule.findall("Pragma"):
-			if p.attrib['id'] == str(task.start_line):
-				thread = ET.SubElement(p, 'Thread')
+			if p.find('id').text == task.start_line:
+				threads_ = p.find('Threads')
+				thread = ET.SubElement(threads_, 'Thread')
 				thread.text = str(task.id)
 			
 
