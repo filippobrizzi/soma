@@ -60,12 +60,12 @@ InstanceRun::InstanceRun(std::string file_name) {
 			barriers_element = barriers_element->NextSiblingElement("PragmaID");
 		}
 
-		sched_opt.for_split_ = 1;
+		/*sched_opt.for_split_ = 1;
 		tinyxml2::XMLElement *for_split_element = pragma_element->FirstChildElement("ForSplit");
 		if(for_split_element) {
 			const char* for_split = for_split_element->GetText();
 			sched_opt.for_split_ = chartoint(for_split);
-		}
+		}*/
 
 		sched_opt_[id] = sched_opt;
 

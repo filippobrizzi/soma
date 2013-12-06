@@ -44,7 +44,7 @@ ThreadPool::ThreadPool(std::string file_name) {
             sched_opt.activation_time_ = chartoint(activation_time);
         }*/
 
-        tinyxml2::XMLElement *pragma_type_element pragma_element->FirstChildElement("Type");
+        tinyxml2::XMLElement *pragma_type_element = pragma_element->FirstChildElement("Type");
         const char* pragma_type = pragma_type_element->GetText();    
         sched_opt.pragma_type_ = pragma_type;
 
@@ -91,15 +91,15 @@ void ThreadPool::init(int pool_size)
     }
 }
 
-void ThreadPool::call(std::shared_ptr<NestedBase> nested_base) {
-    int thread_number = sched_opt_[nested_base->pragma_id_].threads_.size();
+void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
+    int thread_number = sched_opt_[nested_b->pragma_id_].threads_.size();
     for(int i = 0; i < thread_number; i ++) {
-        push(nested_base, ForParameter(i, thread_number));
+        push(nested_b, ForParameter(i, thread_number));
     }
 
     /* Only pragma Parallel and Parallel For must join in the caller thread */
-    if(sched_opt_.pragma_type_.compare("OMPTaskDirective") != 0) {
-        int barriers_number = sched_opt_[nested_b->pragma_id_]).barriers_.size();
+    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPTaskDirective") != 0) {
+        int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
         int barriers_id;
         for (int i = 0; i < barriers_number; i ++) {
             barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
@@ -113,62 +113,75 @@ void ThreadPool::call(std::shared_ptr<NestedBase> nested_base) {
 void ThreadPool::push(std::shared_ptr<NestedBase> nested_base, 
                                      ForParameter for_param) {
     
-    jobid_t id = nested_base.pragma_id_;
+    Jobid_t id = nested_base->pragma_id_;
         
-    JobIn job_in;
-    job_in.job_ = Job(nested_base, for_param);
+    JobIn job_in(nested_base, for_param);
+    //job_in.job_ = Job(nested_base, for_param);
     job_in.job_id_ = id;
     job_in.job_type_ = sched_opt_[nested_base->pragma_id_].pragma_type_;
     job_in.done_cond_var_ = 
-            std::unique<std::condition_variable>(new std::condition_variable());    
+            std::unique_ptr<std::condition_variable>(new std::condition_variable());    
    
-    known_jobs_[id].push_back(job_in);
-    work_queue_.push(job_in_);
+    known_jobs_[id].push_back(std::move(job_in));
+    //work_queue_.push(std::move(job_in));
+    Jobid_t jid [2] = {id, for_param.thread_id_};
+    work_queue_.push(jid);
 }
 
 
 void ThreadPool::push_termination_job() {
-    JobIn job_int;
-    job_in.exit_run_ = true;
-    work_queue_.push_back(job_in);
+    //JobIn job_in;
+    //job_in.exit_run_ = true;
+    Jobid_t jid[2] = {0, 0};
+    work_queue_.push(jid);
 }
 
 
 void ThreadPool::run(int me) {
     while(true) {
         if(work_queue_.size() != 0) {
-            JobIn job_in = work_queue_.front();
-            if(job_in.exit_run_)
-                break;
+
+            job_pop_mtx.lock();
+            Jobid_t *j_id = work_queue_.front();
+            if(j_id[0] == 0){
+                work_queue_.pop();
+                break;            
+            }
+            JobIn &job_in = known_jobs_[j_id[0]].at(j_id[1]);
+            work_queue_.pop();
+            
             // TODO: exceptions here: terminatedwithexceptions
             //try {
-                job_in.job_.nested_base_(job_in.job_.for_param_);
+                //job_in.job_.nested_base_(job_in.job_.for_param_);
+            job_in.job_.nested_base_->callme(job_in.job_.for_param_);
             //}catch(std::exception e)
             
             /* Before task terminate has to wait for all its children to terminate */
             if(job_in.job_type_.compare("OMPTaskDirective") == 0) {
                 int barriers_number = sched_opt_[job_in.job_id_].barriers_.size();
-                int barrier_id:
+                int barrier_id;
                 for(int i = 0; i < barriers_number; i ++) {
                     barrier_id = sched_opt_[job_in.job_id_].barriers_[i];
                     join(barrier_id);
-                    known_jobs_.erase(barriers_id);
+                    known_jobs_.erase(barrier_id);
                 }
             }
 
-            job_in.done_cond_var_.notify_one();
+            job_in.done_cond_var_->notify_one();
         }
     }
 }
 
 
-void ThreadPool::join(jobid_t job_id) {
+void ThreadPool::join(Jobid_t job_id) {
     
     /* Each pragma can be runned on multiple thread: e.g. parallel for */
     for(int i = 0; i < known_jobs_[job_id].size(); i ++) {
         std::unique_lock<std::mutex> lk(cond_var_mtx);
-        known_jobs_[job_id].at(i).done_cond_var_.wait(lk);
+        known_jobs_[job_id].at(i).done_cond_var_->wait(lk);
     }
+    //CHECK THIS
+    known_jobs_.erase(job_id);
 }
 
 
@@ -181,7 +194,6 @@ void ThreadPool::joinall() {
     for(int i = 0; i < threads_pool_.size(); i++)
         threads_pool_[i].join();
 
-    work_queue_.clear();
 }
 
 

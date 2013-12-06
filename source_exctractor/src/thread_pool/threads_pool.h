@@ -5,8 +5,9 @@
 #include <map>
 #include <math.h>
 #include <iostream>
-#include <queue>
 #include <condition_variable>
+#include <queue>
+#include <memory>
 
 #include "xml_creator/tinyxml2.h"
 
@@ -37,7 +38,7 @@ public:
 
 class ThreadPool {
 public:
-    typedef int jobid_t;
+    typedef int Jobid_t;
 
     struct Job
     {
@@ -55,7 +56,7 @@ public:
     void push(std::shared_ptr<NestedBase> nested_base, ForParameter for_param);
     void push_termination_job();
 
-    bool join(jobid_t);
+    void join(Jobid_t);
 
     void joinall();
 
@@ -77,12 +78,16 @@ private:
 
     struct JobIn {
         Job job_;
-        jobid_t job_id_;
+        Jobid_t job_id_;
         std::string job_type_;
         /* Communicates to threads to terminate their activity */
         bool exit_run_ = false;
         bool terminated_with_exceptions_;
         std::unique_ptr<std::condition_variable> done_cond_var_;
+
+        JobIn(std::shared_ptr<NestedBase> nested_base, ForParameter for_param) 
+                : job_(nested_base, for_param) {}
+
     };
 
     ThreadPool(std::string file_name);
@@ -93,10 +98,13 @@ private:
 
     std::vector<std::thread> threads_pool_; // not thread safe
     /* Job queue */
-    std::Queue<JobIn> work_queue_;    
+    //std::queue<JobIn> work_queue_;
+    std::queue<Jobid_t *> work_queue_;        
     /* For each pragma the list of jobs executing that pragma, e.g. in case of parallel for */
-    std::map<jobid_t, std::vector<JobIn>> known_jobs_;
+    std::map<Jobid_t, std::vector<JobIn>> known_jobs_;
     /* Mutex used by std::condition_variable to synchronize jobs execution */
     std::mutex cond_var_mtx; 
+
+    std::mutex job_pop_mtx;
 };
 

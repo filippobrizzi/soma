@@ -29,7 +29,9 @@ void Program::ParseSourceCode(std::string file_name) {
 	function_list_ = new std::vector<clang::FunctionDecl *>(ast_consumer.recursive_visitor_.function_list_);
 
   /*Output rewritten source code into a new file */
-	const clang::RewriteBuffer *rewrite_buf_profiling = rewrite_profiling.getRewriteBufferFor(ccompiler_.getSourceManager().getMainFileID());  	
+	const clang::RewriteBuffer *rewrite_buf_profiling = 
+      rewrite_profiling.getRewriteBufferFor(ccompiler_.getSourceManager().getMainFileID());  	
+  
   out_file_profile << std::string(rewrite_buf_profiling->begin(), rewrite_buf_profiling->end());
   out_file_profile.close();
 
@@ -50,7 +52,9 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
 
     /* Include the path to ProfileTracker.h */
     if(include_inserted_ == false) {
-      std::string text_include = "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
+      std::string text_include = 
+      "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
+      
       rewrite_profiling_.InsertText(start_src_loc, text_include, true, false);
       include_inserted_ = true;
     } 
@@ -110,16 +114,20 @@ void ProfilingRecursiveASTVisitor::RewriteProfiling(clang::Stmt *s) {
     if(clang::isa<clang::ForStmt>(s)) {
       std::string condition_var_value = ForConditionVarValue(s);
       //std::string conditionVar = "";
-      text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << function_start_line << ", " << pragma_start_line << ", " << condition_var_value << "))\n";
+      text_profiling << "if( ProfileTracker x = ProfileTrackParams(" 
+          << function_start_line << ", " << pragma_start_line << ", " << condition_var_value << "))\n";
       rewrite_profiling_.InsertText(start_src_loc, text_profiling.str(), true, true);
 
     } else {
-	    text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << function_start_line << ", " << pragma_start_line << "))\n";
+	    text_profiling << "if( ProfileTracker x = ProfileTrackParams(" 
+          << function_start_line << ", " << pragma_start_line << "))\n";
       rewrite_profiling_.InsertText(start_src_loc, text_profiling.str(), true, true);
     }
 
     /* Comment the pragma in the profiling file */
-    clang::SourceLocation pragma_start_src_loc = sm.translateLineCol(sm.getMainFileID(), pragma_start_line - 1, 1);
+    clang::SourceLocation pragma_start_src_loc = 
+        sm.translateLineCol(sm.getMainFileID(), pragma_start_line - 1, 1);
+    
     rewrite_profiling_.InsertText(pragma_start_src_loc, "//", true, false);
 }
 
@@ -147,8 +155,10 @@ std::string ProfilingRecursiveASTVisitor::ForConditionVarValue(const clang::Stmt
     end_cond_var_value = text_end_value.str();
 
   } else if(strcmp(right_expr->getStmtClassName(), "ImplicitCastExpr") == 0) {
-  	const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(right_expr->child_begin()));
-  	const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
+  	const clang::DeclRefExpr *decl_ref_expr = 
+        static_cast<const clang::DeclRefExpr *>(*(right_expr->child_begin()));
+  	
+    const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
   	//return nD->getNameAsString(); 
     end_cond_var_value = named_decl->getNameAsString();
   }
@@ -168,7 +178,9 @@ std::string ProfilingRecursiveASTVisitor::ForConditionVarValue(const clang::Stmt
  *  for (... = 0)
  */
     if(strcmp(decl_stmt->child_begin()->getStmtClassName(), "IntegerLiteral") == 0) {      
-      const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(*(decl_stmt->child_begin())); 
+      const clang::IntegerLiteral *int_literal = 
+          static_cast<const clang::IntegerLiteral *>(*(decl_stmt->child_begin())); 
+      
       std::stringstream text_star_value;
       text_star_value << int_literal->getValue().getZExtValue();
       start_cond_var_value = text_star_value.str();
@@ -177,7 +189,9 @@ std::string ProfilingRecursiveASTVisitor::ForConditionVarValue(const clang::Stmt
  *  for (... = a)
  */
     }else if (strcmp(decl_stmt->child_begin()->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(decl_stmt->child_begin()->child_begin()));
+      const clang::DeclRefExpr *decl_ref_expr = 
+          static_cast<const clang::DeclRefExpr *>(*(decl_stmt->child_begin()->child_begin()));
+      
       const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
       start_cond_var_value = named_decl->getNameAsString();
     }
@@ -186,8 +200,10 @@ std::string ProfilingRecursiveASTVisitor::ForConditionVarValue(const clang::Stmt
  *  for ( i = ...)
  */
   else if(strcmp(for_stmt->child_begin()->getStmtClassName(), "BinaryOperator") == 0) {
-    const clang::BinaryOperator *binary_op = static_cast<const clang::BinaryOperator *>(*(for_stmt->child_begin())); 
-    const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(binary_op->child_begin()));
+    const clang::BinaryOperator *binary_op = 
+        static_cast<const clang::BinaryOperator *>(*(for_stmt->child_begin())); 
+    const clang::DeclRefExpr *decl_ref_expr = 
+        static_cast<const clang::DeclRefExpr *>(*(binary_op->child_begin()));
 /*
  *  for( ... = 0)
  */
@@ -200,7 +216,8 @@ std::string ProfilingRecursiveASTVisitor::ForConditionVarValue(const clang::Stmt
  *  for ( ... = a)
  */
     } else if (strcmp(stmt_itr->getStmtClassName(), "ImplicitCastExpr") == 0) {
-      const clang::DeclRefExpr *decl_ref_expr = static_cast<const clang::DeclRefExpr *>(*(stmt_itr->child_begin()));
+      const clang::DeclRefExpr *decl_ref_expr = 
+          static_cast<const clang::DeclRefExpr *>(*(stmt_itr->child_begin()));
       const clang::NamedDecl *named_decl = decl_ref_expr->getFoundDecl();
       start_cond_var_value = named_decl->getNameAsString();
     }
@@ -253,7 +270,8 @@ void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *root_ve
   clang::ParseAST(ccompiler_.getPreprocessor(), &t_ast_consumer, ccompiler_.getASTContext());
   ccompiler_.getDiagnosticClient().EndSourceFile();
 
-  const clang::RewriteBuffer *rewrite_buff_pragma = rewrite_pragma.getRewriteBufferFor(ccompiler_.getSourceManager().getMainFileID());
+  const clang::RewriteBuffer *rewrite_buff_pragma = 
+      rewrite_pragma.getRewriteBufferFor(ccompiler_.getSourceManager().getMainFileID());
   out_file_pragma << std::string(rewrite_buff_pragma->begin(), rewrite_buff_pragma->end());
   out_file_pragma.close();
 }
@@ -266,7 +284,7 @@ bool TransformRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     if(include_inserted_ == false) {
       include_inserted_ = true;
 
-      std::string text_include = "#include \"instancerun.h\"\n";
+      std::string text_include = "#include \"/home/pippo/Documents/Project/soma/source_exctractor/src/thread_pool/threads_pool.h\"\n";
 
       rewrite_pragma_.InsertText(f_start_src_loc, text_include, true, false);
     }
@@ -279,7 +297,10 @@ bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
   
   clang::SourceLocation s_start_stc_loc = s->getLocStart();
   /* Visit only stmt in the source file (not in included file) and that are pragma stmt */
-  if(sm.getFileID(s_start_stc_loc) == sm.getMainFileID() && clang::isa<clang::OMPExecutableDirective>(s) && s != previous_stmt_) {
+  if(sm.getFileID(s_start_stc_loc) == sm.getMainFileID() 
+        && clang::isa<clang::OMPExecutableDirective>(s) 
+        && s != previous_stmt_) {
+    
     previous_stmt_ = s;
     clang::OMPExecutableDirective *omp_stmt = static_cast<clang::OMPExecutableDirective *>(s);
     clang::Stmt *associated_stmt = omp_stmt->getAssociatedStmt();
@@ -304,10 +325,11 @@ void TransformRecursiveASTVisitor::RewriteOMPBarrier(clang::OMPExecutableDirecti
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
-    Nested(int pragmaID) : NestedBase(pragmaID) {}\n\
+    Nested(int pragma_id) : NestedBase(pragma_id) {}\n\
     void callme(ForParameter for_param){}\n\
   };\n\
-  InstanceRun::getInstance(\"" << utils::FileName(omp_stmt->getLocStart(), sm) << "\")->call(std::make_shared<Nested>(" << stmt_start_line << "));\n\
+  ThreadPool::getInstance(\"" << utils::FileName(omp_stmt->getLocStart(), sm) 
+      << "\")->call(std::make_shared<Nested>(" << stmt_start_line << "));\n\
 }";
 
   clang::SourceLocation pragma_start_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_start_line + 1, 1);
@@ -339,14 +361,17 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
-    Nested(int pragmaID";
+    Nested(int pragma_id";
 
-  text_constructor << " : NestedBase(pragmaID)";
+  text_constructor << " : NestedBase(pragma_id)";
 
   clang::CapturedStmt *captured_stmt = static_cast<clang::CapturedStmt *>(associated_stmt);
   /* Iterate over all the variable used inside a pragma but defined outside. These variable have to be passed to
      the newly created function */ 
-  for(clang::CapturedStmt::capture_iterator capture_var_itr = captured_stmt->capture_begin(); capture_var_itr != captured_stmt->capture_end(); ++capture_var_itr){
+  for(clang::CapturedStmt::capture_iterator capture_var_itr = captured_stmt->capture_begin(); 
+      capture_var_itr != captured_stmt->capture_end(); 
+      ++capture_var_itr){
+
     clang::VarDecl *var_decl = capture_var_itr->getCapturedVar(); 
     std::string var_type = var_decl->getType().getAsString();
 
@@ -361,7 +386,8 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
       var_type.erase(0, 6);
 
     if(n->option_vect_->find("private") != n->option_vect_->end()) {
-      if(n->option_vect_->find("private")->second.find(var_decl->getNameAsString()) != n->option_vect_->find("private")->second.end() 
+      if(n->option_vect_->find("private")->second.find(var_decl->getNameAsString()) 
+            != n->option_vect_->find("private")->second.end() 
             || var_type.find("*") != std::string::npos){
 
         text_constructor_params << var_type << " " << var_decl->getNameAsString();
@@ -385,7 +411,8 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
     text_constructor_var << var_decl->getNameAsString();
   }
 
-  text << text_constructor_params.str() << ") " << text_constructor.str() << "{}\n" << text_class_var.str() << "\n";    
+  text << text_constructor_params.str() << ") " << text_constructor.str() 
+      << "{}\n" << text_class_var.str() << "\n";    
   
   unsigned stmt_start_line = utils::Line(s->getLocStart(), sm);
   
@@ -431,7 +458,9 @@ void callme(ForParameter for_param) {\n";
 text_after_pragma << 
 "}\n\
 };\n\
-InstanceRun::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(std::make_shared<Nested>(" << n->getStartLine();
+ThreadPool::getInstance(\"" << utils::FileName(s->getLocStart(), sm) 
+    << "\")->call(std::make_shared<Nested>(" << n->getStartLine();
+  
   if(text_constructor_var.str().compare("") != 0)
       text_after_pragma << ", ";
     
@@ -454,13 +483,18 @@ Node *TransformRecursiveASTVisitor::GetNodeObjForPragma(clang::Stmt *s){
 
   std::vector<Root *>::iterator root_itr;
   for(root_itr = root_vect_->begin(); root_itr != root_vect_->end(); root_itr ++) {
-    if((*root_itr)->getFunctionLineStart() < utils::Line(stmt_start_src_loc, sm) && (*root_itr)->getFunctionLineEnd() > utils::Line(stmt_start_src_loc, sm))
+    if((*root_itr)->getFunctionLineStart() < utils::Line(stmt_start_src_loc, sm) 
+        && (*root_itr)->getFunctionLineEnd() > utils::Line(stmt_start_src_loc, sm))
+      
       break;
   }
   
   std::vector<Node *>::iterator node_itr;
   Node * n;
-  for(node_itr = (*root_itr)->children_vect_->begin(); node_itr != (*root_itr)->children_vect_->end(); node_itr ++) {
+  for(node_itr = (*root_itr)->children_vect_->begin(); 
+      node_itr != (*root_itr)->children_vect_->end(); 
+      node_itr ++) {
+    
     n = RecursiveGetNodeObjforPragma(*node_itr, stmt_start_line);
     if(n != NULL)
       return n;
@@ -473,7 +507,9 @@ Node *TransformRecursiveASTVisitor::RecursiveGetNodeObjforPragma(Node *n, unsign
   if(n->getStartLine() == stmt_start_line){
         return n;
   }else if(n->children_vect_ != NULL) {
-    for(std::vector<Node *>::iterator node_itr = n->children_vect_->begin(); node_itr != n->children_vect_->end(); ++ node_itr) {
+    for(std::vector<Node *>::iterator node_itr = n->children_vect_->begin(); 
+        node_itr != n->children_vect_->end(); ++ node_itr) {
+      
       nn = RecursiveGetNodeObjforPragma(*node_itr, stmt_start_line);
       if(nn != NULL)
         return nn;
