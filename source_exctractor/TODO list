@@ -19,20 +19,11 @@
 	*************************************************************************************************
 	-------------------------------------------------------------------------------------------------	
 
-	Invece di fare thread.join, potrei creare un lista di task che hanno completato, due problemi:
+	Problema: 
 
-	1 - I thread fanno attesa attiva, controllando costantemente se la lista contiene il task su cui 		sono bloccati.
+	1 - Controllare che un job non fatta join su un job che ancora non ha eseguito. Che succede se fa 		join su un thread che ha già finito?
 
-	2 - Sono in grado di inserire il task quando finisce? posso sapere quando un task finisce?
-		(Ultima riga di fx()?)
+	2 - Dovremmo fare un Queue<Job> per ogni thread nella thread pool. In questo modo possiamo 				effettivamente dividere l'esecuzione in flow distinti.
 
-
-	-------------------------------------------------------------------------------------------------
-	*************************************************************************************************
-	-------------------------------------------------------------------------------------------------	
-
-	Alla fine del programma devo fare una join su tutti i thread. Due casi:
-
-	1 - Ho il main...devo inserire in comando prima del return...come faccio?
-
-	2 - Non ho il main...come faccio a sapere qual'è l'ultima chiamata?
+	3 - Come facciamo a far terminare il while(true). Dovremmo passargli un job speciale...ma quando..		abbimo visto che è impossibile passare qualcosa alla fine del main() c'è il problema del return.
+		Si potrebbe però fare nel distruttore di ThreadPool...si passa ad ogni thread un job speciale e poi si fa la join.

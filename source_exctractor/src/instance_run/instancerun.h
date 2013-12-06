@@ -29,9 +29,9 @@ public:
   	int pragma_id_;
   	int activation_time_;
   	
-  	virtual void callme(ForParameter *for_param) = 0;
+  	virtual void callme(ForParameter for_param) = 0;
   	
-  	void operator()(ForParameter *for_param);
+  	void operator()(ForParameter for_param);
 };
 
 class InstanceRun {
@@ -48,8 +48,6 @@ class InstanceRun {
 
 	InstanceRun(std::string file_name);
 
-	/* Start time of the whole program. It is used to know when to activate task */
-	std::chrono::time_point<std::chrono::system_clock> program_start_time_;
 public:
 	/* List of the pragma that are currently running. When a pragma completes it is deleted from the map */
 	std::map<int, std::thread *> running_threads_;
@@ -58,7 +56,7 @@ public:
 
 	static InstanceRun* getInstance(std::string file_name);
 
-	void call(NestedBase & nested_base);
+	void call(std::shared_ptr<NestedBase> nested_base);
 	std::chrono::time_point<std::chrono::system_clock> getTimeStart() { return program_start_time_; };
 
 };
