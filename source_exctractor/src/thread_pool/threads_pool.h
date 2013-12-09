@@ -17,8 +17,8 @@ int chartoint(char *cc);
 
 class ForParameter {
 public:
-    int thread_id_;
-    int num_threads_;
+    const int thread_id_;
+    const int num_threads_;
     ForParameter(int thread_id, int num_threads) : thread_id_(thread_id), num_threads_(num_threads) {}
 };
 
@@ -27,12 +27,14 @@ class NestedBase {
 public: 
 
     NestedBase(int pragma_id) : pragma_id_(pragma_id) {}
-
+    //NestedBase(const NestedBase&) {}
+    
     int pragma_id_;
+    int iid = 1000;
     
     virtual void callme(ForParameter for_param) = 0;
-    
-    void operator()(ForParameter for_param) { callme(for_param); }
+    virtual std::shared_ptr<NestedBase> clone() const = 0;
+    //void operator()(ForParameter for_param) { callme(for_param); }
 };
 
 
@@ -68,6 +70,7 @@ public:
 private:
     struct ScheduleOptions {
         int pragma_id_;
+        int thread_id_;
         /* Idicates the pragma type: parallel, task, ... */
         std::string pragma_type_;
         /* Indicates the threads that have to run the task */
@@ -80,13 +83,15 @@ private:
         Job job_;
         Jobid_t job_id_;
         std::string job_type_;
-        /* Communicates to threads to terminate their activity */
-        bool exit_run_ = false;
+
+        /* Fix the bug where a thread waits for another thread which already nofied to have compleated */ 
+        bool job_completed_ = false;
+
         bool terminated_with_exceptions_;
         std::unique_ptr<std::condition_variable> done_cond_var_;
 
         JobIn(std::shared_ptr<NestedBase> nested_base, ForParameter for_param) 
-                : job_(nested_base, for_param) {}
+                : job_(nested_base, for_param), job_completed_(false) {}
 
     };
 
@@ -98,7 +103,6 @@ private:
 
     std::vector<std::thread> threads_pool_; // not thread safe
     /* Job queue */
-    //std::queue<JobIn> work_queue_;
     std::queue<Jobid_t *> work_queue_;        
     /* For each pragma the list of jobs executing that pragma, e.g. in case of parallel for */
     std::map<Jobid_t, std::vector<JobIn>> known_jobs_;

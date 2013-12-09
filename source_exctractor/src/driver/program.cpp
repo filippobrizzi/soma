@@ -419,7 +419,7 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
   if(text_constructor_params.str().compare("") == 0)
       text << "void fx(ForParameter for_param)";
     else
-      text << "void fx(ForParameter for_param," << text_constructor_params.str() <<")";
+      text << "void fx(ForParameter for_param, " << text_constructor_params.str() <<")";
   
   if(n->for_node_ != NULL) {
     
