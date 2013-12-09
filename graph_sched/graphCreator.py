@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
 	#getting cores of the actual machine
 	cores = multiprocessing.cpu_count() / 2
-
+	
 	tasks_list = []
 	task_list = []
 	flows_list = []
@@ -90,23 +90,6 @@ if __name__ == "__main__":
 	for task in gen:
 		task_list.append(task)
 	
-	"""
-	j = 1
-	for l in task_permuter:
-		tasks_list.append(copy.deepcopy(l))
-		if j == cores:
-			break
-		j += 1
-	
-
-	
-	for t in tasks_list:
-		print "new permuation \n"
-		for j in t:
-			print "\t", j.start_line
-	"""
-	
-
 	for core in range(cores):
 		tmp = []
 		optimal_flow_list.append(tmp)
@@ -114,17 +97,24 @@ if __name__ == "__main__":
 		flows_list.append(tmp_2)
 		random.shuffle(task_list)
 		tasks_list.append(copy.deepcopy(copy.deepcopy(task_list)))
+		q = sched.Queue()
+		queue_list.append(q)
 
 
 
 	start_time = time.clock()
-
+	
 
 	for core in range(cores):
-		p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
-		#p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
+		#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
+		p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, queue_list[core],  )))
 		print "starting core: ",core
 		p_list[core].start()
+
+	results = []
+	for queue in queue_list:
+		t = queue.q.get()
+		results.append(t)
 
 	i = 0
 	for p in p_list:
@@ -132,11 +122,25 @@ if __name__ == "__main__":
 		print "core ", i, " joined"
 		i += 1
 
+	optimal_flow = results[0]
+	best = 0
+	for i in range(len(results)):
+		if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
+			best = i
+
+			
+	print "solution:"
+	for flow in results[best]:
+		flow.dump("\t")
+		print "\ttime:",flow.time
+
+	"""
 	optimal_flow = optimal_flow_list[0]
 
 	for flow in optimal_flow_list:
 		if sched.get_cost(flow) < optimal_flow:
 			optimal_flow = flow
+
 
 
 	par.add_new_tasks(optimal_flow, main_flow)
@@ -158,7 +162,7 @@ if __name__ == "__main__":
 	if output == 'True':
 		sched.make_white(main_flow)
 		par.scanGraph(main_flow)
-	
+	"""
 	
 	
 

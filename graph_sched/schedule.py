@@ -3,57 +3,70 @@ import xml.etree.cElementTree as ET
 import math
 import copy
 import time
+import multiprocessing
+
+
+class Queue():
+	def __init__(self):
+		self.q = multiprocessing.Queue()
+		self.set = False
 
 
 
 #returns the optimal flows 
-def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time):
-	curopt = get_cost(optimal_flow)
-	cur = get_cost(flow_list)
+def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q):
 	cur_time = time.clock() - start_time
-	if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt and cur_time < execution_time:
-		task_i = task_list[level]
-		# test integrating the single task in each
-		for flow in flow_list :
-			flow.add_task(task_i)
-			get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time)
-			flow.remove_task(task_i)
-		new_flow = par.Flow()		
-		new_flow.add_task(task_i)
-		flow_list.append(new_flow)
-		get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time)
-		flow_list.remove(new_flow)
-		
-		if 'For' in task_i.type :
-			#checks the possible splittings of the for node
-			for i in range(2, MAX_FLOWS + 1):
-				tmp_task_list = []
-				#splits the for node in j nodes
-				for j in range(0, i):
-					task = par.For_Node("splitted_" + task_i.start_line + "." + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
-					task.in_time = float(task_i.time) / i
-					task_list.append(task)
-					tmp_task_list.append(task)
-				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS, start_time, execution_time)
-				for tmp_task in tmp_task_list:
-					task_list.remove(tmp_task)
+	if cur_time < execution_time:
+		curopt = get_cost(optimal_flow)
+		cur = get_cost(flow_list)
+		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt:
+			task_i = task_list[level]
+			# test integrating the single task in each
+			for flow in flow_list :
+				flow.add_task(task_i)
+				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q)
+				flow.remove_task(task_i)
+			new_flow = par.Flow()		
+			new_flow.add_task(task_i)
+			flow_list.append(new_flow)
+			get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q)
+			flow_list.remove(new_flow)
 			
-	else:
-		if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur < curopt:
-			#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
-			del optimal_flow[:]
-			id = 0
-			#print "newflowset:"
-			for flow in flow_list:
-				for task in flow.tasks:
-					task.id = id
-				id += 1
-				optimal_flow.append(copy.deepcopy(flow))
+			if 'For' in task_i.type :
+				#checks the possible splittings of the for node
+				for i in range(2, MAX_FLOWS + 1):
+					tmp_task_list = []
+					#splits the for node in j nodes
+					for j in range(0, i):
+						task = par.For_Node("splitted_" + task_i.start_line + "." + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
+						task.in_time = float(task_i.time) / i
+						task_list.append(task)
+						tmp_task_list.append(task)
+					get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS, start_time, execution_time, q)
+					for tmp_task in tmp_task_list:
+						task_list.remove(tmp_task)
+				
+		else:
+			if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur < curopt:
+				#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
+				del optimal_flow[:]
+				id = 0
+				#print "newflowset:"
+				for flow in flow_list:
+					for task in flow.tasks:
+						task.id = id
+					id += 1
+					optimal_flow.append(copy.deepcopy(flow))
+	elif q.set == False:
+		q.q.put(optimal_flow)
+		q.set = True
+
+
+
 				#flow.dump("\t")
 				#print "\ttime:",flow.time
 			#print "\tcost ", get_cost(optimal_flow),"with flows",len(flow_list)
-
-
+				
 #generator for the tasks of the graph
 def generate_task(node):
 	if node.color != 'black':
