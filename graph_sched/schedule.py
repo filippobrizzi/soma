@@ -2,8 +2,8 @@ import pargraph as par
 import xml.etree.cElementTree as ET
 import math
 import copy
-from threading import Thread
 import time
+
 
 
 #returns the optimal flows 
@@ -52,6 +52,7 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 				#flow.dump("\t")
 				#print "\ttime:",flow.time
 			#print "\tcost ", get_cost(optimal_flow),"with flows",len(flow_list)
+
 
 #generator for the tasks of the graph
 def generate_task(node):
@@ -228,9 +229,6 @@ def serialize_splitted(task, schedule, mapped):
 				thread = ET.SubElement(threads_, 'Thread')
 				thread.text = str(task.id)
 			
-
-
-
 
 
 

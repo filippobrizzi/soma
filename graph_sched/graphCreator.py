@@ -3,8 +3,13 @@ import pargraph as par
 import copy
 import schedule as sched
 import profiler as pro
-import threading
 import time
+import multiprocessing
+import itertools
+import random
+import threading
+
+
 
 
 """ Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output)
@@ -67,29 +72,82 @@ if __name__ == "__main__":
 
 	#creating a new generator for the expanded graph
 	sched.make_white(main_flow)
-	gen = sched.generate_task(main_flow)
+
+	#getting the number of physical cores of the machine profiled
+	max_flows = sched.get_core_num(profile_xml)
+
+	#getting cores of the actual machine
+	cores = multiprocessing.cpu_count() / 2
+
+	tasks_list = []
 	task_list = []
+	flows_list = []
+	optimal_flow_list = []
+	p_list = []
+	queue_list = []
+	gen = sched.generate_task(main_flow)
+
 	for task in gen:
 		task_list.append(task)
+	
+	"""
+	j = 1
+	for l in task_permuter:
+		tasks_list.append(copy.deepcopy(l))
+		if j == cores:
+			break
+		j += 1
+	
 
-	#getting the number of physical cores of the machine
-	max_flows = sched.get_core_num(profile_xml)
-	flow_list = []
-	optimal_flow = []
+	
+	for t in tasks_list:
+		print "new permuation \n"
+		for j in t:
+			print "\t", j.start_line
+	"""
+	
+
+	for core in range(cores):
+		tmp = []
+		optimal_flow_list.append(tmp)
+		tmp_2 = []
+		flows_list.append(tmp_2)
+		random.shuffle(task_list)
+		tasks_list.append(copy.deepcopy(copy.deepcopy(task_list)))
+
+
+
 	start_time = time.clock()
-	sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, start_time, execution_time)
+
+
+	for core in range(cores):
+		p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
+		#p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
+		print "starting core: ",core
+		p_list[core].start()
+
+	i = 0
+	for p in p_list:
+		p.join()
+		print "core ", i, " joined"
+		i += 1
+
+	optimal_flow = optimal_flow_list[0]
+
+	for flow in optimal_flow_list:
+		if sched.get_cost(flow) < optimal_flow:
+			optimal_flow = flow
+
 
 	par.add_new_tasks(optimal_flow, main_flow)
 
 	sched.chetto(main_flow, 12, optimal_flow)
 
-	
+
 	print "best solution:"
 	for flow in optimal_flow:
 		flow.dump("\t")
 		print "\ttime:",flow.time
-	
-
 	
 	sched.make_white(main_flow)
 	#sched.print_schedule(main_flow)
@@ -100,7 +158,8 @@ if __name__ == "__main__":
 	if output == 'True':
 		sched.make_white(main_flow)
 		par.scanGraph(main_flow)
-
+	
+	
 	
 
 
