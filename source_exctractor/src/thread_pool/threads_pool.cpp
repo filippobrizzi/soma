@@ -83,9 +83,7 @@ void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
 
 
     for(int i = 0; i < thread_number; i ++) {
-        std::shared_ptr<NestedBase> new_nested_b = nested_b->clone();
-        new_nested_b->iid = i;
-        push(new_nested_b, ForParameter(i, thread_number));
+        push(nested_b->clone(), ForParameter(i, thread_number));
     }
 
     /* Only pragma Parallel and Parallel For must join in the caller thread */
@@ -111,13 +109,13 @@ void ThreadPool::push(std::shared_ptr<NestedBase> nested_base,
     job_in.job_type_ = sched_opt_[nested_base->pragma_id_].pragma_type_;
     job_in.done_cond_var_ = 
             std::unique_ptr<std::condition_variable>(new std::condition_variable());    
-   
+       
+    job_pop_mtx.lock();
     known_jobs_[id].push_back(std::move(job_in));
-    
+
     Jobid_t *jid = new Jobid_t[2];
     jid[0] = id; jid[1] = for_param.thread_id_;
     
-    job_pop_mtx.lock();
     work_queue_.push(jid);
     job_pop_mtx.unlock();
     /* DEBUG */
@@ -127,7 +125,8 @@ void ThreadPool::push(std::shared_ptr<NestedBase> nested_base,
         << for_param.thread_id_ << " / " << for_param.num_threads_  << " -- "
         << known_jobs_[id].back().job_id_ << " - "
         << known_jobs_[id].back().job_.for_param_.thread_id_ << " / "
-        << known_jobs_[id].back().job_.for_param_.num_threads_ << std::endl;cout_mtx.unlock();
+        << known_jobs_[id].back().job_.for_param_.num_threads_ 
+        << " TYPE " << known_jobs_[id].back().job_type_ << std::endl;cout_mtx.unlock();
 }
 
 
@@ -151,32 +150,24 @@ void ThreadPool::run(int me) {
             
             if(j_id[0] == 0)
                 break;            
+            int pragma_id = j_id[0]; int thread_id = j_id[1]; 
+            //JobIn &job_in = known_jobs_[j_id[0]].at(j_id[1]);
             
-            JobIn &job_in = known_jobs_[j_id[0]].at(j_id[1]);
-            cout_mtx.lock(); std::cout << "THREAD: " << me << " job_in " << j_id[0] << " - " << j_id[1] 
-                << " -- " << known_jobs_[j_id[0]][j_id[1]].job_id_ 
-                << " JOB FOR " << job_in.job_.for_param_.thread_id_ << " / " << job_in.job_.for_param_.num_threads_ 
-                << " nested " << job_in.job_.nested_base_->pragma_id_
-                << " IIDDD " << job_in.job_.nested_base_->iid
-                << std::endl; cout_mtx.unlock();
-            // TODO: exceptions here: terminatedwithexceptions
-            //try {
-                job_in.job_.nested_base_->callme(job_in.job_.for_param_);
-            //}catch(std::exception e) {}
-            
+            known_jobs_[pragma_id][thread_id].job_.nested_base_->callme(known_jobs_[pragma_id][thread_id].job_.for_param_);
             /* Before task terminate has to wait for all its children to terminate */
-            if(job_in.job_type_.compare("OMPTaskDirective") == 0) {
-                int barriers_number = sched_opt_[job_in.job_id_].barriers_.size();
+            
+            if(known_jobs_[pragma_id][thread_id].job_type_.compare("OMPTaskDirective") == 0) {
+                int barriers_number = sched_opt_[known_jobs_[pragma_id][thread_id].job_id_].barriers_.size();
                 int barrier_id;
                 for(int i = 0; i < barriers_number; i ++) {
-                    barrier_id = sched_opt_[job_in.job_id_].barriers_[i];
+                    barrier_id = sched_opt_[known_jobs_[pragma_id][thread_id].job_id_].barriers_[i];
                     join(barrier_id);                
                 }
             }
-            job_in.job_completed_ = true;
-            job_in.done_cond_var_->notify_one();
+        
+            known_jobs_[pragma_id][thread_id].job_completed_ = true;
+            known_jobs_[pragma_id][thread_id].done_cond_var_->notify_one();
         }else {
-            //std::cout << "AAAAAAAAAAAAAAAA   " << me << std::endl;
             job_pop_mtx.unlock();
         }
     }
@@ -194,7 +185,7 @@ void ThreadPool::join(Jobid_t job_id) {
         }
     }
     //CHECK THIS
-    //known_jobs_.erase(job_id);
+    known_jobs_.erase(job_id);
     //cout_mtx.lock(); std::cout << "JOIN END " << job_id << std::endl; cout_mtx.unlock();
 }
 

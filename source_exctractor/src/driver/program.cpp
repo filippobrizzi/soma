@@ -325,6 +325,7 @@ void TransformRecursiveASTVisitor::RewriteOMPBarrier(clang::OMPExecutableDirecti
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
+    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } \n\
     Nested(int pragma_id) : NestedBase(pragma_id) {}\n\
     void callme(ForParameter for_param){}\n\
   };\n\
@@ -361,6 +362,7 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
 "{\n\
   class Nested : public NestedBase {\n\
   public: \n\
+    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } \n\
     Nested(int pragma_id";
 
   text_constructor << " : NestedBase(pragma_id)";

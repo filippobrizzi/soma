@@ -27,10 +27,8 @@ class NestedBase {
 public: 
 
     NestedBase(int pragma_id) : pragma_id_(pragma_id) {}
-    //NestedBase(const NestedBase&) {}
     
     int pragma_id_;
-    int iid = 1000;
     
     virtual void callme(ForParameter for_param) = 0;
     virtual std::shared_ptr<NestedBase> clone() const = 0;
@@ -87,7 +85,7 @@ private:
         /* Fix the bug where a thread waits for another thread which already nofied to have compleated */ 
         bool job_completed_ = false;
 
-        bool terminated_with_exceptions_;
+        //bool terminated_with_exceptions_;
         std::unique_ptr<std::condition_variable> done_cond_var_;
 
         JobIn(std::shared_ptr<NestedBase> nested_base, ForParameter for_param) 
