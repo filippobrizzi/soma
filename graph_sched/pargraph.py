@@ -166,7 +166,7 @@ class Flow():
 	def dump(self,prefix=""):
 		print prefix,"flow:"
 		for task in self.tasks:
-			print prefix, "\t", task.type, " ", task.start_line, " ", task.in_time
+			print prefix, "\t", task.type, " ", task.start_line, " ", task.in_time, " id ", task.id
 	def remove_task(self, task):
 		self.tasks.remove(task)
 		self.time -= task.in_time #float(task.time) - float(task.children_time)
@@ -580,6 +580,8 @@ def find_node2(node, flow_graphs):
 
 
 def find_sub_node(node, function):
+	if (function.start_line) == node and ('BARRIER' not in function.type):
+			return function
 	for child in function.children:
 		if (child.start_line) == node and ('BARRIER' not in child.type):
 			return child
@@ -633,6 +635,7 @@ def add_new_tasks(optimal_flow, main_flow):
 	for key in for_map:
 		node_to_replace = find_node2(key, main_flow)
 		nodes_to_add = []
+		print "replace ", node_to_replace.type, " @ ", node_to_replace.start_line
 
 		for i in range(for_map[key].count):
 			nodes_to_add.append(For_Node("splitted_" + node_to_replace.start_line + "." + str(i), node_to_replace.start_line, node_to_replace.init_type, node_to_replace.init_var, node_to_replace.init_value, node_to_replace.init_cond, node_to_replace.init_cond_value, node_to_replace.init_increment, node_to_replace.init_increment_value, node_to_replace.time, node_to_replace.variance, math.floor(float(node_to_replace.mean_loops) / (i + 1))))
@@ -642,11 +645,23 @@ def add_new_tasks(optimal_flow, main_flow):
 			for n in nodes_to_add:
 				parent.add(n)
 				n.id = for_map[key].id.pop(0)
+				n.color = 'white'
 
 		for child in node_to_replace.children:
 			child.parent.remove(node_to_replace)
 			for n in nodes_to_add:
 				n.add(child) 
+
+
+def add_flow_id(optimal_flow, task_list):
+	id_map = {}
+	for flow in optimal_flow:
+		for task in flow.tasks:
+			if "splitted" not in task.type:
+				id_map[task.start_line] = task.id
+	for task in task_list:
+		if "splitted" not in task.type:
+			task.id = id_map[task.start_line]
 
 
 

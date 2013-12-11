@@ -1,26 +1,3 @@
 <Schedule>
   <Cores>4</Cores>
-  <Pragma>
-    <id>28</id>
-    <Type>main</Type>
-    <Threads>
-      <Thread>None</Thread>
-    </Threads>
-    <Start_time>0</Start_time>
-    <Deadline>8.0</Deadline>
-    <Barrier>
-      <id>28</id>
-      <id>35</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>35</id>
-    <Type>OMPForDirective</Type>
-    <Threads>
-      <Thread>2</Thread>
-      <Thread>3</Thread>
-    </Threads>
-    <Start_time>8.0</Start_time>
-    <Deadline>8.0</Deadline>
-  </Pragma>
 </Schedule>

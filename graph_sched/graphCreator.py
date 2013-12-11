@@ -64,12 +64,7 @@ if __name__ == "__main__":
 
 	#creating a generator for the expanded graph
 	gen = sched.generate_task(main_flow)
-
-	#getting the number of tasks in the expanded graph
-	num_tasks = 0
-	for node in gen:
-		num_tasks += 1
-
+	
 	#creating a new generator for the expanded graph
 	sched.make_white(main_flow)
 
@@ -79,17 +74,23 @@ if __name__ == "__main__":
 	#getting cores of the actual machine
 	cores = multiprocessing.cpu_count() / 2
 	
+	#initializing all the lists for the parallel scheduling algorithm
 	tasks_list = []
 	task_list = []
 	flows_list = []
 	optimal_flow_list = []
 	p_list = []
 	queue_list = []
-	gen = sched.generate_task(main_flow)
+	results = []
+	num_tasks = 0
+	start_time = time.clock()
 
+	#getting the number of tasks in the expanded graph and creating a list of task
 	for task in gen:
 		task_list.append(task)
+		num_tasks += 1
 	
+
 	for core in range(cores):
 		tmp = []
 		optimal_flow_list.append(tmp)
@@ -99,70 +100,62 @@ if __name__ == "__main__":
 		tasks_list.append(copy.deepcopy(copy.deepcopy(task_list)))
 		q = sched.Queue()
 		queue_list.append(q)
-
-
-
-	start_time = time.clock()
-	
-
-	for core in range(cores):
-		#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
 		p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, queue_list[core],  )))
 		print "starting core: ",core
 		p_list[core].start()
-
-	results = []
+		#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
+		
+	#getting the results from the processes
 	for queue in queue_list:
 		t = queue.q.get()
 		results.append(t)
 
+	#joining all the processes
 	i = 0
 	for p in p_list:
 		p.join()
 		print "core ", i, " joined"
 		i += 1
 
+	#getting the best result
 	optimal_flow = results[0]
 	best = 0
 	for i in range(len(results)):
 		if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
 			best = i
+	optimal_flow = results[best]
 
-			
+	#printing the best result	
 	print "solution:"
-	for flow in results[best]:
-		flow.dump("\t")
-		print "\ttime:",flow.time
-
-	"""
-	optimal_flow = optimal_flow_list[0]
-
-	for flow in optimal_flow_list:
-		if sched.get_cost(flow) < optimal_flow:
-			optimal_flow = flow
-
-
-
-	par.add_new_tasks(optimal_flow, main_flow)
-
-	sched.chetto(main_flow, 12, optimal_flow)
-
-
-	print "best solution:"
 	for flow in optimal_flow:
 		flow.dump("\t")
 		print "\ttime:",flow.time
+
+	#substitutes for tasks with splitted versions if present in the optimal flows
+	par.add_new_tasks(optimal_flow, main_flow)
+	sched.make_white(main_flow)
+	gen_ = sched.generate_task(main_flow)
+
+	t_list = []
+	for t in gen_:
+		t_list.append(t)
+		
+
+	par.add_flow_id(optimal_flow, t_list)
+
+	#sets arrival times and deadlines using a modified version of the chetto algorithm
+	sched.chetto(main_flow, 12, optimal_flow)
 	
 	sched.make_white(main_flow)
-	#sched.print_schedule(main_flow)
+	sched.print_schedule(main_flow)
 	
 	sched.create_schedule(main_flow, len(optimal_flow))
-
 
 	if output == 'True':
 		sched.make_white(main_flow)
 		par.scanGraph(main_flow)
-	"""
+
+	
 	
 	
 

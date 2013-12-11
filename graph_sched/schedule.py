@@ -69,12 +69,19 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 				
 #generator for the tasks of the graph
 def generate_task(node):
-	if node.color != 'black':
+	if node.color == 'white':
 		node.color = 'black'
 		yield node
 		for n in node.children:
 			for node in generate_task(n):
 				yield node
+
+def generate_list(l, node):
+	if node.color == 'white':
+		node.color = 'black'
+		l.append(node)
+		for n in node.children:
+			generate_list(l, n)
 
 #returns the number or physical cores
 def get_core_num(profile):
@@ -85,8 +92,8 @@ def get_core_num(profile):
 def make_white(node):
 	if node.color == 'black':
 		node.color = 'white'
-		for child in node.children:
-			make_white(child)
+	for child in node.children:
+		make_white(child)
 
 #returns the graph which contains the 'main' function
 def get_main(exp_flows):
@@ -173,15 +180,15 @@ def get_id(node, optimal_flow):
 			if node.type == task.type:
 				return flow.id
 
-def print_schedule(graph):
-	for node in graph.children:
-		if node.color == 'white':
-			node.color = 'black'
-			print node.type," @ ", node.start_line
-			print "\t start: ", node.arrival
-			print "\t deadline: ", node.d
-			print "\t flow: ", node.id
-			print_schedule(node)
+def print_schedule(node):
+	if node.color == 'white':
+		node.color = 'black'
+		print node.type," @ ", node.start_line
+		print "\t start: ", node.arrival
+		print "\t deadline: ", node.d
+		print "\t flow: ", node.id
+	for n in node.children:
+		print_schedule(n)
 
 def create_schedule(graph, num_cores):
 	mapped = []
