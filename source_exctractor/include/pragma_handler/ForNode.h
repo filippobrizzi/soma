@@ -21,6 +21,8 @@
 class ForNode {
 
 public:
+	clang::ForStmt *for_stmt_;
+
 	/* Loop variable */
 	std::string loop_var_;
 	std::string loop_var_type_;

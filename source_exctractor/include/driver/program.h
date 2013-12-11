@@ -76,7 +76,7 @@ public:
   bool VisitStmt(clang::Stmt *s);
   /* This function is called for each function in the AST */
   bool VisitFunctionDecl(clang::FunctionDecl *f);
-
+  bool VisitDecl(clang::Decl *decl);
   std::vector<clang::OMPExecutableDirective *> pragma_list_;
   std::vector<clang::FunctionDecl *> function_list_;
     
@@ -143,6 +143,7 @@ public:
   
   bool VisitStmt(clang::Stmt *s);
   bool VisitFunctionDecl(clang::FunctionDecl *f);
+  bool VisitDecl(clang::Decl *decl);
 };
 
 /*

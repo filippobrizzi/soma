@@ -19,11 +19,19 @@
 	*************************************************************************************************
 	-------------------------------------------------------------------------------------------------	
 
-	Problema: 
+	PROBLEMI:
 
-	1 - Controllare che un job non fatta join su un job che ancora non ha eseguito. Che succede se fa 		join su un thread che ha già finito?
+	1 - problema con le parentesi graffe del for...io sostituisco il for quindi se è del tipo:
+		for(...;...;...)
+		{
 
-	2 - Dovremmo fare un Queue<Job> per ogni thread nella thread pool. In questo modo possiamo 				effettivamente dividere l'esecuzione in flow distinti.
+		}
 
-	3 - Come facciamo a far terminare il while(true). Dovremmo passargli un job speciale...ma quando..		abbimo visto che è impossibile passare qualcosa alla fine del main() c'è il problema del return.
-		Si potrebbe però fare nel distruttore di ThreadPool...si passa ad ogni thread un job speciale e poi si fa la join.
+		no problem, ma se invece è del tipo:
+		for(...;...;...) {
+
+		}
+
+		ho un problema perchè non so se la graffa alla fine c'è o meno, e quindi non so se la devo aggiungere.
+
+		Possibile problema, con il source location estrarre la stringa della linea, parsarla e vedere se c'è una graffa.

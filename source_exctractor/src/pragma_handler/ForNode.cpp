@@ -15,6 +15,7 @@ ForNode::ForNode(clang::ForStmt *for_stmt) {
   increment_val_set_ = false;
   increment_var_ = "";
 
+  for_stmt_ = for_stmt;
   ExtractForParameters(for_stmt);
 }
 
@@ -133,7 +134,7 @@ void ForNode::ExtractForIncrement(clang::ForStmt *for_stmt) {
 
     if(strcmp(right_expr->getStmtClassName(), "IntegerLiteral") == 0) {
       const clang::IntegerLiteral *int_literal = static_cast<const clang::IntegerLiteral *>(right_expr);
-      increment_val_set_ = int_literal->getValue().getZExtValue();
+      increment_val_ = int_literal->getValue().getZExtValue();
       increment_val_set_ = true;
 
     }else if(strcmp(right_expr->getStmtClassName(), "ImplicitCastExpr") == 0) {

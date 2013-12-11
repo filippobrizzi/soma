@@ -83,7 +83,7 @@ int main() {
  #pragma omp parallel shared(b)
  {
     #pragma omp for period(12)
-    for(int i=1;i< n; i += 1) {
+    for(int i=1;i< n; i += 3) {
       sleep(1);
     }
  }

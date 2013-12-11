@@ -1,12 +1,12 @@
 
 #include <unistd.h>
 
+#include "/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h"
 class X{
 public:
   float* y(int i, int *c);
 };
 
-#include "/home/pippo/Documents/Project/soma/source_exctractor/src/profile_tracker/ProfileTracker.h"
 float* X::y (int i, int *c) {
 if( ProfileTracker x = ProfileTrackParams(9, 0)) {
 	int a = i;
@@ -100,7 +100,7 @@ if( ProfileTracker x = ProfileTrackParams(28, 0)) {
  {
 //    #pragma omp for period(12)
     if( ProfileTracker x = ProfileTrackParams(28, 86, n - 1))
-    for(int i=1;i< n; i += 1) {
+    for(int i=1;i< n; i += 3) {
       sleep(1);
     }
  }

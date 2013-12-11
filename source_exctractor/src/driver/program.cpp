@@ -37,6 +37,20 @@ void Program::ParseSourceCode(std::string file_name) {
 
 }
 
+bool ProfilingRecursiveASTVisitor::VisitDecl(clang::Decl *decl) {
+
+  clang::SourceLocation cxx_start_src_loc = decl->getLocStart();
+  if(sm.getFileID(cxx_start_src_loc) == sm.getMainFileID() 
+      && clang::isa<clang::CXXRecordDecl>(decl)
+      && include_inserted_ == false) {
+    include_inserted_ = true;
+    std::string text_include = 
+      "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
+    rewrite_profiling_.InsertText(cxx_start_src_loc, text_include, true, false);
+  }
+
+  return true;
+}
 
 /*
  * ---- Insert the call to the profilefunction tracker to track the execution time of each funcion.
@@ -276,6 +290,19 @@ void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *root_ve
   out_file_pragma.close();
 }
 
+bool TransformRecursiveASTVisitor::VisitDecl(clang::Decl *decl) {
+
+  clang::SourceLocation cxx_start_src_loc = decl->getLocStart();
+  if(sm.getFileID(cxx_start_src_loc) == sm.getMainFileID() 
+      && clang::isa<clang::CXXRecordDecl>(decl)
+      && include_inserted_ == false) {
+    include_inserted_ = true;
+    std::string text_include = "#include \"/home/pippo/Documents/Project/soma/source_exctractor/src/thread_pool/threads_pool.h\"\n";
+    rewrite_pragma_.InsertText(cxx_start_src_loc, text_include, true, false);
+  }
+
+  return true;
+}
 
 bool TransformRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {     
   clang::SourceLocation f_start_src_loc = f->getLocStart();
@@ -527,7 +554,6 @@ std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
 
   ForNode *for_node = n->for_node_;
 
-
   /* for( int i = a + for_param->thread_id_ *(b - a)/ num_threads_; .... */
   text_for << "for(" << for_node->loop_var_type_ << " " << for_node->loop_var_ << " = ";
   if(for_node->loop_var_init_val_set_)
@@ -574,9 +600,21 @@ std::string TransformRecursiveASTVisitor::RewriteOMPFor(Node *n) {
   /* ...; i ++) */
   text_for << for_node->loop_var_ << " " << for_node->increment_op_ << " ";
   if(for_node->increment_val_set_)
-    text_for << for_node->increment_val_ << ")\n";
+    text_for << for_node->increment_val_;
   else
-    text_for << for_node->increment_var_ << ")\n";
+    text_for << for_node->increment_var_; 
+
+  /* Guarantee that a "{" is inserted at the end of the for declaration line if necessary */ 
+  clang::SourceLocation for_src_loc = for_node->for_stmt_->getLocStart();
+  std::string for_string = sm.getCharacterData(for_src_loc);
+  size_t ext = for_string.find_first_of("\n");
+  for_string = for_string.substr(0, ext);
+
+  ext = for_string.rfind("{");
+  if (ext == std::string::npos)
+    text_for << ")\n";
+  else
+    text_for << ") { \n";
 
   return text_for.str();
 
