@@ -336,8 +336,9 @@ bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
       if(strcmp(captured_stmt->getStmtClassName(), "OMPForDirective") != 0)
         RewriteOMPPragma(associated_stmt);
 
-    }else if(strcmp(omp_stmt->getStmtClassName(), "OMPBarrierDirective") == 0){
-        RewriteOMPBarrier(omp_stmt);
+    }else if(strcmp(omp_stmt->getStmtClassName(), "OMPBarrierDirective") == 0
+            || strcmp(omp_stmt->getStmtClassName(), "OMPTaskwaitDirective") == 0){
+      RewriteOMPBarrier(omp_stmt);
     }
   }
   return true;

@@ -16,11 +16,20 @@ std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pr
 
     function_decl_tmp = GetFunctionForPragma(*omp_itr, function_list, sm);
     Node * n = new Node(*omp_itr, function_decl_tmp, sm);
+      std::cout << "CIAO 1 - " << (*omp_itr)->getStmtClassName() << std::endl;
 
-    if((*omp_itr)->getAssociatedStmt())
-      if(strcmp((*omp_itr)->getStmtClassName(), "OMPParallelDirective") == 0 && utils::Line((*omp_itr)->getAssociatedStmt()->getLocStart(), sm) == utils::Line((*omp_itr)->getAssociatedStmt()->getLocEnd(), sm))
+    /* In case of parallel for skip one stmt. 
+       Parallel for is represented with two OMPExecutableDirective,
+       (OMPParallel + OMPFor) so we have to skip one stmt */
+    if((*omp_itr)->getAssociatedStmt()) {
+      if(strcmp((*omp_itr)->getStmtClassName(), "OMPParallelDirective") == 0 
+          && utils::Line((*omp_itr)->getAssociatedStmt()->getLocStart(), sm) 
+             == utils::Line((*omp_itr)->getAssociatedStmt()->getLocEnd(), sm)) {
+        n->pragma_type_ = "OMPParallelForDirective";
         omp_itr++;
-    
+      }
+    }
+
     if(function_decl_tmp != function_decl) {
       function_decl = function_decl_tmp;
       Root *root = new Root(n, n->getParentFunctionInfo());

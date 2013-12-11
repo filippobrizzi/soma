@@ -38,21 +38,23 @@ private:
 	std::string file_name_;
 	int start_line_, start_column_;
 	int end_line_, end_column_;
-
-/*Pragma name with all the parameters */
-	std::string pragma_type_;
 	
-
 /*Line number of the function that contains this pragma */
 	FunctionInfo parent_funct_info_;
 
 /* Variables to construct the tree */
 	Node *parent_node_;
 
+	/*Pragma name with all the parameters */
+	//std::string pragma_type_;
+
 /* Function to exctract all the parameters of the pragma */
 	void setPragmaClauses(clang::SourceManager& sm);
 
 public:
+	/*Pragma name with all the parameters */
+	std::string pragma_type_;
+
 	bool profiled_ = false;
 	//SourceLocationStruct src_loc_;
 

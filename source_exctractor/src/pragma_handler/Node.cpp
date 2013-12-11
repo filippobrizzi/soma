@@ -144,7 +144,7 @@ void Node::CreateXMLPragmaNode(tinyxml2::XMLDocument *xml_doc, tinyxml2::XMLElem
   pragmas_element->InsertEndChild(pragma_element);
 
   tinyxml2::XMLElement *name_element = xml_doc->NewElement("Name");
-  pragmas_element->InsertEndChild(name_element);
+  pragma_element->InsertEndChild(name_element);
   
   tinyxml2::XMLText* name_text = xml_doc->NewText(pragma_type_.c_str());
   name_element->InsertEndChild(name_text);
@@ -153,17 +153,17 @@ void Node::CreateXMLPragmaNode(tinyxml2::XMLDocument *xml_doc, tinyxml2::XMLElem
   
   if(option_vect_->size() != 0) {
     tinyxml2::XMLElement *options_element = xml_doc->NewElement("Options");
-    pragmas_element->InsertEndChild(options_element);
+    pragma_element->InsertEndChild(options_element);
 
     CreateXMLPragmaOptions(xml_doc, options_element);
 
-    pragmas_element->InsertAfterChild(options_element, position_element);
+    pragma_element->InsertAfterChild(options_element, position_element);
   } else {
 
 /*
  * ---- Position ----
  */  
-    pragmas_element->InsertEndChild(position_element);
+    pragma_element->InsertEndChild(position_element);
   }
 
   tinyxml2::XMLElement *start_line_element = xml_doc->NewElement("StartLine");
@@ -185,13 +185,13 @@ void Node::CreateXMLPragmaNode(tinyxml2::XMLDocument *xml_doc, tinyxml2::XMLElem
  */
   if(for_node_) {
     tinyxml2::XMLElement *for_element = xml_doc->NewElement("For");
-    pragmas_element->InsertEndChild(for_element);
+    pragma_element->InsertEndChild(for_element);
     for_node_->CreateXMLPragmaFor(xml_doc, for_element);
   }
 
   if(children_vect_->size() != 0) {
     tinyxml2::XMLElement *nesting_element = xml_doc->NewElement("Children");
-    pragmas_element->InsertEndChild(nesting_element);
+    pragma_element->InsertEndChild(nesting_element);
     tinyxml2::XMLElement *new_pragmas_element = xml_doc->NewElement("Pragmas");
     nesting_element->InsertEndChild(new_pragmas_element);
     for(std::vector<Node *>::iterator node_itr = children_vect_->begin(); node_itr != children_vect_->end(); ++node_itr) {
