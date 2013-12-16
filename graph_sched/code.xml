@@ -1,319 +1,70 @@
 <File>
-  <Name>test_cases/omp_test.cpp</Name>
-  <Function>
-    <Name>y</Name>
-    <ReturnType>float *</ReturnType>
-    <Parameters>
-      <Parameter>
-        <Type>int</Type>
-        <Name>i</Name>
-      </Parameter>
-      <Parameter>
-        <Type>int *</Type>
-        <Name>c</Name>
-      </Parameter>
-    </Parameters>
-    <Line>9</Line>
-    <Pragmas>
-      <Pragma>
-        <Name>OMPParallelDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Type>int</Type>
-              <Var>n</Var>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>15</StartLine>
-          <EndLine>17</EndLine>
-        </Position>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-        <Callerid>9</Callerid>
-      </Pragma>
-      <Pragma>
-        <Name>OMPForDirective</Name>
-        <Position>
-          <StartLine>21</StartLine>
-          <EndLine>22</EndLine>
-        </Position>
-        <For>
-          <Declaration>
-            <Type>int</Type>
-            <LoopVariable>j</LoopVariable>
-            <InitValue>124</InitValue>
-          </Declaration>
-          <Condition>
-            <Op>&lt;</Op>
-            <ConditionValue>125</ConditionValue>
-          </Condition>
-          <Increment>
-            <Op>++</Op>
-          </Increment>
-        </For>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-        <Loops>125.0</Loops>
-        <Callerid>9</Callerid>
-      </Pragma>
-    </Pragmas>
-    <Time>2.0</Time>
-    <Variance>0.0</Variance>
-    <Callerids>
-      <Callerid>66</Callerid>
-    </Callerids>
-  </Function>
+  <Name>../../TestOpencv/opencv1.cpp</Name>
   <Function>
     <Name>main</Name>
     <ReturnType>int</ReturnType>
-    <Line>28</Line>
+    <Parameters>
+      <Parameter>
+        <Type>int</Type>
+        <Name>argc</Name>
+      </Parameter>
+      <Parameter>
+        <Type>char **</Type>
+        <Name>argv</Name>
+      </Parameter>
+    </Parameters>
+    <Line>10</Line>
     <Pragmas>
       <Pragma>
-        <Name>OMPForDirective</Name>
-        <Position>
-          <StartLine>35</StartLine>
-          <EndLine>37</EndLine>
-        </Position>
-        <For>
-          <Declaration>
-            <Type>int</Type>
-            <LoopVariable>i</LoopVariable>
-            <InitValue>0</InitValue>
-          </Declaration>
-          <Condition>
-            <Op>&lt;</Op>
-            <ConditionValue>1</ConditionValue>
-          </Condition>
-          <Increment>
-            <Op>+=</Op>
-            <IncrementValue>1</IncrementValue>
-          </Increment>
-        </For>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-        <Loops>1.0</Loops>
-        <Callerid>28</Callerid>
-      </Pragma>
-      <Pragma>
         <Name>OMPParallelDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Type>int</Type>
-              <Var>a</Var>
-            </Parameter>
-          </Option>
-        </Options>
         <Position>
-          <StartLine>40</StartLine>
-          <EndLine>80</EndLine>
+          <StartLine>32</StartLine>
+          <EndLine>70</EndLine>
         </Position>
         <Children>
           <Pragmas>
             <Pragma>
-              <Name>OMPTaskDirective</Name>
-              <Options>
-                <Option>
-                  <Name>shared</Name>
-                  <Parameter>
-                    <Type>int</Type>
-                    <Var>b</Var>
-                  </Parameter>
-                </Option>
-              </Options>
+              <Name>OMPSectionsDirective</Name>
               <Position>
-                <StartLine>42</StartLine>
-                <EndLine>45</EndLine>
-              </Position>
-              <Time>1.0</Time>
-              <Variance>0.0</Variance>
-              <Callerid>40</Callerid>
-            </Pragma>
-            <Pragma>
-              <Name>OMPTaskDirective</Name>
-              <Options>
-                <Option>
-                  <Name>shared</Name>
-                  <Parameter>
-                    <Type>int</Type>
-                    <Var>b</Var>
-                  </Parameter>
-                </Option>
-              </Options>
-              <Position>
-                <StartLine>48</StartLine>
-                <EndLine>51</EndLine>
-              </Position>
-              <Time>1.0</Time>
-              <Variance>0.0</Variance>
-              <Callerid>40</Callerid>
-            </Pragma>
-            <Pragma>
-              <Name>OMPForDirective</Name>
-              <Position>
-                <StartLine>54</StartLine>
-                <EndLine>56</EndLine>
-              </Position>
-              <For>
-                <Declaration>
-                  <Type>int</Type>
-                  <LoopVariable>i</LoopVariable>
-                  <InitValue>1</InitValue>
-                </Declaration>
-                <Condition>
-                  <Op>&lt;</Op>
-                  <ConditionValue>2</ConditionValue>
-                </Condition>
-                <Increment>
-                  <Op>++</Op>
-                </Increment>
-              </For>
-              <Time>1.0</Time>
-              <Variance>0.0</Variance>
-              <Loops>2.0</Loops>
-              <Callerid>40</Callerid>
-            </Pragma>
-            <Pragma>
-              <Name>OMPTaskDirective</Name>
-              <Options>
-                <Option>
-                  <Name>shared</Name>
-                  <Parameter>
-                    <Type>int</Type>
-                    <Var>b</Var>
-                  </Parameter>
-                </Option>
-              </Options>
-              <Position>
-                <StartLine>59</StartLine>
-                <EndLine>74</EndLine>
+                <StartLine>34</StartLine>
+                <EndLine>69</EndLine>
               </Position>
               <Children>
                 <Pragmas>
                   <Pragma>
-                    <Name>OMPTaskDirective</Name>
-                    <Options>
-                      <Option>
-                        <Name>shared</Name>
-                        <Parameter>
-                          <Type>int</Type>
-                          <Var>b</Var>
-                        </Parameter>
-                      </Option>
-                    </Options>
+                    <Name>OMPSectionDirective</Name>
                     <Position>
-                      <StartLine>61</StartLine>
-                      <EndLine>63</EndLine>
+                      <StartLine>37</StartLine>
+                      <EndLine>51</EndLine>
                     </Position>
-                    <Time>1.0</Time>
+                    <Time>4.0</Time>
                     <Variance>0.0</Variance>
-                    <Callerid>59</Callerid>
+                    <Callerid>34</Callerid>
                   </Pragma>
                   <Pragma>
-                    <Name>OMPTaskDirective</Name>
-                    <Options>
-                      <Option>
-                        <Name>shared</Name>
-                        <Parameter>
-                          <Type>int</Type>
-                          <Var>b</Var>
-                        </Parameter>
-                      </Option>
-                    </Options>
+                    <Name>OMPSectionDirective</Name>
                     <Position>
-                      <StartLine>66</StartLine>
-                      <EndLine>72</EndLine>
+                      <StartLine>54</StartLine>
+                      <EndLine>68</EndLine>
                     </Position>
-                    <Time>3.0</Time>
+                    <Time>4.0</Time>
                     <Variance>0.0</Variance>
-                    <Callerid>59</Callerid>
+                    <Callerid>34</Callerid>
                   </Pragma>
                 </Pragmas>
               </Children>
-              <Time>5.0</Time>
+              <Time>8.0</Time>
               <Variance>0.0</Variance>
-              <Callerid>40</Callerid>
-            </Pragma>
-            <Pragma>
-              <Name>OMPTaskDirective</Name>
-              <Options>
-                <Option>
-                  <Name>shared</Name>
-                  <Parameter>
-                    <Type>int</Type>
-                    <Var>b</Var>
-                  </Parameter>
-                </Option>
-              </Options>
-              <Position>
-                <StartLine>76</StartLine>
-                <EndLine>78</EndLine>
-              </Position>
-              <Time>1.0</Time>
-              <Variance>0.0</Variance>
-              <Callerid>40</Callerid>
+              <Callerid>32</Callerid>
             </Pragma>
           </Pragmas>
         </Children>
-        <Time>9.0</Time>
+        <Time>8.0</Time>
         <Variance>0.0</Variance>
-        <Callerid>28</Callerid>
-      </Pragma>
-      <Pragma>
-        <Name>OMPParallelDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Type>int</Type>
-              <Var>b</Var>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>83</StartLine>
-          <EndLine>88</EndLine>
-        </Position>
-        <Children>
-          <Pragmas>
-            <Pragma>
-              <Name>OMPForDirective</Name>
-              <Position>
-                <StartLine>85</StartLine>
-                <EndLine>87</EndLine>
-              </Position>
-              <For>
-                <Declaration>
-                  <Type>int</Type>
-                  <LoopVariable>i</LoopVariable>
-                  <InitValue>1</InitValue>
-                </Declaration>
-                <Condition>
-                  <Op>&lt;</Op>
-                  <ConditionVariable>n</ConditionVariable>
-                </Condition>
-                <Increment>
-                  <Op>+=</Op>
-                  <IncrementValue>1</IncrementValue>
-                </Increment>
-              </For>
-              <Time>1.0</Time>
-              <Variance>0.0</Variance>
-              <Loops>2.0</Loops>
-              <Callerid>83</Callerid>
-            </Pragma>
-          </Pragmas>
-        </Children>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-        <Callerid>28</Callerid>
+        <Callerid>10</Callerid>
       </Pragma>
     </Pragmas>
-    <Time>11.0</Time>
+    <Time>8.0</Time>
     <Variance>0.0</Variance>
   </Function>
   <GraphType>Code</GraphType>

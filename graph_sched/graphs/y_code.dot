@@ -1,20 +1,20 @@
 digraph G {
-	graph [bb="0,0,459,204"];
+	graph [bb="0,0,530,188"];
 	node [label="\N"];
-	"OMPParallelDirective@15"	 [height=1.1471,
+	"OMPParallelDirective@15"	 [height=1.041,
 		label="OMPParallelDirective@15\n execution time: 1.0\nvariance: 0.0",
-		pos="118,42",
-		width=3.2896];
-	y	 [height=1.1471,
+		pos="120,38",
+		width=3.346];
+	y	 [height=1.041,
 		label="y()\n execution time: 2.000000\nvariance: 0.0",
-		pos="237,162",
-		width=3.1762];
-	y -> "OMPParallelDirective@15"	 [color=cadetblue1,
-		pos="e,156.64,81.319 198.69,123.01 187.66,112.07 175.5,100.02 164.05,88.663"];
-	"OMPForDirective@21"	 [height=1.1471,
-		label="OMPForDirective@21\n execution time: 1.0\nvariance: 0.0",
-		pos="357,42",
-		width=2.8384];
-	y -> "OMPForDirective@21"	 [color=cadetblue1,
-		pos="e,318.85,80.511 275.63,123.01 287.09,111.74 299.75,99.297 311.6,87.645"];
+		pos="257,150",
+		width=3.2888];
+	y -> "OMPParallelDirective@15"	 [color=cadetblue4,
+		pos="e,162.57,73.181 214.4,114.8 200.49,103.62 184.89,91.105 170.46,79.512"];
+	"OMPParallelForDirective@21"	 [height=1.041,
+		label="OMPParallelForDirective@21\n execution time: 1.0\nvariance: 0.0",
+		pos="395,38",
+		width=3.7606];
+	y -> "OMPParallelForDirective@21"	 [color=cadetblue4,
+		pos="e,351.64,73.559 299.91,114.8 313.79,103.73 329.33,91.344 343.76,79.843"];
 }

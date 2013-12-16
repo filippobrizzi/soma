@@ -1,384 +1,117 @@
 <File>
-  <Name>test_cases/omp_test.cpp</Name>
+  <Name>../../TestOpencv/opencv1.cpp</Name>
   <GraphType>flow</GraphType>
-  <Function id="90">
-    <Name>y</Name>
-    <ReturnType>float *</ReturnType>
+  <Function id="100">
+    <Name>main</Name>
+    <ReturnType>int</ReturnType>
     <Parameters>
       <Parameter>
         <Type>int</Type>
-        <Name>i</Name>
+        <Name>argc</Name>
       </Parameter>
       <Parameter>
-        <Type>int *</Type>
-        <Name>c</Name>
+        <Type>char **</Type>
+        <Name>argv</Name>
       </Parameter>
     </Parameters>
-    <Line>9</Line>
-    <Time>2.0</Time>
-    <Variance>0.0</Variance>
-    <Callerids>
-      <Callerid>66</Callerid>
-    </Callerids>
-    <Nodes>
-      <Pragma id="1517">
-        <Name>OMPParallelDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>n</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>15</StartLine>
-          <EndLine>17</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>9</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="2122">
-        <Name>OMPForDirective</Name>
-        <Position>
-          <StartLine>21</StartLine>
-          <EndLine>22</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>9</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-    </Nodes>
-    <Edges>
-      <Edge>
-        <Source>90</Source>
-        <Dest>1517</Dest>
-      </Edge>
-      <Edge>
-        <Source>1517</Source>
-        <Dest>2122</Dest>
-      </Edge>
-    </Edges>
-  </Function>
-  <Function id="280">
-    <Name>main</Name>
-    <ReturnType>int</ReturnType>
-    <Line>28</Line>
-    <Time>11.0</Time>
+    <Line>10</Line>
+    <Time>8.0</Time>
     <Variance>0.0</Variance>
     <Callerids />
     <Nodes>
-      <Pragma id="3537">
-        <Name>OMPForDirective</Name>
-        <Position>
-          <StartLine>35</StartLine>
-          <EndLine>37</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>28</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="4080">
+      <Pragma id="3270">
         <Name>OMPParallelDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>a</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
         <Position>
-          <StartLine>40</StartLine>
-          <EndLine>80</EndLine>
+          <StartLine>32</StartLine>
+          <EndLine>70</EndLine>
         </Position>
         <Callerids>
-          <Callerid>28</Callerid>
+          <Callerid>10</Callerid>
         </Callerids>
-        <Time>9.0</Time>
+        <Time>8.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
-      <Pragma id="4245">
-        <Name>OMPTaskDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
+      <Pragma id="3469">
+        <Name>OMPSectionsDirective</Name>
         <Position>
-          <StartLine>42</StartLine>
-          <EndLine>45</EndLine>
+          <StartLine>34</StartLine>
+          <EndLine>69</EndLine>
         </Position>
         <Callerids>
-          <Callerid>40</Callerid>
+          <Callerid>32</Callerid>
         </Callerids>
-        <Time>1.0</Time>
+        <Time>8.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
-      <Pragma id="400">
-        <Name>BARRIER</Name>
+      <Pragma id="3751">
+        <Name>OMPSectionDirective</Name>
         <Position>
-          <StartLine>40</StartLine>
-        </Position>
-        <Callerids />
-        <Variance>0</Variance>
-      </Pragma>
-      <Pragma id="8388">
-        <Name>OMPParallelDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>83</StartLine>
-          <EndLine>88</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>28</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="8587">
-        <Name>OMPForDirective</Name>
-        <Position>
-          <StartLine>85</StartLine>
-          <EndLine>87</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>83</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="830">
-        <Name>BARRIER</Name>
-        <Position>
-          <StartLine>83</StartLine>
-        </Position>
-        <Callerids />
-        <Variance>0</Variance>
-      </Pragma>
-      <Pragma id="4851">
-        <Name>OMPTaskDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>48</StartLine>
+          <StartLine>37</StartLine>
           <EndLine>51</EndLine>
         </Position>
         <Callerids>
-          <Callerid>40</Callerid>
+          <Callerid>34</Callerid>
         </Callerids>
-        <Time>1.0</Time>
+        <Time>4.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
-      <Pragma id="5456">
-        <Name>OMPForDirective</Name>
-        <Position>
-          <StartLine>54</StartLine>
-          <EndLine>56</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>40</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="5974">
-        <Name>OMPTaskDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>59</StartLine>
-          <EndLine>74</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>40</Callerid>
-        </Callerids>
-        <Time>5.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="6163">
-        <Name>OMPTaskDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
-        <Position>
-          <StartLine>61</StartLine>
-          <EndLine>63</EndLine>
-        </Position>
-        <Callerids>
-          <Callerid>59</Callerid>
-        </Callerids>
-        <Time>1.0</Time>
-        <Variance>0.0</Variance>
-      </Pragma>
-      <Pragma id="590">
+      <Pragma id="340">
         <Name>BARRIER</Name>
         <Position>
-          <StartLine>59</StartLine>
+          <StartLine>34</StartLine>
         </Position>
         <Callerids />
         <Variance>0</Variance>
       </Pragma>
-      <Pragma id="6672">
-        <Name>OMPTaskDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
+      <Pragma id="320">
+        <Name>BARRIER</Name>
         <Position>
-          <StartLine>66</StartLine>
-          <EndLine>72</EndLine>
+          <StartLine>32</StartLine>
         </Position>
-        <Callerids>
-          <Callerid>59</Callerid>
-        </Callerids>
-        <Time>3.0</Time>
-        <Variance>0.0</Variance>
+        <Callerids />
+        <Variance>0</Variance>
       </Pragma>
-      <Pragma id="7678">
-        <Name>OMPTaskDirective</Name>
-        <Options>
-          <Option>
-            <Name>shared</Name>
-            <Parameter>
-              <Var>b</Var>
-              <Type>int</Type>
-            </Parameter>
-          </Option>
-        </Options>
+      <Pragma id="5468">
+        <Name>OMPSectionDirective</Name>
         <Position>
-          <StartLine>76</StartLine>
-          <EndLine>78</EndLine>
+          <StartLine>54</StartLine>
+          <EndLine>68</EndLine>
         </Position>
         <Callerids>
-          <Callerid>40</Callerid>
+          <Callerid>34</Callerid>
         </Callerids>
-        <Time>1.0</Time>
+        <Time>4.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
     </Nodes>
     <Edges>
       <Edge>
-        <Source>280</Source>
-        <Dest>3537</Dest>
+        <Source>100</Source>
+        <Dest>3270</Dest>
       </Edge>
       <Edge>
-        <Source>3537</Source>
-        <Dest>4080</Dest>
+        <Source>3270</Source>
+        <Dest>3469</Dest>
       </Edge>
       <Edge>
-        <Source>4080</Source>
-        <Dest>4245</Dest>
+        <Source>3469</Source>
+        <Dest>3751</Dest>
       </Edge>
       <Edge>
-        <Source>4245</Source>
-        <Dest>400</Dest>
+        <Source>3751</Source>
+        <Dest>340</Dest>
       </Edge>
       <Edge>
-        <Source>400</Source>
-        <Dest>8388</Dest>
+        <Source>340</Source>
+        <Dest>320</Dest>
       </Edge>
       <Edge>
-        <Source>8388</Source>
-        <Dest>8587</Dest>
+        <Source>3469</Source>
+        <Dest>5468</Dest>
       </Edge>
       <Edge>
-        <Source>8587</Source>
-        <Dest>830</Dest>
-      </Edge>
-      <Edge>
-        <Source>4080</Source>
-        <Dest>4851</Dest>
-      </Edge>
-      <Edge>
-        <Source>4851</Source>
-        <Dest>400</Dest>
-      </Edge>
-      <Edge>
-        <Source>4080</Source>
-        <Dest>5456</Dest>
-      </Edge>
-      <Edge>
-        <Source>5456</Source>
-        <Dest>400</Dest>
-      </Edge>
-      <Edge>
-        <Source>4080</Source>
-        <Dest>5974</Dest>
-      </Edge>
-      <Edge>
-        <Source>5974</Source>
-        <Dest>6163</Dest>
-      </Edge>
-      <Edge>
-        <Source>6163</Source>
-        <Dest>590</Dest>
-      </Edge>
-      <Edge>
-        <Source>590</Source>
-        <Dest>400</Dest>
-      </Edge>
-      <Edge>
-        <Source>5974</Source>
-        <Dest>6672</Dest>
-      </Edge>
-      <Edge>
-        <Source>6672</Source>
-        <Dest>590</Dest>
-      </Edge>
-      <Edge>
-        <Source>4080</Source>
-        <Dest>7678</Dest>
-      </Edge>
-      <Edge>
-        <Source>7678</Source>
-        <Dest>400</Dest>
+        <Source>5468</Source>
+        <Dest>340</Dest>
       </Edge>
     </Edges>
   </Function>

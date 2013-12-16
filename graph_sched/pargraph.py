@@ -229,7 +229,7 @@ def getParalGraph(pragma_xml, profile_xml):
 		if (time == 0):
 			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nnot executed", root = root)
 		else:
-			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nexecution time %f" % time, root = root)
+			pragma_graph_root = p.Node(n.find('Line').text, label = name + "()\nexecution time %g" % time, root = root)
 		pragma_graph_root.callerid = callerid
 		graphs[count].add_node(pragma_graph_root)
 		Objroot = Fx_Node(name, n.find('Line').text,n.find('ReturnType').text, float(functions[n.find('Line').text].time), functions[n.find('Line').text].variance, file_name)
@@ -646,6 +646,7 @@ def add_new_tasks(optimal_flow, main_flow):
 				parent.add(n)
 				n.id = for_map[key].id.pop(0)
 				n.color = 'white'
+				n.from_type = node_to_replace.type
 
 		for child in node_to_replace.children:
 			child.parent.remove(node_to_replace)

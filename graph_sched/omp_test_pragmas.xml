@@ -19,9 +19,28 @@
                 <Name>OMPParallelDirective</Name>
                 <Options>
                     <Option>
+                        <Name>period</Name>
+                        <Parameter>
+                            <Type></Type>
+                            <Var>191</Var>
+                        </Parameter>
+                    </Option>
+                    <Option>
                         <Name>shared</Name>
                         <Parameter>
                             <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>float *</Type>
+                            <Var>d</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>float</Type>
+                            <Var>e</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>double</Type>
                             <Var>n</Var>
                         </Parameter>
                     </Option>
@@ -32,7 +51,31 @@
                 </Position>
             </Pragma>
             <Pragma>
-                <Name>OMPForDirective</Name>
+                <Name>OMPParallelForDirective</Name>
+                <Options>
+                    <Option>
+                        <Name>period</Name>
+                        <Parameter>
+                            <Type></Type>
+                            <Var>1</Var>
+                        </Parameter>
+                    </Option>
+                    <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>b</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>float *</Type>
+                            <Var>d</Var>
+                        </Parameter>
+                    </Option>
+                </Options>
                 <Position>
                     <StartLine>21</StartLine>
                     <EndLine>22</EndLine>
@@ -60,10 +103,38 @@
         <Line>28</Line>
         <Pragmas>
             <Pragma>
-                <Name>OMPForDirective</Name>
+                <Name>OMPParallelForDirective</Name>
+                <Options>
+                    <Option>
+                        <Name>period</Name>
+                        <Parameter>
+                            <Type></Type>
+                            <Var>19</Var>
+                        </Parameter>
+                    </Option>
+                    <Option>
+                        <Name>shared</Name>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>b</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>c</Var>
+                        </Parameter>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>n</Var>
+                        </Parameter>
+                    </Option>
+                </Options>
                 <Position>
-                    <StartLine>35</StartLine>
-                    <EndLine>37</EndLine>
+                    <StartLine>36</StartLine>
+                    <EndLine>38</EndLine>
                 </Position>
                 <For>
                     <Declaration>
@@ -93,48 +164,16 @@
                     </Option>
                 </Options>
                 <Position>
-                    <StartLine>40</StartLine>
-                    <EndLine>80</EndLine>
+                    <StartLine>41</StartLine>
+                    <EndLine>85</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
                         <Pragma>
-                            <Name>OMPTaskDirective</Name>
-                            <Options>
-                                <Option>
-                                    <Name>shared</Name>
-                                    <Parameter>
-                                        <Type>int</Type>
-                                        <Var>b</Var>
-                                    </Parameter>
-                                </Option>
-                            </Options>
-                            <Position>
-                                <StartLine>42</StartLine>
-                                <EndLine>45</EndLine>
-                            </Position>
-                        </Pragma>
-                        <Pragma>
-                            <Name>OMPTaskDirective</Name>
-                            <Options>
-                                <Option>
-                                    <Name>shared</Name>
-                                    <Parameter>
-                                        <Type>int</Type>
-                                        <Var>b</Var>
-                                    </Parameter>
-                                </Option>
-                            </Options>
-                            <Position>
-                                <StartLine>48</StartLine>
-                                <EndLine>51</EndLine>
-                            </Position>
-                        </Pragma>
-                        <Pragma>
                             <Name>OMPForDirective</Name>
                             <Position>
-                                <StartLine>54</StartLine>
-                                <EndLine>56</EndLine>
+                                <StartLine>44</StartLine>
+                                <EndLine>46</EndLine>
                             </Position>
                             <For>
                                 <Declaration>
@@ -152,19 +191,10 @@
                             </For>
                         </Pragma>
                         <Pragma>
-                            <Name>OMPTaskDirective</Name>
-                            <Options>
-                                <Option>
-                                    <Name>shared</Name>
-                                    <Parameter>
-                                        <Type>int</Type>
-                                        <Var>b</Var>
-                                    </Parameter>
-                                </Option>
-                            </Options>
+                            <Name>OMPSingleDirective</Name>
                             <Position>
-                                <StartLine>59</StartLine>
-                                <EndLine>74</EndLine>
+                                <StartLine>48</StartLine>
+                                <EndLine>82</EndLine>
                             </Position>
                             <Children>
                                 <Pragmas>
@@ -180,8 +210,31 @@
                                             </Option>
                                         </Options>
                                         <Position>
-                                            <StartLine>61</StartLine>
-                                            <EndLine>63</EndLine>
+                                            <StartLine>50</StartLine>
+                                            <EndLine>53</EndLine>
+                                        </Position>
+                                    </Pragma>
+                                    <Pragma>
+                                        <Name>OMPTaskDirective</Name>
+                                        <Options>
+                                            <Option>
+                                                <Name>period</Name>
+                                                <Parameter>
+                                                    <Type></Type>
+                                                    <Var>19</Var>
+                                                </Parameter>
+                                            </Option>
+                                            <Option>
+                                                <Name>shared</Name>
+                                                <Parameter>
+                                                    <Type>int</Type>
+                                                    <Var>b</Var>
+                                                </Parameter>
+                                            </Option>
+                                        </Options>
+                                        <Position>
+                                            <StartLine>56</StartLine>
+                                            <EndLine>59</EndLine>
                                         </Position>
                                     </Pragma>
                                     <Pragma>
@@ -196,28 +249,64 @@
                                             </Option>
                                         </Options>
                                         <Position>
-                                            <StartLine>66</StartLine>
-                                            <EndLine>72</EndLine>
+                                            <StartLine>62</StartLine>
+                                            <EndLine>77</EndLine>
+                                        </Position>
+                                        <Children>
+                                            <Pragmas>
+                                                <Pragma>
+                                                    <Name>OMPTaskDirective</Name>
+                                                    <Options>
+                                                        <Option>
+                                                            <Name>shared</Name>
+                                                            <Parameter>
+                                                                <Type>int</Type>
+                                                                <Var>b</Var>
+                                                            </Parameter>
+                                                        </Option>
+                                                    </Options>
+                                                    <Position>
+                                                        <StartLine>64</StartLine>
+                                                        <EndLine>66</EndLine>
+                                                    </Position>
+                                                </Pragma>
+                                                <Pragma>
+                                                    <Name>OMPTaskDirective</Name>
+                                                    <Options>
+                                                        <Option>
+                                                            <Name>shared</Name>
+                                                            <Parameter>
+                                                                <Type>int</Type>
+                                                                <Var>b</Var>
+                                                            </Parameter>
+                                                        </Option>
+                                                    </Options>
+                                                    <Position>
+                                                        <StartLine>69</StartLine>
+                                                        <EndLine>75</EndLine>
+                                                    </Position>
+                                                </Pragma>
+                                            </Pragmas>
+                                        </Children>
+                                    </Pragma>
+                                    <Pragma>
+                                        <Name>OMPTaskDirective</Name>
+                                        <Options>
+                                            <Option>
+                                                <Name>shared</Name>
+                                                <Parameter>
+                                                    <Type>int</Type>
+                                                    <Var>b</Var>
+                                                </Parameter>
+                                            </Option>
+                                        </Options>
+                                        <Position>
+                                            <StartLine>79</StartLine>
+                                            <EndLine>81</EndLine>
                                         </Position>
                                     </Pragma>
                                 </Pragmas>
                             </Children>
-                        </Pragma>
-                        <Pragma>
-                            <Name>OMPTaskDirective</Name>
-                            <Options>
-                                <Option>
-                                    <Name>shared</Name>
-                                    <Parameter>
-                                        <Type>int</Type>
-                                        <Var>b</Var>
-                                    </Parameter>
-                                </Option>
-                            </Options>
-                            <Position>
-                                <StartLine>76</StartLine>
-                                <EndLine>78</EndLine>
-                            </Position>
                         </Pragma>
                     </Pragmas>
                 </Children>
@@ -234,16 +323,25 @@
                     </Option>
                 </Options>
                 <Position>
-                    <StartLine>83</StartLine>
-                    <EndLine>88</EndLine>
+                    <StartLine>90</StartLine>
+                    <EndLine>95</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
                         <Pragma>
                             <Name>OMPForDirective</Name>
+                            <Options>
+                                <Option>
+                                    <Name>period</Name>
+                                    <Parameter>
+                                        <Type></Type>
+                                        <Var>12</Var>
+                                    </Parameter>
+                                </Option>
+                            </Options>
                             <Position>
-                                <StartLine>85</StartLine>
-                                <EndLine>87</EndLine>
+                                <StartLine>92</StartLine>
+                                <EndLine>94</EndLine>
                             </Position>
                             <For>
                                 <Declaration>
@@ -257,7 +355,7 @@
                                 </Condition>
                                 <Increment>
                                     <Op>+=</Op>
-                                    <IncrementValue>1</IncrementValue>
+                                    <IncrementValue>3</IncrementValue>
                                 </Increment>
                             </For>
                         </Pragma>

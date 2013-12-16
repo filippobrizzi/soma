@@ -21,7 +21,7 @@ if __name__ == "__main__":
 	executable = sys.argv[2]
 	count = int(sys.argv[3])
 	output = sys.argv[4]
-	execution_time = int(sys.argv[5])
+	execution_time = float(sys.argv[5])
 
 	#runs count time the executable and aggregates the informations in executable_profile.xml. The single profile outputs are saved as profile+iter.xml
 	profile_xml = pro.profileCreator(count, executable)
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 	max_flows = sched.get_core_num(profile_xml)
 
 	#getting cores of the actual machine
-	cores = multiprocessing.cpu_count() / 2
+	cores = multiprocessing.cpu_count() / 8
 	
 	#initializing all the lists for the parallel scheduling algorithm
 	tasks_list = []
@@ -84,6 +84,7 @@ if __name__ == "__main__":
 	results = []
 	num_tasks = 0
 	start_time = time.clock()
+	cur_time = time.clock() - start_time
 
 	#getting the number of tasks in the expanded graph and creating a list of task
 	for task in gen:
@@ -144,6 +145,9 @@ if __name__ == "__main__":
 	par.add_flow_id(optimal_flow, t_list)
 
 	#sets arrival times and deadlines using a modified version of the chetto algorithm
+
+	#Sistemare inserimento deadline!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	sched.chetto(main_flow, 12, optimal_flow)
 	
 	sched.make_white(main_flow)

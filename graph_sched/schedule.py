@@ -15,8 +15,7 @@ class Queue():
 
 #returns the optimal flows 
 def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q):
-	cur_time = time.clock() - start_time
-	if cur_time < execution_time:
+	if time.clock() < execution_time:
 		curopt = get_cost(optimal_flow)
 		cur = get_cost(flow_list)
 		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt:
@@ -195,6 +194,7 @@ def create_schedule(graph, num_cores):
 	schedule = ET.Element('Schedule')
 	cores = ET.SubElement(schedule, 'Cores')
 	cores.text = str(num_cores)
+	make_white(graph)
 	task_list = generate_task(graph)
 	tree = ET.ElementTree(schedule)
 	for task in task_list:
@@ -213,17 +213,22 @@ def create_schedule(graph, num_cores):
 			start.text = str(task.arrival)
 			end = ET.SubElement(pragma, 'Deadline')
 			end.text = str(task.d)
-		if len(task.children) > 1:
-			l = []
-			barrier = ET.SubElement(pragma, 'Barrier')
-			first = ET.SubElement(barrier, 'id')
-			first.text = str(task.start_line)
-			for c in task.children:
-				if c.start_line not in l:
-					tmp_id = ET.SubElement(barrier, 'id')
-					tmp_id.text = str(c.start_line)
-					l.append(c.start_line)
-
+			if 'BARRIER' not in task.children[0].type :
+				l = []
+				barrier = ET.SubElement(pragma, 'Barrier')
+				if 'Parallel' in task.type:
+					first = ET.SubElement(barrier, 'id')
+					first.text = str(task.start_line)
+				if not ('OMPParallelForDirective' in task.type and 'Parallel' in task.children[0].type):
+					for c in task.children:
+						if c.start_line not in l:
+							tmp_id = ET.SubElement(barrier, 'id')
+							tmp_id.text = str(c.start_line)
+							l.append(c.start_line)
+			elif ('OMPParallelForDirective' in task.type and 'BARRIER' in task.children[0].type):
+				barrier = ET.SubElement(pragma, 'Barrier')
+				first = ET.SubElement(barrier, 'id')
+				first.text = str(task.start_line)
 	par.indent(tree.getroot())			
 	tree.write('schedule.xml')
 
@@ -233,7 +238,7 @@ def serialize_splitted(task, schedule, mapped):
 		id = ET.SubElement(pragma, 'id')
 		id.text = str(task.start_line)
 		pragma_type = ET.SubElement(pragma, 'Type')
-		pragma_type.text = 'OMPForDirective'
+		pragma_type.text = str(task.from_type)
 		threads = ET.SubElement(pragma, 'Threads')
 		thread = ET.SubElement(threads, 'Thread')
 		thread.text = str(task.id)
@@ -242,6 +247,22 @@ def serialize_splitted(task, schedule, mapped):
 		end = ET.SubElement(pragma, 'Deadline')
 		end.text = str(task.d)
 		mapped.append(task.start_line)
+		if 'BARRIER' not in task.children[0].type :
+			l = []
+			barrier = ET.SubElement(pragma, 'Barrier')
+			if 'Parallel' in task.from_type:
+				first = ET.SubElement(barrier, 'id')
+				first.text = str(task.start_line)
+			if not ('OMPParallelForDirective' in task.from_type and 'Parallel' in task.children[0].type):
+				for c in task.children:
+					if c.start_line not in l:
+						tmp_id = ET.SubElement(barrier, 'id')
+						tmp_id.text = str(c.start_line)
+						l.append(c.start_line)
+		elif ('OMPParallelForDirective' in task.from_type and 'BARRIER' in task.children[0].type):
+			barrier = ET.SubElement(pragma, 'Barrier')
+			first = ET.SubElement(barrier, 'id')
+			first.text = str(task.start_line)
 	else:
 		for p in schedule.findall("Pragma"):
 			if p.find('id').text == task.start_line:
