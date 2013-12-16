@@ -8,7 +8,7 @@
 using namespace cv;
 using namespace std;
 
-int apply_filter_1(Mat &frame){
+int apply_filter_1(const Mat &frame){
     int count = frame.cols;
     #pragma omp parallel for
     for (int i = 0; i < count; ++i)
@@ -20,7 +20,7 @@ int apply_filter_1(Mat &frame){
     return 0;
 };
 
-int apply_filter_2(Mat &frame){
+int apply_filter_2(const Mat &frame){
     
     int count = frame.cols;
     #pragma omp parallel for

@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 #include "ProfileTracker.h"
-int apply_filter_1(Mat &frame){
+int apply_filter_1(const Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(11, 0)) {
     int count = frame.cols;
 //    #pragma omp parallel for
@@ -24,7 +24,7 @@ if( ProfileTracker x = ProfileTrackParams(11, 0)) {
 }
 };
 
-int apply_filter_2(Mat &frame){
+int apply_filter_2(const Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(23, 0)) {
     
     int count = frame.cols;

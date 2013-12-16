@@ -414,8 +414,9 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
     }else
       text << ", ";
 
-    if(var_type.find("class") != std::string::npos)
-      var_type.erase(0, 6);
+    size_t pos_class = var_type.find("class");
+    if(pos_class != std::string::npos)
+      var_type.erase(pos_class, pos_class);
     
     size_t pos_uppersand = var_type.find("&");
     std::cout << "&&&&&&: " << var_type << " pos " << pos_uppersand << std::endl;

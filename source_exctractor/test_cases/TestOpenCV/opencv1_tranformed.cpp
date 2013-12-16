@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 #include "/home/pippo/Documents/Project/soma/source_exctractor/src/thread_pool/threads_pool.h"
-int apply_filter_1(Mat &frame){
+int apply_filter_1(const Mat &frame){
     int count = frame.cols;
 //    #pragma omp parallel for
     //for (int i = 0; i < count; ++i)
@@ -17,11 +17,11 @@ int apply_filter_1(Mat &frame){
   class Nested : public NestedBase {
   public: 
     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id, int & count, cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
+    Nested(int pragma_id, int & count, const cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
 int & count_;
-cv::Mat & frame_;
+const cv::Mat & frame_;
 
-void fx(ForParameter for_param, int & count, cv::Mat & frame) {
+void fx(ForParameter for_param, int & count, const cv::Mat & frame) {
 for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
     {
         Size gaussian_size(0, 0);
@@ -38,7 +38,7 @@ ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_sha
     return 0;
 };
 
-int apply_filter_2(Mat &frame){
+int apply_filter_2(const Mat &frame){
     
     int count = frame.cols;
 //    #pragma omp parallel for
@@ -47,11 +47,11 @@ int apply_filter_2(Mat &frame){
   class Nested : public NestedBase {
   public: 
     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id, int & count, cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
+    Nested(int pragma_id, int & count, const cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
 int & count_;
-cv::Mat & frame_;
+const cv::Mat & frame_;
 
-void fx(ForParameter for_param, int & count, cv::Mat & frame) {
+void fx(ForParameter for_param, int & count, const cv::Mat & frame) {
 for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
     {        
         erode(frame.col(i), frame.col(i), Mat());

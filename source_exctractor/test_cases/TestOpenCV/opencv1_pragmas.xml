@@ -5,7 +5,7 @@
         <ReturnType>int</ReturnType>
         <Parameters>
             <Parameter>
-                <Type>class cv::Mat &amp;</Type>
+                <Type>const class cv::Mat &amp;</Type>
                 <Name>frame</Name>
             </Parameter>
         </Parameters>
@@ -39,7 +39,7 @@
         <ReturnType>int</ReturnType>
         <Parameters>
             <Parameter>
-                <Type>class cv::Mat &amp;</Type>
+                <Type>const class cv::Mat &amp;</Type>
                 <Name>frame</Name>
             </Parameter>
         </Parameters>

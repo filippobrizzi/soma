@@ -49,9 +49,9 @@ Parent function line = 35
 
 &&&&&&: int pos 18446744073709551615
           new var type: int
-&&&&&&: cv::Mat & pos 8
-          new var type: cv::Mat
+&&&&&&: const cv::Mat & pos 14
+          new var type: const cv::Mat
 &&&&&&: int pos 18446744073709551615
           new var type: int
-&&&&&&: cv::Mat & pos 8
-          new var type: cv::Mat
+&&&&&&: const cv::Mat & pos 14
+          new var type: const cv::Mat
