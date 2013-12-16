@@ -1,4 +1,4 @@
-#include "opencv2/highgui/highgui.hpp"
+ #include "opencv2/highgui/highgui.hpp"
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core/core.hpp"
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
                     apply_filter_1(frame);
                     
-                    apply_filter_2(frame);
+                    //apply_filter_2(frame);
                         
                     oVideoWriter_sx.write(frame);
                     imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
                     bool frame_success = video_cap_dx.read(frame); // read a new frame from video
                     if (!frame_success) break;
                     
-                    apply_filter_1(frame);
+                    //apply_filter_1(frame);
                     apply_filter_2(frame);
 
                     oVideoWriter_dx.write(frame);
