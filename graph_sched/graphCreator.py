@@ -75,7 +75,7 @@ if __name__ == "__main__":
 	#getting cores of the actual machine
 	cores = multiprocessing.cpu_count() / 2
 
-
+	print time.clock()
 	
 	#initializing all the lists for the parallel scheduling algorithm
 	tasks_list = []

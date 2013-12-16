@@ -6,18 +6,18 @@ digraph G {
 	subgraph cluster_0 {
 		graph [bb="8,8,526,558"];
 		10		 [height=0.74639,
-			label="main()\nexecution time 8",
+			label="main()\nexecution time 9",
 			pos="267,523",
 			root=10,
 			width=2.1972];
 		32		 [height=1.041,
-			label="OMPParallelDirective@32\nexecution time: 8.0\nvariance: 0.0",
+			label="OMPParallelDirective@32\nexecution time: 9.0\nvariance: 0.0",
 			pos="267,422",
 			root=10,
 			width=3.346];
 		10 -> 32		 [pos="e,267,459.63 267,495.99 267,487.91 267,478.75 267,469.72"];
 		54		 [height=1.041,
-			label="OMPSectionDirective@54\nexecution time: 4.0\nvariance: 0.0",
+			label="OMPSectionDirective@54\nexecution time: 5.0\nvariance: 0.0",
 			pos="137,198",
 			root=10,
 			width=3.346];
@@ -26,7 +26,7 @@ digraph G {
 			pos="267,106",
 			root=10,
 			width=1.4305];
-		54 -> "34_end"		 [color=chocolate1,
+		54 -> "34_end"		 [color=brown1,
 			pos="e,244.72,122.42 185.41,163.49 202.42,151.71 221.07,138.8 236.23,128.3"];
 		"32_end"		 [height=0.5,
 			label=BARRIER,
@@ -38,20 +38,20 @@ digraph G {
 			pos="397,198",
 			root=10,
 			width=3.346];
-		37 -> "34_end"		 [color=chocolate1,
+		37 -> "34_end"		 [color=brown1,
 			pos="e,289.28,122.42 348.59,163.49 331.58,151.71 312.93,138.8 297.77,128.3"];
 		34		 [height=1.041,
-			label="OMPSectionsDirective@34\nexecution time: 8.0\nvariance: 0.0",
+			label="OMPSectionsDirective@34\nexecution time: 9.0\nvariance: 0.0",
 			pos="267,310",
 			root=10,
 			width=3.4507];
-		34 -> 54		 [color=chocolate1,
+		34 -> 54		 [color=brown1,
 			pos="e,177.63,233.38 226.22,274.5 213.28,263.54 198.83,251.32 185.4,239.96"];
-		34 -> 37		 [color=chocolate1,
+		34 -> 37		 [color=brown1,
 			pos="e,356.37,233.38 307.78,274.5 320.72,263.54 335.17,251.32 348.6,239.96"];
-		32 -> 34		 [color=cyan,
+		32 -> 34		 [color=burlywood4,
 			pos="e,267,347.84 267,384.37 267,375.93 267,366.83 267,358.01"];
-		"34_end" -> "32_end"		 [color=cyan,
+		"34_end" -> "32_end"		 [color=burlywood4,
 			pos="e,267,52.104 267,87.697 267,79.983 267,70.712 267,62.112"];
 	}
 }

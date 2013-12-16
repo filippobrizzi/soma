@@ -15,8 +15,8 @@ def profileCreator(cycle, executable):
 	for i in range(cycle):
 		print "profiling iteration: " + str((j + 1))
 		os.system("./" + executable + ">/dev/null")
-		os.system("mv log_file.xml " + "logfile%s.xml" % j)
-		root = ET.ElementTree(file = "logfile%s.xml" % j).getroot()
+		os.system("mv log_file.xml " + "./logfile%s.xml" % j)
+		root = ET.ElementTree(file = "./logfile%s.xml" % j).getroot()
 
 		for pragma in root.iter('Pragma'):
 			key = pragma.attrib['fid'] + pragma.attrib['pid']
@@ -156,12 +156,15 @@ def getProfilesMap(profile_xml):
 	profile_graph_root = ET.ElementTree(file = profile_xml).getroot()
 
 	functions = {}
+	l = []
 
 	for func in profile_graph_root.findall('Function'):
 		f = par.Function(func.find('Time').text, func.find('Variance').text, func.find('ChildrenTime').text)
 		f.callerid = []
 		if (func.find('CallerId') != None):
-			f.callerid.append(func.find('CallerId').text.replace("[","").replace("]",""))
+			l = re.findall(r'\d+',func.find('CallerId').text.replace("[","").replace("]",""))
+			for id_ in l:
+				f.callerid.append(id_)
 		functions[func.find('FunctionLine').text] = f
 
 	for pragma in profile_graph_root.findall('Pragma'):

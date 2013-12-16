@@ -18,10 +18,11 @@ class Queue():
 
 
 def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time, q):
-	if time.clock() < execution_time:
+	if time.clock() < execution_time :
+		print time.clock()
 		curopt = get_cost(optimal_flow)
 		cur = get_cost(flow_list)
-		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt and time.clock() < execution_time:
+		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt :
 			task_i = task_list[level]
 			# test integrating the single task in each
 			for flow in flow_list :
@@ -46,8 +47,7 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 						tmp_task_list.append(task)
 					get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS, execution_time, q)
 					for tmp_task in tmp_task_list:
-						task_list.remove(tmp_task)
-				
+						task_list.remove(tmp_task)		
 		else:
 			if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur < curopt:
 				#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)

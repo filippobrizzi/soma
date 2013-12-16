@@ -5,22 +5,22 @@
   </Hardware>
   <Function>
     <FunctionLine>10</FunctionLine>
-    <Time>8.0</Time>
+    <Time>9.0</Time>
     <Variance>0.0</Variance>
-    <ChildrenTime>8.0</ChildrenTime>
+    <ChildrenTime>9.0</ChildrenTime>
   </Function>
   <Pragma>
     <FunctionLine>10</FunctionLine>
     <PragmaLine>32</PragmaLine>
-    <Time>8.0</Time>
+    <Time>9.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['10']</CallerId>
-    <ChildrenTime>8.0</ChildrenTime>
+    <ChildrenTime>9.0</ChildrenTime>
   </Pragma>
   <Pragma>
     <FunctionLine>10</FunctionLine>
     <PragmaLine>54</PragmaLine>
-    <Time>4.0</Time>
+    <Time>5.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['34']</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
@@ -36,9 +36,9 @@
   <Pragma>
     <FunctionLine>10</FunctionLine>
     <PragmaLine>34</PragmaLine>
-    <Time>8.0</Time>
+    <Time>9.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['32']</CallerId>
-    <ChildrenTime>8.0</ChildrenTime>
+    <ChildrenTime>9.0</ChildrenTime>
   </Pragma>
 </Log_file>

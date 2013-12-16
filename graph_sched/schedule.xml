@@ -7,7 +7,7 @@
       <Thread>0</Thread>
     </Threads>
     <Start_time>0</Start_time>
-    <Deadline>1.0</Deadline>
+    <Deadline>0.0</Deadline>
     <Barrier>
       <id>32</id>
     </Barrier>
@@ -19,7 +19,7 @@
       <Thread>0</Thread>
     </Threads>
     <Start_time>0</Start_time>
-    <Deadline>1.0</Deadline>
+    <Deadline>0.0</Deadline>
     <Barrier>
       <id>32</id>
       <id>34</id>
@@ -32,7 +32,7 @@
       <Thread>0</Thread>
     </Threads>
     <Start_time>0</Start_time>
-    <Deadline>1.0</Deadline>
+    <Deadline>0.0</Deadline>
     <Barrier>
       <id>37</id>
       <id>54</id>
@@ -42,7 +42,7 @@
     <id>37</id>
     <Type>OMPSectionDirective</Type>
     <Threads>
-      <Thread>0</Thread>
+      <Thread>1</Thread>
     </Threads>
     <Start_time>0</Start_time>
     <Deadline>5.0</Deadline>
@@ -51,9 +51,9 @@
     <id>54</id>
     <Type>OMPSectionDirective</Type>
     <Threads>
-      <Thread>1</Thread>
+      <Thread>0</Thread>
     </Threads>
-    <Start_time>1.0</Start_time>
+    <Start_time>0</Start_time>
     <Deadline>5.0</Deadline>
   </Pragma>
 </Schedule>
