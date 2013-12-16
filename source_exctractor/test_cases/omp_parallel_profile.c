@@ -8,8 +8,8 @@
 int main() {
 if( ProfileTracker x = ProfileTrackParams(7, 0)) {
 
-
-//	#pragma omp parallel
+	int a;
+//	#pragma omp parallel private(a)
 	if( ProfileTracker x = ProfileTrackParams(7, 11))
 	{	
  		
@@ -27,11 +27,10 @@ if( ProfileTracker x = ProfileTrackParams(7, 0)) {
  	
  //	int a = y();
 
- 	#pragma omp master
-// 	printf("hello world\n");
-//
-//	#pragma if( ProfileTracker x = ProfileTrackParams(7, 29))
-	omp parallel for
+ 	//#pragma omp master
+ 	//printf("hello world\n");
+
+//	#pragma omp parallel for
 	if( ProfileTracker x = ProfileTrackParams(7, 30, 2 - 0))
 	for(int i=0;i<2;i++) {
 		sleep(1);

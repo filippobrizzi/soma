@@ -1,6 +1,6 @@
 File modificati:
 
-***clang/include/clang/AST/StmtOpenMP.h : line 314
+***clang/include/clang/AST/OpenMPClause.h : line 314
 
 class OMPPeriodClause : public OMPClause {
   Expr *Period;
@@ -13,7 +13,7 @@ public:
 
   explicit OMPPeriodClause()
     :  OMPClause(OMPC_period, SourceLocation(), SourceLocation()),
-      Period(-1) { }
+      Period(nullptr) { }
 
   Expr *getPeriodValue() const { return Period; }
 
@@ -35,7 +35,7 @@ public:
 
 ---------------------------------------------------------------------------------------------------
 
-*** clang/lib/Sema/TreeTransoform.h : line 6713
+*** clang/lib/Sema/TreeTransoform.h : line 6807
 
 template<typename Derived>
 OMPClause *
@@ -57,7 +57,7 @@ OMPClause *RebuildOMPPeriodClause(Expr *Period,
 ---------------------------------------------------------------------------------
 
 
-*** clang/include/clang/Sema/Sema.h : line 6840
+*** clang/include/clang/Sema/Sema.h : line 6972
 
   OMPOMPClause *ActOnOpenMPPeriodClause(Expr *Period,
                                              SourceLocation StartLoc,
@@ -66,7 +66,7 @@ OMPClause *RebuildOMPPeriodClause(Expr *Period,
 
 ---------------------------------------------------------------------------------
 
-*** clang/lib/Sema/SemaOpenMP.cpp : line 6880
+*** clang/lib/Sema/SemaOpenMP.cpp : line 3433
 
 OMPClause *Sema::ActOnOpenMPPeriodClause(Expr *Period,
                                              SourceLocation StartLoc,
@@ -166,7 +166,7 @@ void OMPClausePrinter::VisitOMPPeriodClause(OMPPeriodClause *Node) {
 
 ----------------------------------------------------------------------------------------
 
-*** clang/lib/Parse/ParseOpenMP.cpp : line 459
+*** clang/lib/Parse/ParseOpenMP.cpp : line 838
   
   case OMPC_period:
 
@@ -175,14 +175,38 @@ void OMPClausePrinter::VisitOMPPeriodClause(OMPPeriodClause *Node) {
 -----------------------------------------------------------------------------------------
 
 *** clang/lib/CodeGen/CGStmtOpenMP.cpp : 
-
-line 1577
-line 1605
-line 1636
-line 1682
-line 1722
-     1757
+line: 
+  1729
+  1759
+  1792
+  1839
+  1882
+  1921
 
   case OMPC_period:
 
 -----------------------------------------------------------------------------------------
+
+*** clang/lib/Serialization/ASTReaderStmt.cpp : 
+
+line 1783
+
+  void OMPClauseReader::VisitOMPPeriodClause(OMPPeriondClause *C) {
+    C->setPeriodValue(Reader->Reader.ReadSubExpr());
+  }
+
+line 1687
+  case OMPC_period:
+    C = new (Context) OMPPeriondClause();
+    break;
+
+
+-------------------------------------------------------------------------------------------
+
+*** clang/lib/Serialization/ASTWriterStmt.cpp
+
+line 1693
+
+void OMPClauseWriter::VisitOMPPeriodClause(OMPPeriodClause *C) {
+  Writer->Writer.AddStmt(C->getPeriodValue());
+}

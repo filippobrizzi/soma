@@ -7,6 +7,15 @@
         <Pragmas>
             <Pragma>
                 <Name>OMPParallelDirective</Name>
+                <Options>
+                    <Option>
+                        <Name>private</Name>
+                        <Parameter>
+                            <Type>int</Type>
+                            <Var>a</Var>
+                        </Parameter>
+                    </Option>
+                </Options>
                 <Position>
                     <StartLine>11</StartLine>
                     <EndLine>15</EndLine>
@@ -20,14 +29,7 @@
                 </Position>
             </Pragma>
             <Pragma>
-                <Name>OMPMasterDirective</Name>
-                <Position>
-                    <StartLine>29</StartLine>
-                    <EndLine>29</EndLine>
-                </Position>
-            </Pragma>
-            <Pragma>
-                <Name>OMPForDirective</Name>
+                <Name>OMPParallelForDirective</Name>
                 <Position>
                     <StartLine>30</StartLine>
                     <EndLine>32</EndLine>

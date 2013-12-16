@@ -19,7 +19,6 @@ int main(int argc, char **argv) {
  * ---- With the information exctracted by the parser create a linked list tree of objects containing
  *		all the necessary information of the pragmas.
  */
- 	std::cout << "CIAO 0" << std::endl;
 	std::vector<Root *> *root_vect = CreateTree(program.getPragmaList(), program.getFunctionList(), program.ccompiler_.getSourceManager());
 /*
  * ---- Using the tree above create an xml file containing the pragma info. This file is used to produce the scheduler.

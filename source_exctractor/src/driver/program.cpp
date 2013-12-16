@@ -58,6 +58,8 @@ bool ProfilingRecursiveASTVisitor::VisitDecl(clang::Decl *decl) {
 bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {     
     
   clang::SourceLocation start_src_loc = f->getLocStart();
+  unsigned funct_start_line = utils::Line(start_src_loc, sm);
+
 
   /* Skip function belonging to external include file and not defined function */
   if(sm.getFileID(start_src_loc) == sm.getMainFileID() && f->hasBody() == true) {
@@ -74,10 +76,9 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     } 
 
     start_src_loc = f->getBody()->getLocStart();
-  	unsigned start_line = utils::Line(start_src_loc, sm);
     clang::SourceLocation new_start_src_loc = sm.translateLineCol(sm.getMainFileID(), start_line + 1, 1);
     std::stringstream text_profiling;
-    text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << start_line << ", 0)) {\n";
+    text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << funct_start_line << ", 0)) {\n";
     
     /* Insert the if in the first line of the function definition */
     rewrite_profiling_.InsertText(new_start_src_loc, text_profiling.str(), true, false);
