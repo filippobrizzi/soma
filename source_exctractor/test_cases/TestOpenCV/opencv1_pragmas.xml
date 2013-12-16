@@ -5,7 +5,7 @@
         <ReturnType>int</ReturnType>
         <Parameters>
             <Parameter>
-                <Type>const class cv::Mat &amp;</Type>
+                <Type>class cv::Mat &amp;</Type>
                 <Name>frame</Name>
             </Parameter>
         </Parameters>
@@ -39,7 +39,7 @@
         <ReturnType>int</ReturnType>
         <Parameters>
             <Parameter>
-                <Type>const class cv::Mat &amp;</Type>
+                <Type>class cv::Mat &amp;</Type>
                 <Name>frame</Name>
             </Parameter>
         </Parameters>
@@ -86,31 +86,31 @@
             <Pragma>
                 <Name>OMPParallelDirective</Name>
                 <Position>
-                    <StartLine>39</StartLine>
-                    <EndLine>98</EndLine>
+                    <StartLine>41</StartLine>
+                    <EndLine>100</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
                         <Pragma>
                             <Name>OMPSectionsDirective</Name>
                             <Position>
-                                <StartLine>41</StartLine>
-                                <EndLine>97</EndLine>
+                                <StartLine>43</StartLine>
+                                <EndLine>99</EndLine>
                             </Position>
                             <Children>
                                 <Pragmas>
                                     <Pragma>
                                         <Name>OMPSectionDirective</Name>
                                         <Position>
-                                            <StartLine>44</StartLine>
-                                            <EndLine>69</EndLine>
+                                            <StartLine>46</StartLine>
+                                            <EndLine>71</EndLine>
                                         </Position>
                                     </Pragma>
                                     <Pragma>
                                         <Name>OMPSectionDirective</Name>
                                         <Position>
-                                            <StartLine>72</StartLine>
-                                            <EndLine>96</EndLine>
+                                            <StartLine>74</StartLine>
+                                            <EndLine>98</EndLine>
                                         </Position>
                                     </Pragma>
                                 </Pragmas>

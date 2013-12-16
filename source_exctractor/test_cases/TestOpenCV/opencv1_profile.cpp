@@ -1,4 +1,4 @@
-#include "opencv2/highgui/highgui.hpp"
+ #include "opencv2/highgui/highgui.hpp"
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core/core.hpp"
@@ -9,7 +9,7 @@ using namespace cv;
 using namespace std;
 
 #include "ProfileTracker.h"
-int apply_filter_1(const Mat &frame){
+int apply_filter_1(Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(11, 0)) {
     int count = frame.cols;
 //    #pragma omp parallel for
@@ -24,7 +24,7 @@ if( ProfileTracker x = ProfileTrackParams(11, 0)) {
 }
 };
 
-int apply_filter_2(const Mat &frame){
+int apply_filter_2(Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(23, 0)) {
     
     int count = frame.cols;
@@ -42,16 +42,18 @@ if( ProfileTracker x = ProfileTrackParams(23, 0)) {
 int main(int argc, char* argv[])
 {
 if( ProfileTracker x = ProfileTrackParams(35, 0)) {
+    //VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
+    //VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
 
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(35, 39))
+    if( ProfileTracker x = ProfileTrackParams(35, 41))
     {
 //        #pragma omp sections
-        if( ProfileTracker x = ProfileTrackParams(35, 41))
+        if( ProfileTracker x = ProfileTrackParams(35, 43))
         {
             
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(35, 44))
+            if( ProfileTracker x = ProfileTrackParams(35, 46))
             {   
                 VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
                 double dWidth = video_cap_sx.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
@@ -70,7 +72,7 @@ if( ProfileTracker x = ProfileTrackParams(35, 0)) {
 
                     apply_filter_1(frame);
                     
-                    apply_filter_2(frame);
+                    //apply_filter_2(frame);
                         
                     oVideoWriter_sx.write(frame);
                     imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
@@ -80,7 +82,7 @@ if( ProfileTracker x = ProfileTrackParams(35, 0)) {
             }
 
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(35, 72))
+            if( ProfileTracker x = ProfileTrackParams(35, 74))
             {
                 VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
                 double dWidth = video_cap_dx.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
@@ -97,7 +99,7 @@ if( ProfileTracker x = ProfileTrackParams(35, 0)) {
                     bool frame_success = video_cap_dx.read(frame); // read a new frame from video
                     if (!frame_success) break;
                     
-                    apply_filter_1(frame);
+                    //apply_filter_1(frame);
                     apply_filter_2(frame);
 
                     oVideoWriter_dx.write(frame);

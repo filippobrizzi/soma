@@ -1,4 +1,4 @@
-#include "opencv2/highgui/highgui.hpp"
+ #include "opencv2/highgui/highgui.hpp"
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core/core.hpp"
@@ -47,9 +47,9 @@ int apply_filter_2(Mat &frame){
   class Nested : public NestedBase {
   public: 
     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id, int & count,  cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
+    Nested(int pragma_id, int & count, cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
 int & count_;
- cv::Mat & frame_;
+cv::Mat & frame_;
 
 void fx(ForParameter for_param, int & count, cv::Mat & frame) {
 for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
@@ -69,6 +69,8 @@ ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_sha
 
 int main(int argc, char* argv[])
 {
+    //VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
+    //VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
 
 //    #pragma omp parallel
     {
@@ -100,7 +102,7 @@ int main(int argc, char* argv[])
                 double dHeight = video_cap_sx.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
                 Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
                 VideoWriter oVideoWriter_sx ("./MyVideo_sx_new.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-                //namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+                namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_sx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
 
                 while(1)
@@ -109,14 +111,13 @@ int main(int argc, char* argv[])
 
                     bool frame_success = video_cap_sx.read(frame); // read a new frame from video
                     if (!frame_success) break;
-                    cout << "Pragma 44: filter 1" << endl;
+
                     apply_filter_1(frame);
-                    cout << "Pragma 44: filter 2" << endl;
+                    
                     //apply_filter_2(frame);
-                    cout << "Pragma 44: write" << endl;    
+                        
                     oVideoWriter_sx.write(frame);
-                    cout << "Pragma 44: fwrite_end" << endl;
-                    //imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
+                    imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
                 }
@@ -125,7 +126,7 @@ void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(44));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(46));
 }
 
 //            #pragma omp section
@@ -141,7 +142,7 @@ ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_sha
                 double dHeight = video_cap_dx.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
                 Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
                 VideoWriter oVideoWriter_dx ("./MyVideo_dx_new.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-                //namedWindow("MyVideo_dx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+                namedWindow("MyVideo_dx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_dx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
 
                 while(1)
@@ -151,14 +152,11 @@ ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_sha
                     bool frame_success = video_cap_dx.read(frame); // read a new frame from video
                     if (!frame_success) break;
                     
-                    cout << "Pragma 72: filter 1" << endl;
                     //apply_filter_1(frame);
-                    cout << "Pragma 72: filter 2" << endl;
                     apply_filter_2(frame);
-                    cout << "Pragma 72: write" << endl;    
+
                     oVideoWriter_dx.write(frame);
-                    cout << "Pragma 72: fwrite_end" << endl;
-                    //imshow("MyVideo_dx", frame); //show the frame in "MyVideo" window
+                    imshow("MyVideo_dx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
                 }
@@ -167,21 +165,21 @@ void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(72));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(74));
 }
         }
 void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(41));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(43));
 }
     }
 void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(39));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(41));
 }
     return 0;
 
