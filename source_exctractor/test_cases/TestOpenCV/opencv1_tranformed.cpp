@@ -10,27 +10,29 @@ using namespace std;
 
 #include "/home/pippo/Documents/Project/soma/source_exctractor/src/thread_pool/threads_pool.h"
 int apply_filter_1(const Mat &frame){
+    int count = frame.cols;
 //    #pragma omp parallel for
-    //for (int i = 0; i < frame.cols; ++i)
+    //for (int i = 0; i < count; ++i)
 {
   class Nested : public NestedBase {
   public: 
     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id, class cv::Mat & & frame)  : NestedBase(pragma_id), frame_(frame) {}
+    Nested(int pragma_id, int & count, class cv::Mat & & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
+int & count_;
 class cv::Mat & & frame_;
 
-void fx(ForParameter for_param, class cv::Mat & & frame) {
-for(int i = 0 + for_param.thread_id_*( - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*( - 0)/for_param.num_threads_; i ++ )
+void fx(ForParameter for_param, int & count, class cv::Mat & & frame) {
+for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
     {
         Size gaussian_size(0, 0);
         GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);     
     }  
 }
 void callme(ForParameter for_param) {
-fx(for_param, frame_);
+fx(for_param, count_, frame_);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(13, frame));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(14, count, frame));
 }
 
     return 0;
@@ -38,27 +40,28 @@ ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_sha
 
 int apply_filter_2(const Mat &frame){
     
-    
+    int count = frame.cols;
 //    #pragma omp parallel for
-    //for (int i = 0; i < frame.cols; ++i)
+    //for (int i = 0; i < count; ++i)
 {
   class Nested : public NestedBase {
   public: 
     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id, class cv::Mat & & frame)  : NestedBase(pragma_id), frame_(frame) {}
+    Nested(int pragma_id, int & count, class cv::Mat & & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
+int & count_;
 class cv::Mat & & frame_;
 
-void fx(ForParameter for_param, class cv::Mat & & frame) {
-for(int i = 0 + for_param.thread_id_*( - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*( - 0)/for_param.num_threads_; i ++ )
+void fx(ForParameter for_param, int & count, class cv::Mat & & frame) {
+for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
     {        
         erode(frame.col(i), frame.col(i), Mat());
     }  
 }
 void callme(ForParameter for_param) {
-fx(for_param, frame_);
+fx(for_param, count_, frame_);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(26, frame));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(27, count, frame));
 }
     return 0;
 };
@@ -121,7 +124,7 @@ void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(43));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(44));
 }
 
 //            #pragma omp section
@@ -160,21 +163,21 @@ void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(71));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(72));
 }
         }
 void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(40));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(41));
 }
     }
 void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(38));
+ThreadPool::getInstance("test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(39));
 }
     return 0;
 

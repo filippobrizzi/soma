@@ -9,8 +9,9 @@ using namespace cv;
 using namespace std;
 
 int apply_filter_1(const Mat &frame){
+    int count = frame.cols;
     #pragma omp parallel for
-    for (int i = 0; i < frame.cols; ++i)
+    for (int i = 0; i < count; ++i)
     {
         Size gaussian_size(0, 0);
         GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);     
@@ -21,9 +22,9 @@ int apply_filter_1(const Mat &frame){
 
 int apply_filter_2(const Mat &frame){
     
-    
+    int count = frame.cols;
     #pragma omp parallel for
-    for (int i = 0; i < frame.cols; ++i)
+    for (int i = 0; i < count; ++i)
     {        
         erode(frame.col(i), frame.col(i), Mat());
     }  

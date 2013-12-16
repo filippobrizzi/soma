@@ -8,12 +8,13 @@
 using namespace cv;
 using namespace std;
 
-#include "/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h"
+#include "ProfileTracker.h"
 int apply_filter_1(const Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(11, 0)) {
+    int count = frame.cols;
 //    #pragma omp parallel for
-    if( ProfileTracker x = ProfileTrackParams(11, 13,  - 0))
-    for (int i = 0; i < frame.cols; ++i)
+    if( ProfileTracker x = ProfileTrackParams(11, 14, count - 0))
+    for (int i = 0; i < count; ++i)
     {
         Size gaussian_size(0, 0);
         GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);     
@@ -24,12 +25,12 @@ if( ProfileTracker x = ProfileTrackParams(11, 0)) {
 };
 
 int apply_filter_2(const Mat &frame){
-if( ProfileTracker x = ProfileTrackParams(22, 0)) {
+if( ProfileTracker x = ProfileTrackParams(23, 0)) {
     
-    
+    int count = frame.cols;
 //    #pragma omp parallel for
-    if( ProfileTracker x = ProfileTrackParams(22, 26,  - 0))
-    for (int i = 0; i < frame.cols; ++i)
+    if( ProfileTracker x = ProfileTrackParams(23, 27, count - 0))
+    for (int i = 0; i < count; ++i)
     {        
         erode(frame.col(i), frame.col(i), Mat());
     }  
@@ -43,14 +44,14 @@ int main(int argc, char* argv[])
 if( ProfileTracker x = ProfileTrackParams(35, 0)) {
 
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(34, 38))
+    if( ProfileTracker x = ProfileTrackParams(35, 39))
     {
 //        #pragma omp sections
-        if( ProfileTracker x = ProfileTrackParams(34, 40))
+        if( ProfileTracker x = ProfileTrackParams(35, 41))
         {
             
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(34, 43))
+            if( ProfileTracker x = ProfileTrackParams(35, 44))
             {   
                 VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
                 double dWidth = video_cap_sx.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
@@ -79,7 +80,7 @@ if( ProfileTracker x = ProfileTrackParams(35, 0)) {
             }
 
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(34, 71))
+            if( ProfileTracker x = ProfileTrackParams(35, 72))
             {
                 VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
                 double dWidth = video_cap_dx.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
