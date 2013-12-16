@@ -22,6 +22,7 @@ if __name__ == "__main__":
 	count = int(sys.argv[3])
 	output = sys.argv[4]
 	execution_time = float(sys.argv[5])
+	deadline = float(sys.argv[6])
 
 	#runs count time the executable and aggregates the informations in executable_profile.xml. The single profile outputs are saved as profile+iter.xml
 	profile_xml = pro.profileCreator(count, executable)
@@ -72,7 +73,9 @@ if __name__ == "__main__":
 	max_flows = sched.get_core_num(profile_xml)
 
 	#getting cores of the actual machine
-	cores = multiprocessing.cpu_count() / 8
+	cores = multiprocessing.cpu_count() / 2
+
+
 	
 	#initializing all the lists for the parallel scheduling algorithm
 	tasks_list = []
@@ -83,14 +86,15 @@ if __name__ == "__main__":
 	queue_list = []
 	results = []
 	num_tasks = 0
-	start_time = time.clock()
-	cur_time = time.clock() - start_time
 
 	#getting the number of tasks in the expanded graph and creating a list of task
 	for task in gen:
 		task_list.append(task)
 		num_tasks += 1
 	
+	#use just one core for a small number of tasks
+	if len(task_list) < 10:
+		cores = 1
 
 	for core in range(cores):
 		tmp = []
@@ -101,7 +105,7 @@ if __name__ == "__main__":
 		tasks_list.append(copy.deepcopy(copy.deepcopy(task_list)))
 		q = sched.Queue()
 		queue_list.append(q)
-		p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, queue_list[core],  )))
+		p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, execution_time, queue_list[core],  )))
 		print "starting core: ",core
 		p_list[core].start()
 		#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
@@ -146,9 +150,8 @@ if __name__ == "__main__":
 
 	#sets arrival times and deadlines using a modified version of the chetto algorithm
 
-	#Sistemare inserimento deadline!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	sched.chetto(main_flow, 12, optimal_flow)
+	sched.chetto(main_flow, deadline, optimal_flow)
 	
 	sched.make_white(main_flow)
 	sched.print_schedule(main_flow)

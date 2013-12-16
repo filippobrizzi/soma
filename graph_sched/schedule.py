@@ -14,21 +14,24 @@ class Queue():
 
 
 #returns the optimal flows 
-def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q):
+#if time is to big for the number of possible solutions it does not work.
+
+
+def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time, q):
 	if time.clock() < execution_time:
 		curopt = get_cost(optimal_flow)
 		cur = get_cost(flow_list)
-		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt:
+		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt and time.clock() < execution_time:
 			task_i = task_list[level]
 			# test integrating the single task in each
 			for flow in flow_list :
 				flow.add_task(task_i)
-				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q)
+				get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time, q)
 				flow.remove_task(task_i)
 			new_flow = par.Flow()		
 			new_flow.add_task(task_i)
 			flow_list.append(new_flow)
-			get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, start_time, execution_time, q)
+			get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time, q)
 			flow_list.remove(new_flow)
 			
 			if 'For' in task_i.type :
@@ -41,7 +44,7 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 						task.in_time = float(task_i.time) / i
 						task_list.append(task)
 						tmp_task_list.append(task)
-					get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS, start_time, execution_time, q)
+					get_optimal_flow(flow_list, task_list, level + 1, optimal_flow, NUM_TASKS + i - 1, MAX_FLOWS, execution_time, q)
 					for tmp_task in tmp_task_list:
 						task_list.remove(tmp_task)
 				
