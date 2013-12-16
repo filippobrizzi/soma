@@ -59,13 +59,13 @@ ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested
 
 int main() {
 
- int a,n, b;
- b=0;
- a = 10;
- n = 2;
- int c;
-// #pragma omp parallel for shared(a, n, b, c) period(19)
- //for(int i=0;i< 1; i += 1) {
+  int a,n, b;
+  b=0;
+  a = 10;
+  n = 2;
+  int c;
+//  #pragma omp parallel for shared(a, n, b, c) period(19)
+  //for(int i=0;i< 1; i += 1) {
 {
   class Nested : public NestedBase {
   public: 
@@ -75,7 +75,7 @@ int main() {
 void fx(ForParameter for_param) {
 for(int i = 0 + for_param.thread_id_*(1 - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(1 - 0)/for_param.num_threads_; i += 1) { 
    sleep(1);
- }
+  }
 }
 void callme(ForParameter for_param) {
 fx(for_param);
@@ -84,55 +84,18 @@ fx(for_param);
 ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(36));
 }
 
-// #pragma omp parallel shared(a)
- {
-   class Nested : public NestedBase {
-   public: 
-     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-     Nested(int pragma_id, int & b, int & a)  : NestedBase(pragma_id), b_(b) , a_(a) {}
- int & b_;
- int & a_;
- 
- void fx(ForParameter for_param, int & b, int & a){
-//  #pragma omp task shared(b)
+//  #pragma omp parallel shared(a)
   {
     class Nested : public NestedBase {
     public: 
       virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-      Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+      Nested(int pragma_id, int & b, int & a)  : NestedBase(pragma_id), b_(b) , a_(a) {}
   int & b_;
+  int & a_;
   
-  void fx(ForParameter for_param, int & b){
-    b = 5;
-    sleep(1);
-  }
-void callme(ForParameter for_param) {
-fx(for_param, b_);
-}
-};
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(43, b));
-}
-
-//  #pragma omp task shared(b) period(19)
-  {
-    class Nested : public NestedBase {
-    public: 
-      virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-      Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
-  int & b_;
-  
-  void fx(ForParameter for_param, int & b){
-  	/* code */
-    sleep(1);
-  }
-void callme(ForParameter for_param) {
-fx(for_param, b_);
-}
-};
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(49, b));
-}
-
-//  #pragma omp for
+  void fx(ForParameter for_param, int & b, int & a){
+    
+//    #pragma omp for
     //for(int i=1;i< 2; i ++) {
 {
   class Nested : public NestedBase {
@@ -149,19 +112,9 @@ void callme(ForParameter for_param) {
 fx(for_param);
 }
 };
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(55));
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(44));
 }
-  
-//  #pragma omp task shared(b)
-  {
-    class Nested : public NestedBase {
-    public: 
-      virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-      Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
-  int & b_;
-  
-  void fx(ForParameter for_param, int & b){
-//    #pragma omp task shared(b)
+//    #pragma omp single
     {
       class Nested : public NestedBase {
       public: 
@@ -170,63 +123,127 @@ ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested
     int & b_;
     
     void fx(ForParameter for_param, int & b){
-      sleep(1);
-    }
+//      #pragma omp task shared(b)
+      {
+        class Nested : public NestedBase {
+        public: 
+          virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+          Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+      int & b_;
+      
+      void fx(ForParameter for_param, int & b){
+        b = 5;
+        sleep(1);
+      }
+void callme(ForParameter for_param) {
+fx(for_param, b_);
+}
+};
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(50, b));
+}
+
+//      #pragma omp task shared(b) period(19)
+      {
+        class Nested : public NestedBase {
+        public: 
+          virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+          Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+      int & b_;
+      
+      void fx(ForParameter for_param, int & b){
+      	/* code */
+        sleep(1);
+      }
+void callme(ForParameter for_param) {
+fx(for_param, b_);
+}
+};
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(56, b));
+}
+
+//      #pragma omp task shared(b)
+      {
+        class Nested : public NestedBase {
+        public: 
+          virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+          Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+      int & b_;
+      
+      void fx(ForParameter for_param, int & b){
+//        #pragma omp task shared(b)
+        {
+          class Nested : public NestedBase {
+          public: 
+            virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+            Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+        int & b_;
+        
+        void fx(ForParameter for_param, int & b){
+          sleep(1);
+        }
+void callme(ForParameter for_param) {
+fx(for_param, b_);
+}
+};
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(64, b));
+}
+          sleep(1);
+//        #pragma omp task shared(b)
+        {
+          class Nested : public NestedBase {
+          public: 
+            virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+            Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+        int & b_;
+        
+        void fx(ForParameter for_param, int & b){
+          X w;
+          int y;
+          int *z;
+          sleep(1);
+          w.y(y, z);
+        }
+void callme(ForParameter for_param) {
+fx(for_param, b_);
+}
+};
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(69, b));
+}
+
+      }
 void callme(ForParameter for_param) {
 fx(for_param, b_);
 }
 };
 ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(62, b));
 }
-      sleep(1);
-//    #pragma omp task shared(b)
-    {
-      class Nested : public NestedBase {
-      public: 
-        virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-        Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
-    int & b_;
-    
-    void fx(ForParameter for_param, int & b){
-      X w;
-      int y;
-      int *z;
-      sleep(1);
-      w.y(y, z);
+//      #pragma omp task shared(b)
+      {
+        class Nested : public NestedBase {
+        public: 
+          virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+          Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
+      int & b_;
+      
+      void fx(ForParameter for_param, int & b){
+        sleep(1);
+      }
+void callme(ForParameter for_param) {
+fx(for_param, b_);
+}
+};
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(79, b));
+}
     }
 void callme(ForParameter for_param) {
 fx(for_param, b_);
 }
 };
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(67, b));
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(48, b));
 }
 
-  }
-void callme(ForParameter for_param) {
-fx(for_param, b_);
-}
-};
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(60, b));
-}
-//  #pragma omp task shared(b)
-  {
-    class Nested : public NestedBase {
-    public: 
-      virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-      Nested(int pragma_id, int & b)  : NestedBase(pragma_id), b_(b) {}
-  int & b_;
-  
-  void fx(ForParameter for_param, int & b){
-    sleep(1);
-  }
-void callme(ForParameter for_param) {
-fx(for_param, b_);
-}
-};
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(77, b));
-}
 
- }
+  }
 void callme(ForParameter for_param) {
 fx(for_param, b_, a_);
 }
@@ -234,16 +251,18 @@ fx(for_param, b_, a_);
 ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(41, b, a));
 }
 
-// #pragma omp parallel shared(b)
- {
-   class Nested : public NestedBase {
-   public: 
-     virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-     Nested(int pragma_id, int & n, int & b)  : NestedBase(pragma_id), n_(n) , b_(b) {}
- int & n_;
- int & b_;
- 
- void fx(ForParameter for_param, int & n, int & b){
+
+
+//  #pragma omp parallel shared(b)
+  {
+    class Nested : public NestedBase {
+    public: 
+      virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+      Nested(int pragma_id, int & n, int & b)  : NestedBase(pragma_id), n_(n) , b_(b) {}
+  int & n_;
+  int & b_;
+  
+  void fx(ForParameter for_param, int & n, int & b){
 //    #pragma omp for period(12)
     //for(int i=1;i< n; i += 3) {
 {
@@ -262,14 +281,13 @@ void callme(ForParameter for_param) {
 fx(for_param, n_);
 }
 };
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(86, n));
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(92, n));
 }
- }
+  }
 void callme(ForParameter for_param) {
 fx(for_param, n_, b_);
 }
 };
-ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(84, n, b));
+ThreadPool::getInstance("test_cases/omp_test.cpp")->call(std::make_shared<Nested>(90, n, b));
 }
-
 }

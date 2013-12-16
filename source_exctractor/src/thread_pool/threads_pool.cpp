@@ -2,7 +2,6 @@
 
 
 std::mutex singleton_mtx;
-std::mutex cout_mtx;
 
 
 ThreadPool* ThreadPool::getInstance(std::string file_name) {
@@ -80,16 +79,17 @@ void ThreadPool::init(int pool_size)
 
 void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
     int thread_number = sched_opt_[nested_b->pragma_id_].threads_.size();
-
+    int thread_id;
 
     for(int i = 0; i < thread_number; i ++) {
-        push(nested_b->clone(), ForParameter(i, thread_number));
+        thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
+        push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
     }
 
     /* Only pragma Parallel and Parallel For must join in the caller thread */
-    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPTaskDirective") != 0) {
+    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0
+        || sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelForDirective") == 0) {
         int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
-
         int barriers_id;
         for (int i = 0; i < barriers_number; i ++) {
             barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
@@ -100,7 +100,7 @@ void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
 
 
 void ThreadPool::push(std::shared_ptr<NestedBase> nested_base, 
-                                     ForParameter for_param) {
+                                     ForParameter for_param, int thread_id) {
     
     Jobid_t id = nested_base->pragma_id_;
         
@@ -113,28 +113,23 @@ void ThreadPool::push(std::shared_ptr<NestedBase> nested_base,
     job_pop_mtx.lock();
     known_jobs_[id].push_back(std::move(job_in));
 
-    Jobid_t *jid = new Jobid_t[2];
-    jid[0] = id; jid[1] = for_param.thread_id_;
+    Jobid_t *j_id = new Jobid_t[2];
+    j_id[0] = id; 
+    j_id[1] = for_param.thread_id_;
     
-    work_queue_.push(jid);
+    work_queue_[thread_id].push(j_id);
     job_pop_mtx.unlock();
-    /* DEBUG */
 
-    //cout_mtx.lock();std::cout << "Push " << nested_base->pragma_id_ << " - " << for_param.thread_id_ << " / " << for_param.num_threads_ << std::endl;cout_mtx.unlock();
-    cout_mtx.lock();std::cout << "Push " << nested_base->pragma_id_ << " - " 
-        << for_param.thread_id_ << " / " << for_param.num_threads_  << " -- "
-        << known_jobs_[id].back().job_id_ << " - "
-        << known_jobs_[id].back().job_.for_param_.thread_id_ << " / "
-        << known_jobs_[id].back().job_.for_param_.num_threads_ 
-        << " TYPE " << known_jobs_[id].back().job_type_ << std::endl;cout_mtx.unlock();
+    std::cout << "PUSH " << id << " - " << thread_id << std::endl;
+
 }
 
 
-void ThreadPool::push_termination_job() {
+void ThreadPool::push_termination_job(int thread_id) {
 
-    Jobid_t *jid = new Jobid_t[2];
-    jid[0] = 0; jid[1] = 0;
-    work_queue_.push(jid);
+    Jobid_t *j_id = new Jobid_t[2];
+    j_id[0] = 0; j_id[1] = 0;
+    work_queue_[thread_id].push(j_id);
 }
 
 
@@ -142,21 +137,30 @@ void ThreadPool::run(int me) {
     while(true) {
         
         job_pop_mtx.lock();
-        if(work_queue_.size() != 0) {
+        if(work_queue_[me].size() != 0) {
 
-            Jobid_t *j_id = work_queue_.front();
-            work_queue_.pop();
+            Jobid_t *j_id = work_queue_[me].front();
+            work_queue_[me].pop();
             job_pop_mtx.unlock();
             
-            if(j_id[0] == 0)
-                break;            
             int pragma_id = j_id[0]; int thread_id = j_id[1]; 
-            //JobIn &job_in = known_jobs_[j_id[0]].at(j_id[1]);
+           
+            if(pragma_id == 0)
+                break;            
             
-            known_jobs_[pragma_id][thread_id].job_.nested_base_->callme(known_jobs_[pragma_id][thread_id].job_.for_param_);
-            /* Before task terminate has to wait for all its children to terminate */
-            
-            if(known_jobs_[pragma_id][thread_id].job_type_.compare("OMPTaskDirective") == 0) {
+            ForParameter for_param = known_jobs_[pragma_id][thread_id].job_.for_param_;
+            try {
+                known_jobs_[pragma_id][thread_id].job_.nested_base_->callme(for_param);
+            }catch(std::exception& e){
+                known_jobs_[pragma_id][thread_id].terminated_with_exceptions_ = true;
+                std::cerr << "Pragma " << pragma_id << " terminated with exception: " << e.what() << std::endl;                
+            }
+
+            /* Before task terminate has to wait for all its children to terminate */            
+            if(known_jobs_[pragma_id][thread_id].job_type_.compare("OMPTaskDirective") == 0
+                || known_jobs_[pragma_id][thread_id].job_type_.compare("OMPSingleDirective") == 0
+                || known_jobs_[pragma_id][thread_id].job_type_.compare("OMPSectionsDirective") == 0) {
+
                 int barriers_number = sched_opt_[known_jobs_[pragma_id][thread_id].job_id_].barriers_.size();
                 int barrier_id;
                 for(int i = 0; i < barriers_number; i ++) {
@@ -174,9 +178,7 @@ void ThreadPool::run(int me) {
 }
 
 
-void ThreadPool::join(Jobid_t job_id) {
-    
-    //cout_mtx.lock(); std::cout << "JOIN START " << job_id << std::endl; cout_mtx.unlock();
+void ThreadPool::join(Jobid_t job_id) {    
     /* Each pragma can be runned on multiple thread: e.g. parallel for */
     for(int i = 0; i < known_jobs_[job_id].size(); i ++) {
         if(known_jobs_[job_id].at(i).job_completed_ != true) {
@@ -184,23 +186,20 @@ void ThreadPool::join(Jobid_t job_id) {
             known_jobs_[job_id].at(i).done_cond_var_->wait(lk);
         }
     }
-    //CHECK THIS
     known_jobs_.erase(job_id);
-    //cout_mtx.lock(); std::cout << "JOIN END " << job_id << std::endl; cout_mtx.unlock();
 }
 
 
 void ThreadPool::joinall() {
     /* Push termination job in the working queue */
     for (int i = 0; i < threads_pool_.size(); i ++)
-        push_termination_job();
+        push_termination_job(i);
     
     /* Joining on all the threads in the thread pool */
     for(int i = 0; i < threads_pool_.size(); i++)
         threads_pool_[i].join();
 
 }
-
 
 
 int chartoint(const char *cc){

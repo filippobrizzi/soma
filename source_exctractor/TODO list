@@ -1,8 +1,6 @@
 
-2 - Investigate why the condition variables in Cloth.cpp are not detected
+ 	Investigate why the condition variables in Cloth.cpp are not detected
 
-
-------------------------------------------------------------------------------------------------------
 
 
 	-------------------------------------------------------------------------------------------------
@@ -13,25 +11,19 @@
 	devo usare gli include di gcc4.8 (/usr/include/c++/4.8/) che poi mi danno altri mille errori?
 
 
-
-
 	-------------------------------------------------------------------------------------------------
 	*************************************************************************************************
 	-------------------------------------------------------------------------------------------------	
 
-	PROBLEMI:
+	Investigate:
 
-	1 - problema con le parentesi graffe del for...io sostituisco il for quindi se è del tipo:
-		for(...;...;...)
-		{
+	use boost::thread_group
+	asio::io_service
 
-		}
+	-------------------------------------------------------------------------------------------------
+	*************************************************************************************************
+	-------------------------------------------------------------------------------------------------	
+	
+	TODO:
 
-		no problem, ma se invece è del tipo:
-		for(...;...;...) {
-
-		}
-
-		ho un problema perchè non so se la graffa alla fine c'è o meno, e quindi non so se la devo aggiungere.
-
-		Possibile problema, con il source location estrarre la stringa della linea, parsarla e vedere se c'è una graffa.
+	Trovare il modo di specificare parallel for come tipo del pragma!!!!
