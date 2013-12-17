@@ -419,10 +419,8 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
       var_type.erase(pos_class, pos_class);
     
     size_t pos_uppersand = var_type.find("&");
-    std::cout << "&&&&&&: " << var_type << " pos " << pos_uppersand << std::endl;
     if(pos_uppersand != std::string::npos)
       var_type.erase(pos_uppersand - 1, var_type.size());
-    std::cout << "          new var type: " << var_type << std::endl;
 
     if(n->option_vect_->find("private") != n->option_vect_->end()) {
       if(n->option_vect_->find("private")->second.find(var_decl->getNameAsString()) 

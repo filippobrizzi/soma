@@ -1,18 +1,6 @@
 <Schedule>
   <Cores>3</Cores>
   <Pragma>
-    <id>35</id>
-    <Type>main</Type>
-    <Threads>
-      <Thread>0</Thread>
-    </Threads>
-    <Start_time>0</Start_time>
-    <Deadline>4.82835820896</Deadline>
-    <Barrier>
-      <id>39</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
     <id>39</id>
     <Type>OMPParallelDirective</Type>
     <Threads>
@@ -46,46 +34,6 @@
     </Threads>
     <Start_time>4.82835820896</Start_time>
     <Deadline>9.82835820896</Deadline>
-    <Barrier>
-      <id>23</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>23</id>
-    <Type>apply_filter_2</Type>
-    <Threads>
-      <Thread>0</Thread>
-    </Threads>
-    <Start_time>9.82835820896</Start_time>
-    <Deadline>9.82835820896</Deadline>
-    <Barrier>
-      <id>27</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>27</id>
-    <Type>OMPParallelForDirective</Type>
-    <Threads>
-      <Thread>1</Thread>
-    </Threads>
-    <Start_time>9.82835820896</Start_time>
-    <Deadline>9.9328358209</Deadline>
-    <Barrier>
-      <id>27</id>
-      <id>11</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>11</id>
-    <Type>apply_filter_1</Type>
-    <Threads>
-      <Thread>0</Thread>
-    </Threads>
-    <Start_time>9.9328358209</Start_time>
-    <Deadline>9.9328358209</Deadline>
-    <Barrier>
-      <id>14</id>
-    </Barrier>
   </Pragma>
   <Pragma>
     <id>14</id>
@@ -107,21 +55,6 @@
     </Threads>
     <Start_time>0</Start_time>
     <Deadline>9.82835820896</Deadline>
-    <Barrier>
-      <id>23</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>23</id>
-    <Type>apply_filter_2</Type>
-    <Threads>
-      <Thread>0</Thread>
-    </Threads>
-    <Start_time>0</Start_time>
-    <Deadline>9.82835820896</Deadline>
-    <Barrier>
-      <id>27</id>
-    </Barrier>
   </Pragma>
   <Pragma>
     <id>27</id>
@@ -133,31 +66,6 @@
     <Deadline>9.9328358209</Deadline>
     <Barrier>
       <id>27</id>
-      <id>11</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>11</id>
-    <Type>apply_filter_1</Type>
-    <Threads>
-      <Thread>0</Thread>
-    </Threads>
-    <Start_time>9.9328358209</Start_time>
-    <Deadline>9.9328358209</Deadline>
-    <Barrier>
-      <id>14</id>
-    </Barrier>
-  </Pragma>
-  <Pragma>
-    <id>14</id>
-    <Type>OMPParallelForDirective</Type>
-    <Threads>
-      <Thread>1</Thread>
-    </Threads>
-    <Start_time>9.9328358209</Start_time>
-    <Deadline>10.0</Deadline>
-    <Barrier>
-      <id>14</id>
     </Barrier>
   </Pragma>
 </Schedule>

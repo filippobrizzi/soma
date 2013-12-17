@@ -39,28 +39,26 @@ if( ProfileTracker x = ProfileTrackParams(23, 0)) {
 };
 
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 if( ProfileTracker x = ProfileTrackParams(35, 0)) {
     //VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
     //VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
-
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(35, 41))
+    if( ProfileTracker x = ProfileTrackParams(35, 39))
     {
 //        #pragma omp sections
-        if( ProfileTracker x = ProfileTrackParams(35, 43))
+        if( ProfileTracker x = ProfileTrackParams(35, 41))
         {
             
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(35, 46))
+            if( ProfileTracker x = ProfileTrackParams(35, 44))
             {   
                 VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
                 double dWidth = video_cap_sx.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
                 double dHeight = video_cap_sx.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
                 Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
                 VideoWriter oVideoWriter_sx ("./MyVideo_sx_new.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-                namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+                //namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_sx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
 
                 while(1)
@@ -75,21 +73,21 @@ if( ProfileTracker x = ProfileTrackParams(35, 0)) {
                     //apply_filter_2(frame);
                         
                     oVideoWriter_sx.write(frame);
-                    imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
+                    //imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
                 }
             }
 
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(35, 74))
+            if( ProfileTracker x = ProfileTrackParams(35, 72))
             {
                 VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
                 double dWidth = video_cap_dx.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
                 double dHeight = video_cap_dx.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
                 Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
                 VideoWriter oVideoWriter_dx ("./MyVideo_dx_new.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-                namedWindow("MyVideo_dx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+                //namedWindow("MyVideo_dx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_dx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
 
                 while(1)
@@ -103,7 +101,7 @@ if( ProfileTracker x = ProfileTrackParams(35, 0)) {
                     apply_filter_2(frame);
 
                     oVideoWriter_dx.write(frame);
-                    imshow("MyVideo_dx", frame); //show the frame in "MyVideo" window
+                    //imshow("MyVideo_dx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
                 }
