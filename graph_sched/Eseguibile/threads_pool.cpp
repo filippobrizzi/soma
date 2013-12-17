@@ -27,7 +27,8 @@ ThreadPool::ThreadPool(std::string file_name) {
 
     tinyxml2::XMLElement *threads_num_element = xml_doc.FirstChildElement("Schedule")->FirstChildElement("Cores");
     const char* threads_num = threads_num_element->GetText();
-    init(chartoint(threads_num));   
+    /* Set the number of thread as the number of cores plus one thread wich is used to run parallel and sections job */
+    init(chartoint(threads_num) + 1);   
 
 
     tinyxml2::XMLElement *pragma_element = xml_doc.FirstChildElement("Schedule")->FirstChildElement("Pragma");
@@ -45,13 +46,20 @@ ThreadPool::ThreadPool(std::string file_name) {
         tinyxml2::XMLElement *thread_element = pragma_element->FirstChildElement("Threads");
         if(thread_element != NULL)
             thread_element = thread_element->FirstChildElement("Thread");
-        while(thread_element != NULL){
-            const char *thread_id = thread_element->GetText();
-            sched_opt.threads_.push_back(chartoint(thread_id));
+        
+        if(strcmp(pragma_type, "OMPParallelDirective") == 0
+            || strcmp(pragma_type, "OMPSectionsDirective") == 0
+            || strcmp(pragma_type, "OMPSingleDirective") == 0) {
 
-            thread_element = thread_element->NextSiblingElement("Thread");
+            sched_opt.threads_.push_back(chartoint(threads_num));
+        }else {
+            while(thread_element != NULL){
+                const char *thread_id = thread_element->GetText();
+                sched_opt.threads_.push_back(chartoint(thread_id));
+
+                thread_element = thread_element->NextSiblingElement("Thread");
+            }
         }
-
         tinyxml2::XMLElement *barriers_element = pragma_element->FirstChildElement("Barrier");
         if(barriers_element != NULL)
             barriers_element = barriers_element->FirstChildElement("id");

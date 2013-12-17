@@ -47,22 +47,21 @@ if __name__ == "__main__":
 
 	#creates the flow type graph --> flow.xml
 	par.dump_graphs(flow_graphs)
-
 	#adding to the original xml the profiling informations --> code.xml
 	pro.add_profile_xml(profile_xml, pragma_xml)
-
 	#creating the total graph with the call-tree
 	func_graph = par.create_complete_graph(visual_flow_graphs, profile_xml)
-
 	#creating the graphs with the function calls
 	func_graph.write_pdf('graphs/function_graphs.pdf')
 	func_graph.write_dot('graphs/function_graphs.dot')
+
+	
 
 	#creating the expanded graph where the functions are inserted in the flow graph
 	exp_flows = copy.deepcopy(flow_graphs)
 	par.explode_graph(exp_flows)
 	main_flow = sched.get_main(exp_flows)
-
+	
 	#creating a generator for the expanded graph
 	gen = sched.generate_task(main_flow)
 	
@@ -74,8 +73,6 @@ if __name__ == "__main__":
 
 	#getting cores of the actual machine
 	cores = multiprocessing.cpu_count() / 2
-
-	print time.clock()
 	
 	#initializing all the lists for the parallel scheduling algorithm
 	tasks_list = []
@@ -126,8 +123,9 @@ if __name__ == "__main__":
 	optimal_flow = results[0]
 	best = 0
 	for i in range(len(results)):
-		if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
-			best = i
+		for flow in results[i]:
+			if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
+				best = i
 	optimal_flow = results[best]
 
 	#printing the best result	
@@ -145,12 +143,9 @@ if __name__ == "__main__":
 	for t in gen_:
 		t_list.append(t)
 		
-
 	par.add_flow_id(optimal_flow, t_list)
 
 	#sets arrival times and deadlines using a modified version of the chetto algorithm
-
-
 	sched.chetto(main_flow, deadline, optimal_flow)
 	
 	sched.make_white(main_flow)

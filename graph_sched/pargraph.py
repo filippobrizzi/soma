@@ -591,24 +591,49 @@ def find_sub_node(node, function):
 			return tmp_node
 	return None
 
+class Caller():
+	def __init__(self, original_caller, used_caller):
+		self.original_caller = original_caller
+		self.used_caller = used_caller
+		self.old_children = []
+
+#adding to the main graph all the function which are called taking care of multiple connections between pragma and caller
 def explode_graph(flow_graphs):
+	setted_callers = {}
 	for function in flow_graphs:
+		count = 0
 		caller_list = function.callerid
 		if caller_list != None:
 			for caller in caller_list:
 				function_copy = copy.deepcopy(function)
+				count += 1
 				caller_node = find_node(caller, flow_graphs)
-				function_copy.parent.append(caller_node)
-				children_list = []
-				for child in caller_node.children:
-					children_list.append(child)
-					child.parent.remove(caller_node)
-				caller_node.children = []
-				caller_node.children.append(function_copy)
-				last_node = sched.get_last(function_copy)
-				last_node.children = children_list
-				for child in children_list:
-					child.parent.append(last_node)
+				if caller_node.start_line not in setted_callers:
+					setted_callers[caller_node.start_line] = Caller(copy.copy(caller_node), caller_node)
+					function_copy.parent.append(caller_node)
+					children_list = []
+					for child in caller_node.children:
+						children_list.append(child)
+						child.parent.remove(caller_node)
+						setted_callers[caller_node.start_line].old_children.append(child)
+					caller_node.children = []
+					caller_node.children.append(function_copy)
+					last_node = sched.get_last(function_copy)
+					last_node.children = children_list
+					for child in children_list:
+						child.parent.append(last_node)
+				else:
+					children_list = []
+					for child in setted_callers[caller_node.start_line].old_children:
+						children_list.append(child)
+					function_copy.parent.append(setted_callers[caller_node.start_line].used_caller)
+					setted_callers[caller_node.start_line].used_caller.children.append(function_copy)
+					last_node = sched.get_last(function_copy)
+					last_node.children = children_list
+					for child in children_list:
+						child.parent.append(last_node)
+
+					
 
 def get_parameter(parameter):
 	if parameter.find('Type') != None:

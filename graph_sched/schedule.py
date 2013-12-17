@@ -11,15 +11,12 @@ class Queue():
 		self.q = multiprocessing.Queue()
 		self.set = False
 
-
-
 #returns the optimal flows 
 #if time is to big for the number of possible solutions it does not work.
 
 
 def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time, q):
 	if time.clock() < execution_time :
-		print time.clock()
 		curopt = get_cost(optimal_flow)
 		cur = get_cost(flow_list)
 		if len(flow_list) < MAX_FLOWS and len(task_list) != level and cur <= curopt :
@@ -62,8 +59,9 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 	elif q.set == False:
 		q.q.put(optimal_flow)
 		q.set = True
-
-
+	if q.set == False:
+		q.q.put(optimal_flow)
+		q.set = True
 
 				#flow.dump("\t")
 				#print "\ttime:",flow.time
@@ -207,6 +205,11 @@ def create_schedule(graph, num_cores):
 			pragma = ET.SubElement(schedule, 'Pragma')
 			id = ET.SubElement(pragma, 'id')
 			id.text = str(task.start_line)
+			caller_id = ET.SubElement(pragma, 'Caller_id')
+			if(len(task.parent) > 0):
+				caller_id.text = str(task.parent[0].start_line)
+			else:
+				caller_id.text = str(0)
 			pragma_type = ET.SubElement(pragma, 'Type')
 			pragma_type.text = str(task.type)
 			threads = ET.SubElement(pragma, 'Threads')
@@ -218,11 +221,12 @@ def create_schedule(graph, num_cores):
 			end.text = str(task.d)
 			if 'BARRIER' not in task.children[0].type :
 				l = []
-				barrier = ET.SubElement(pragma, 'Barrier')
 				if 'Parallel' in task.type:
+					barrier = ET.SubElement(pragma, 'Barrier')
 					first = ET.SubElement(barrier, 'id')
 					first.text = str(task.start_line)
-				if not ('OMPParallelForDirective' in task.type and 'Parallel' in task.children[0].type):
+				if not ('OMPParallelForDirective' in task.type and 'Parallel' in task.children[0].type) and not isinstance(task.children[0], par.Fx_Node):
+					barrier = ET.SubElement(pragma, 'Barrier')
 					for c in task.children:
 						if c.start_line not in l:
 							tmp_id = ET.SubElement(barrier, 'id')
@@ -240,6 +244,11 @@ def serialize_splitted(task, schedule, mapped):
 		pragma = ET.SubElement(schedule, 'Pragma')
 		id = ET.SubElement(pragma, 'id')
 		id.text = str(task.start_line)
+		caller_id = ET.SubElement(pragma, 'Caller_id')
+		if(len(task.parent) > 0):
+			caller_id.text = str(task.parent[0].start_line)
+		else:
+			caller_id.text = str(0)
 		pragma_type = ET.SubElement(pragma, 'Type')
 		pragma_type.text = str(task.from_type)
 		threads = ET.SubElement(pragma, 'Threads')
