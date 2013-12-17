@@ -1,4 +1,4 @@
-#include "opencv2/highgui/highgui.hpp"
+ #include "opencv2/highgui/highgui.hpp"
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/core/core.hpp"
@@ -9,8 +9,9 @@ using namespace cv;
 using namespace std;
 
 int apply_filter_1(const Mat &frame){
+    int count = frame.cols;
     #pragma omp parallel for
-    for (int i = 0; i < frame.cols; ++i)
+    for (int i = 0; i < count; ++i)
     {
         Size gaussian_size(0, 0);
         GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);     
@@ -21,9 +22,9 @@ int apply_filter_1(const Mat &frame){
 
 int apply_filter_2(const Mat &frame){
     
-    
+    int count = frame.cols;
     #pragma omp parallel for
-    for (int i = 0; i < frame.cols; ++i)
+    for (int i = 0; i < count; ++i)
     {        
         erode(frame.col(i), frame.col(i), Mat());
     }  
@@ -31,9 +32,9 @@ int apply_filter_2(const Mat &frame){
 };
 
 
-int main(int argc, char* argv[])
-{
-
+int main(int argc, char* argv[]) {
+    //VideoCapture video_cap_sx("MyVideo_sx.avi"); // open the video file for reading
+    //VideoCapture video_cap_dx("MyVideo_dx.avi"); // open the video file for reading
     #pragma omp parallel
     {
         #pragma omp sections
@@ -46,7 +47,7 @@ int main(int argc, char* argv[])
                 double dHeight = video_cap_sx.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
                 Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
                 VideoWriter oVideoWriter_sx ("./MyVideo_sx_new.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-                namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+                //namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_sx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
 
                 while(1)
@@ -58,10 +59,10 @@ int main(int argc, char* argv[])
 
                     apply_filter_1(frame);
                     
-                    apply_filter_2(frame);
+                    //apply_filter_2(frame);
                         
                     oVideoWriter_sx.write(frame);
-                    imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
+                    //imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
                 }
@@ -74,7 +75,7 @@ int main(int argc, char* argv[])
                 double dHeight = video_cap_dx.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
                 Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
                 VideoWriter oVideoWriter_dx ("./MyVideo_dx_new.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-                namedWindow("MyVideo_dx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
+                //namedWindow("MyVideo_dx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_dx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
 
                 while(1)
@@ -84,11 +85,11 @@ int main(int argc, char* argv[])
                     bool frame_success = video_cap_dx.read(frame); // read a new frame from video
                     if (!frame_success) break;
                     
-                    apply_filter_1(frame);
+                    //apply_filter_1(frame);
                     apply_filter_2(frame);
 
                     oVideoWriter_dx.write(frame);
-                    imshow("MyVideo_dx", frame); //show the frame in "MyVideo" window
+                    //imshow("MyVideo_dx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
                 }

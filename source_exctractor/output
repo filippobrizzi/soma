@@ -1,0 +1,57 @@
+CIAO 1 - OMPParallelDirective
+CIAO 1 - OMPParallelDirective
+CIAO 1 - OMPParallelDirective
+CIAO 1 - OMPSectionsDirective
+CIAO 1 - OMPSectionDirective
+CIAO 1 - OMPSectionDirective
+test_cases/TestOpenCV/opencv1
+test_cases/TestOpenCV/opencv1_pragmas.xml
+FUNCTION INFO 
+Name = apply_filter_1  ReturnType = int
+OMPParallelForDirective
+Num clauses = 0
+Start Line = 14   End Line = 18
+Parent function line = 11
+for( int i = 0; i < count; i ++;)
+
+FUNCTION INFO 
+Name = apply_filter_2  ReturnType = int
+OMPParallelForDirective
+Num clauses = 0
+Start Line = 27   End Line = 30
+Parent function line = 23
+for( int i = 0; i < count; i ++;)
+
+FUNCTION INFO 
+Name = main  ReturnType = int
+OMPParallelDirective
+Num clauses = 0
+Start Line = 41   End Line = 100
+Parent function line = 35
+
+Child 
+OMPSectionsDirective
+Num clauses = 0
+Start Line = 43   End Line = 99
+Parent function line = 35
+
+Child 
+OMPSectionDirective
+Num clauses = 0
+Start Line = 46   End Line = 71
+Parent function line = 35
+
+Child 
+OMPSectionDirective
+Num clauses = 0
+Start Line = 74   End Line = 98
+Parent function line = 35
+
+&&&&&&: int pos 18446744073709551615
+          new var type: int
+&&&&&&: const cv::Mat & pos 14
+          new var type: const cv::Mat
+&&&&&&: int pos 18446744073709551615
+          new var type: int
+&&&&&&: const cv::Mat & pos 14
+          new var type: const cv::Mat

@@ -1,7 +1,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <mutex> 
+#include <mutex>
 #include <map>
 #include <math.h>
 #include <iostream>
@@ -24,8 +24,8 @@ public:
 };
 
 
-class NestedBase { 
-public: 
+class NestedBase {
+public:
 
     NestedBase(int pragma_id) : pragma_id_(pragma_id) {}
     
@@ -58,8 +58,8 @@ public:
     void push(std::shared_ptr<NestedBase> nested_base, ForParameter for_param, int thread_id);
     void push_termination_job(int thread_id);
 
-    /* Pause a thread till the job[job_id] complete */ 
-    void join(Jobid_t job_id, std::thread::id caller_thread_id);
+    /* Pause a thread till the job[job_id] complete */
+    void join(Jobid_t job_id);
 
     void joinall();
 
@@ -71,7 +71,6 @@ public:
 private:
     struct ScheduleOptions {
         int pragma_id_;
-        int caller_id_;
         /* In case of a parallel for, specify to the job which part of the for to execute */
         int thread_id_;
         /* Idicates the pragma type: parallel, task, ... */
@@ -86,29 +85,18 @@ private:
         Job job_;
         /* ID of the job = pragma line number */
         Jobid_t job_id_;
-        Jobid_t pragma_id_;
         /* Pragma type, e.g. OMPParallelDirective, OMPTaskDirective, ... */
         std::string job_type_;
-        /* Fix the bug where a thread waits for another thread which already nofied to have compleated */ 
+        /* Fix the bug where a thread waits for another thread which already nofied to have compleated */
         bool job_completed_ = false;
 
         bool terminated_with_exceptions_ = false;
 
         std::unique_ptr<std::condition_variable> done_cond_var_;
 
-        std::vector<int> barriers_;
-
-        JobIn(std::shared_ptr<NestedBase> nested_base, ForParameter for_param) 
+        JobIn(std::shared_ptr<NestedBase> nested_base, ForParameter for_param)
                 : job_(nested_base, for_param), job_completed_(false) {}
 
-    };
-
-    struct JobQueue {
-        Jobid_t j_id_;
-        int thread_id_;
-        std::thread::id caller_thread_id_;
-        JobQueue(Jobid_t j_id, int thread_id, std::thread::id caller_thread_id) 
-            : j_id_(j_id), thread_id_(thread_id), caller_thread_id_(caller_thread_id) {}
     };
 
     ThreadPool(std::string file_name);
@@ -119,16 +107,10 @@ private:
 
     std::vector<std::thread> threads_pool_; // not thread safe
     /* Job queue for each thread */
-
-    std::map<int, std::queue<JobQueue>> work_queue_;
-    //std::map<int, std::queue<Jobid_t *>> work_queue_;        
-    
+    std::map<int, std::queue<Jobid_t *>> work_queue_;
     /* For each pragma the list of jobs executing that pragma, e.g. in case of parallel for */
-    typedef std::pair<Jobid_t, std::thread::id> JobKey;
-    std::map<JobKey, std::vector<JobIn>> known_jobs_;
-    //std::map<Jobid_t, std::vector<JobIn>> known_jobs_;
+    std::map<Jobid_t, std::vector<JobIn>> known_jobs_;
     /* Mutex used by std::condition_variable to synchronize jobs execution */
-    std::mutex cond_var_mtx; 
+    std::mutex cond_var_mtx;
     std::mutex job_pop_mtx;
 };
-

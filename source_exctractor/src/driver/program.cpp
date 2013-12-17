@@ -69,13 +69,14 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     /* Include the path to ProfileTracker.h */
     if(include_inserted_ == false) {
       std::string text_include = 
-      "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
+      "#include \"ProfileTracker.h\"\n";
       
       rewrite_profiling_.InsertText(start_src_loc, text_include, true, false);
       include_inserted_ = true;
     } 
 
     start_src_loc = f->getBody()->getLocStart();
+  	unsigned start_line = utils::Line(start_src_loc, sm);
     clang::SourceLocation new_start_src_loc = sm.translateLineCol(sm.getMainFileID(), start_line + 1, 1);
     std::stringstream text_profiling;
     text_profiling << "if( ProfileTracker x = ProfileTrackParams(" << funct_start_line << ", 0)) {\n";
@@ -413,8 +414,13 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
     }else
       text << ", ";
 
-    if(var_type.find("class") != std::string::npos)
-      var_type.erase(0, 6);
+    size_t pos_class = var_type.find("class");
+    if(pos_class != std::string::npos)
+      var_type.erase(pos_class, pos_class);
+    
+    size_t pos_uppersand = var_type.find("&");
+    if(pos_uppersand != std::string::npos)
+      var_type.erase(pos_uppersand - 1, var_type.size());
 
     if(n->option_vect_->find("private") != n->option_vect_->end()) {
       if(n->option_vect_->find("private")->second.find(var_decl->getNameAsString()) 
