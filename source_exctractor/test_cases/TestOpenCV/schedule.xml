@@ -1,13 +1,27 @@
 <Schedule>
   <Cores>3</Cores>
   <Pragma>
+    <id>35</id>
+    <Caller_id>0</Caller_id>
+    <Type>main</Type>
+    <Threads>
+      <Thread>0</Thread>
+    </Threads>
+    <Start_time>0</Start_time>
+    <Deadline>7.83582089552</Deadline>
+    <Barrier>
+      <id>39</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
     <id>39</id>
+    <Caller_id>35</Caller_id>
     <Type>OMPParallelDirective</Type>
     <Threads>
       <Thread>0</Thread>
     </Threads>
     <Start_time>0</Start_time>
-    <Deadline>4.82835820896</Deadline>
+    <Deadline>7.83582089552</Deadline>
     <Barrier>
       <id>39</id>
       <id>41</id>
@@ -15,12 +29,13 @@
   </Pragma>
   <Pragma>
     <id>41</id>
-    <Type>OMPSectionsDirective</Type>
+    <Caller_id>39</Caller_id>
+    <Type>OMPSingleDirective</Type>
     <Threads>
       <Thread>0</Thread>
     </Threads>
     <Start_time>0</Start_time>
-    <Deadline>4.82835820896</Deadline>
+    <Deadline>7.83582089552</Deadline>
     <Barrier>
       <id>44</id>
       <id>72</id>
@@ -28,42 +43,132 @@
   </Pragma>
   <Pragma>
     <id>44</id>
-    <Type>OMPSectionDirective</Type>
+    <Caller_id>41</Caller_id>
+    <Type>OMPTaskDirective</Type>
     <Threads>
-      <Thread>2</Thread>
+      <Thread>0</Thread>
     </Threads>
-    <Start_time>4.82835820896</Start_time>
-    <Deadline>9.82835820896</Deadline>
+    <Start_time>0</Start_time>
+    <Deadline>9.83582089552</Deadline>
+    <Barrier>
+      <id>11</id>
+      <id>23</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
+    <id>11</id>
+    <Caller_id>44</Caller_id>
+    <Type>apply_filter_1</Type>
+    <Threads>
+      <Thread>0</Thread>
+    </Threads>
+    <Start_time>0</Start_time>
+    <Deadline>9.83582089552</Deadline>
+    <Barrier>
+      <id>14</id>
+    </Barrier>
   </Pragma>
   <Pragma>
     <id>14</id>
+    <Caller_id>11</Caller_id>
     <Type>OMPParallelForDirective</Type>
     <Threads>
       <Thread>1</Thread>
     </Threads>
-    <Start_time>9.9328358209</Start_time>
+    <Start_time>9.83582089552</Start_time>
     <Deadline>10.0</Deadline>
     <Barrier>
       <id>14</id>
     </Barrier>
   </Pragma>
   <Pragma>
-    <id>72</id>
-    <Type>OMPSectionDirective</Type>
+    <id>23</id>
+    <Caller_id>44</Caller_id>
+    <Type>apply_filter_2</Type>
     <Threads>
       <Thread>0</Thread>
     </Threads>
     <Start_time>0</Start_time>
-    <Deadline>9.82835820896</Deadline>
+    <Deadline>9.91791044776</Deadline>
+    <Barrier>
+      <id>27</id>
+    </Barrier>
   </Pragma>
   <Pragma>
     <id>27</id>
+    <Caller_id>23</Caller_id>
     <Type>OMPParallelForDirective</Type>
     <Threads>
       <Thread>1</Thread>
     </Threads>
-    <Start_time>9.82835820896</Start_time>
-    <Deadline>9.9328358209</Deadline>
+    <Start_time>9.91791044776</Start_time>
+    <Deadline>10.0</Deadline>
+    <Barrier>
+      <id>27</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
+    <id>72</id>
+    <Caller_id>41</Caller_id>
+    <Type>OMPTaskDirective</Type>
+    <Threads>
+      <Thread>2</Thread>
+    </Threads>
+    <Start_time>7.83582089552</Start_time>
+    <Deadline>9.83582089552</Deadline>
+    <Barrier>
+      <id>11</id>
+      <id>23</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
+    <id>11</id>
+    <Caller_id>72</Caller_id>
+    <Type>apply_filter_1</Type>
+    <Threads>
+      <Thread>0</Thread>
+    </Threads>
+    <Start_time>9.83582089552</Start_time>
+    <Deadline>9.83582089552</Deadline>
+    <Barrier>
+      <id>14</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
+    <id>14</id>
+    <Caller_id>11</Caller_id>
+    <Type>OMPParallelForDirective</Type>
+    <Threads>
+      <Thread>1</Thread>
+    </Threads>
+    <Start_time>9.83582089552</Start_time>
+    <Deadline>10.0</Deadline>
+    <Barrier>
+      <id>14</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
+    <id>23</id>
+    <Caller_id>72</Caller_id>
+    <Type>apply_filter_2</Type>
+    <Threads>
+      <Thread>0</Thread>
+    </Threads>
+    <Start_time>9.83582089552</Start_time>
+    <Deadline>9.91791044776</Deadline>
+    <Barrier>
+      <id>27</id>
+    </Barrier>
+  </Pragma>
+  <Pragma>
+    <id>27</id>
+    <Caller_id>23</Caller_id>
+    <Type>OMPParallelForDirective</Type>
+    <Threads>
+      <Thread>1</Thread>
+    </Threads>
+    <Start_time>9.91791044776</Start_time>
+    <Deadline>10.0</Deadline>
     <Barrier>
       <id>27</id>
     </Barrier>

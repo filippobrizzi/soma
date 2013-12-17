@@ -118,15 +118,14 @@ private:
     std::map<int, ScheduleOptions> sched_opt_;
 
     std::vector<std::thread> threads_pool_; // not thread safe
+    
     /* Job queue for each thread */
-
     std::map<int, std::queue<JobQueue>> work_queue_;
-    //std::map<int, std::queue<Jobid_t *>> work_queue_;        
     
     /* For each pragma the list of jobs executing that pragma, e.g. in case of parallel for */
     typedef std::pair<Jobid_t, std::thread::id> JobKey;
     std::map<JobKey, std::vector<JobIn>> known_jobs_;
-    //std::map<Jobid_t, std::vector<JobIn>> known_jobs_;
+
     /* Mutex used by std::condition_variable to synchronize jobs execution */
     std::mutex cond_var_mtx; 
     std::mutex job_pop_mtx;

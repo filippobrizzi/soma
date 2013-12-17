@@ -29,9 +29,10 @@ struct ProfileTrackParams {
  */
 class ProfileTracker {
 
-	time_t start_time_;
-	time_t end_time_;
-
+	//time_t start_time_;
+	//time_t end_time_;
+	clock_t start_time_;
+	clock_t end_time_;
 
 	int num_for_iteration_;
 	bool num_for_iteration_set_;
