@@ -1,35 +1,35 @@
 digraph G {
-	graph [bb="0,0,1174,644",
+	graph [bb="0,0,1184,644",
 		compound=true
 	];
 	node [label="\N"];
 	subgraph cluster_0 {
-		graph [bb="534,8,846,210"];
+		graph [bb="534,8,856,210"];
 		11		 [height=0.74639,
-			label="apply_filter_1()\nexecution time 0.0447761",
+			label="apply_filter_1()\nexecution time 0.0970149",
 			pos="661,175",
 			root=11,
 			width=3.2888];
 		14		 [height=1.3356,
-			label="OMPParallelForDirective@14\nfor( i = 0; i < count; i ++ )\nexecution time: 0.044776119403\nvariance: 0.206812036725",
-			pos="690,64",
+			label="OMPParallelForDirective@14\nfor( i = 0; i < count; i ++ )\nexecution time: 0.0970149253731\nvariance: 0.295978089777",
+			pos="695,64",
 			root=11,
-			width=4.0942];
-		11 -> 14		 [pos="e,677.5,111.99 667.87,148.17 669.99,140.22 672.41,131.13 674.85,121.94"];
+			width=4.2561];
+		11 -> 14		 [pos="e,680.34,111.99 669.06,148.17 671.56,140.13 674.43,130.93 677.33,121.65"];
 	}
 	subgraph cluster_1 {
-		graph [bb="854,8,1166,210"];
+		graph [bb="864,8,1176,210"];
 		27		 [height=1.3356,
-			label="OMPParallelForDirective@27\nfor( i = 0; i < count; i ++ )\nexecution time: 0.149253731343\nvariance: 0.356338399591",
-			pos="1010,64",
+			label="OMPParallelForDirective@27\nfor( i = 0; i < count; i ++ )\nexecution time: 0.141791044776\nvariance: 0.348835698284",
+			pos="1020,64",
 			root=23,
 			width=4.0942];
 		23		 [height=0.74639,
-			label="apply_filter_2()\nexecution time 0.149254",
-			pos="976,175",
+			label="apply_filter_2()\nexecution time 0.141791",
+			pos="986,175",
 			root=23,
 			width=3.1506];
-		23 -> 27		 [pos="e,995.34,111.99 984.06,148.17 986.56,140.13 989.43,130.93 992.33,121.65"];
+		23 -> 27		 [pos="e,1005.3,111.99 994.06,148.17 996.56,140.13 999.43,130.93 1002.3,121.65"];
 	}
 	subgraph cluster_2 {
 		graph [bb="8,38,526,636"];
@@ -43,7 +43,7 @@ digraph G {
 			pos="267,64",
 			root=35,
 			width=1.4305];
-		"41_end" -> "39_end"		 [color=beige,
+		"41_end" -> "39_end"		 [color=dodgerblue,
 			pos="e,267,82.271 267,156.97 267,139.71 267,112.74 267,92.462"];
 		39		 [height=1.041,
 			label="OMPParallelDirective@39\nexecution time: 34.0\nvariance: 0.0",
@@ -55,14 +55,14 @@ digraph G {
 			pos="267,388",
 			root=35,
 			width=3.4507];
-		39 -> 41		 [color=beige,
+		39 -> 41		 [color=dodgerblue,
 			pos="e,267,425.84 267,462.37 267,453.93 267,444.83 267,436.01"];
 		44		 [height=1.041,
 			label="OMPSectionDirective@44\nexecution time: 17.0\nvariance: 0.0",
 			pos="137,276",
 			root=35,
 			width=3.346];
-		44 -> "41_end"		 [color=darkslategray3,
+		44 -> "41_end"		 [color=darkolivegreen,
 			pos="e,246.58,191.55 181.74,240.93 200.5,226.64 221.77,210.45 238.37,197.8"];
 		35		 [height=0.74639,
 			label="main()\nexecution time 34",
@@ -70,22 +70,22 @@ digraph G {
 			root=35,
 			width=2.3354];
 		35 -> 39		 [pos="e,267,537.63 267,573.99 267,565.91 267,556.75 267,547.72"];
-		41 -> 44		 [color=darkslategray3,
+		41 -> 44		 [color=darkolivegreen,
 			pos="e,177.63,311.38 226.22,352.5 213.28,341.54 198.83,329.32 185.4,317.96"];
 		72		 [height=1.041,
 			label="OMPSectionDirective@72\nexecution time: 17.0\nvariance: 0.0",
 			pos="397,276",
 			root=35,
 			width=3.346];
-		41 -> 72		 [color=darkslategray3,
+		41 -> 72		 [color=darkolivegreen,
 			pos="e,356.37,311.38 307.78,352.5 320.72,341.54 335.17,329.32 348.6,317.96"];
-		72 -> "41_end"		 [color=darkslategray3,
+		72 -> "41_end"		 [color=darkolivegreen,
 			pos="e,287.42,191.55 352.26,240.93 333.5,226.64 312.23,210.45 295.63,197.8"];
 	}
 	44 -> 11	 [pos="e,589.7,196.55 220.76,248.89 236.03,244.78 251.91,240.93 267,238 382.4,215.61 414.35,231.05 530,210 546.18,207.06 563.3,203.18 579.64,\
 199.1"];
-	44 -> 23	 [pos="e,909.55,196.8 219.23,248.53 234.94,244.35 251.37,240.56 267,238 522.99,196 593.73,250.25 850,210 866.22,207.45 883.35,203.62 899.58,\
-199.44"];
+	44 -> 23	 [pos="e,919.55,196.81 219.23,248.52 234.94,244.34 251.37,240.56 267,238 527.38,195.38 599.33,250.83 860,210 876.22,207.46 893.35,203.63 \
+909.58,199.45"];
 	72 -> 11	 [pos="e,601.26,198.4 472.65,246.63 510.14,232.57 555.08,215.72 591.67,202"];
-	72 -> 23	 [pos="e,906.71,196.31 509.82,262.66 601.87,251.67 735.02,233.67 850,210 865.2,206.87 881.29,202.98 896.7,198.96"];
+	72 -> 23	 [pos="e,916.72,196.35 510.41,263.06 604.56,252.2 741.7,234.17 860,210 875.21,206.89 891.29,203.02 906.71,199"];
 }

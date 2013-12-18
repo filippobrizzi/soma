@@ -31,14 +31,14 @@
             <Op>++</Op>
           </Increment>
         </For>
-        <Time>0.044776119403</Time>
-        <Variance>0.206812036725</Variance>
+        <Time>0.0970149253731</Time>
+        <Variance>0.295978089777</Variance>
         <Loops>1280.0</Loops>
         <Callerid>11</Callerid>
       </Pragma>
     </Pragmas>
-    <Time>0.044776119403</Time>
-    <Variance>0.206812036725</Variance>
+    <Time>0.0970149253731</Time>
+    <Variance>0.295978089777</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -75,14 +75,14 @@
             <Op>++</Op>
           </Increment>
         </For>
-        <Time>0.149253731343</Time>
-        <Variance>0.356338399591</Variance>
+        <Time>0.141791044776</Time>
+        <Variance>0.348835698284</Variance>
         <Loops>1280.0</Loops>
         <Callerid>23</Callerid>
       </Pragma>
     </Pragmas>
-    <Time>0.149253731343</Time>
-    <Variance>0.356338399591</Variance>
+    <Time>0.141791044776</Time>
+    <Variance>0.348835698284</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>

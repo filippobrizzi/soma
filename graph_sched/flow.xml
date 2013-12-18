@@ -11,8 +11,8 @@
       </Parameter>
     </Parameters>
     <Line>11</Line>
-    <Time>0.044776119403</Time>
-    <Variance>0.206812036725</Variance>
+    <Time>0.0970149253731</Time>
+    <Variance>0.295978089777</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -27,8 +27,8 @@
         <Callerids>
           <Callerid>11</Callerid>
         </Callerids>
-        <Time>0.044776119403</Time>
-        <Variance>0.206812036725</Variance>
+        <Time>0.0970149253731</Time>
+        <Variance>0.295978089777</Variance>
       </Pragma>
     </Nodes>
     <Edges>
@@ -48,8 +48,8 @@
       </Parameter>
     </Parameters>
     <Line>23</Line>
-    <Time>0.149253731343</Time>
-    <Variance>0.356338399591</Variance>
+    <Time>0.141791044776</Time>
+    <Variance>0.348835698284</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -64,8 +64,8 @@
         <Callerids>
           <Callerid>23</Callerid>
         </Callerids>
-        <Time>0.149253731343</Time>
-        <Variance>0.356338399591</Variance>
+        <Time>0.141791044776</Time>
+        <Variance>0.348835698284</Variance>
       </Pragma>
     </Nodes>
     <Edges>

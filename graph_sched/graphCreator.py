@@ -23,6 +23,7 @@ if __name__ == "__main__":
 	output = sys.argv[4]
 	execution_time = float(sys.argv[5])
 	deadline = float(sys.argv[6])
+	multi = sys.argv[7]
 
 	#runs count time the executable and aggregates the informations in executable_profile.xml. The single profile outputs are saved as profile+iter.xml
 	profile_xml = pro.profileCreator(count, executable)
@@ -93,40 +94,48 @@ if __name__ == "__main__":
 	if len(task_list) < 10:
 		cores = 1
 
-	for core in range(cores):
-		tmp = []
-		optimal_flow_list.append(tmp)
-		tmp_2 = []
-		flows_list.append(tmp_2)
-		random.shuffle(task_list)
-		tasks_list.append(copy.deepcopy(copy.deepcopy(task_list)))
-		q = sched.Queue()
-		queue_list.append(q)
-		p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, execution_time, queue_list[core],  )))
-		print "starting core: ",core
-		p_list[core].start()
-		#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
-		
-	#getting the results from the processes
-	for queue in queue_list:
-		t = queue.q.get()
-		results.append(t)
 
-	#joining all the processes
-	i = 0
-	for p in p_list:
-		p.join()
-		print "core ", i, " joined"
-		i += 1
+	if multi == 'parallel':
+		for core in range(cores):
+			tmp = []
+			optimal_flow_list.append(tmp)
+			tmp_2 = []
+			flows_list.append(tmp_2)
+			random.shuffle(task_list)
+			tasks_list.append(copy.deepcopy(task_list))
+			q = sched.Queue()
+			queue_list.append(q)
+			p_list.append(multiprocessing.Process(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, execution_time, queue_list[core],  )))
+			print "starting core: ",core
+			p_list[core].start()
+		#getting the results from the processes
+		for queue in queue_list:
+			t = queue.q.get()
+			results.append(t)
+		#joining all the processes
+		i = 0
+		for p in p_list:
+			p.join()
+			print "core ", i, " joined"
+			i += 1
+		#getting the best result
+		optimal_flow = results[0]
+		best = 0
+		for i in range(len(results)):
+			for flow in results[i]:
+				if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
+					best = i
+		optimal_flow = results[best]
+	else:
+			q = sched.Queue()
+			optimal_flow = []
+			flow_list = []
+			execution_time += time.clock()
+			print "searching best schedule"
+			sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, execution_time, q )
+			#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
 
-	#getting the best result
-	optimal_flow = results[0]
-	best = 0
-	for i in range(len(results)):
-		for flow in results[i]:
-			if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
-				best = i
-	optimal_flow = results[best]
+	
 
 	#printing the best result	
 	print "solution:"
@@ -142,7 +151,7 @@ if __name__ == "__main__":
 	t_list = []
 	for t in gen_:
 		t_list.append(t)
-		
+
 	par.add_flow_id(optimal_flow, t_list)
 
 	#sets arrival times and deadlines using a modified version of the chetto algorithm
