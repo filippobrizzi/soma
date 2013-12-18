@@ -281,6 +281,17 @@ def serialize_splitted(task, schedule, mapped):
 				threads_ = p.find('Threads')
 				thread = ET.SubElement(threads_, 'Thread')
 				thread.text = str(task.id)
+
+def check_schedule(main_flow):
+	make_white(main_flow)
+	gen = generate_task(main_flow)
+	for node in gen:
+		if node.arrival < 0:
+			return False
+	return True
+	
+
+
 			
 
 

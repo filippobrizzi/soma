@@ -11,8 +11,8 @@
       </Parameter>
     </Parameters>
     <Line>11</Line>
-    <Time>0.119402985075</Time>
-    <Variance>0.324262104215</Variance>
+    <Time>0.044776119403</Time>
+    <Variance>0.206812036725</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -27,8 +27,8 @@
         <Callerids>
           <Callerid>11</Callerid>
         </Callerids>
-        <Time>0.119402985075</Time>
-        <Variance>0.324262104215</Variance>
+        <Time>0.044776119403</Time>
+        <Variance>0.206812036725</Variance>
       </Pragma>
     </Nodes>
     <Edges>
@@ -48,8 +48,8 @@
       </Parameter>
     </Parameters>
     <Line>23</Line>
-    <Time>0.0820895522388</Time>
-    <Variance>0.274501106832</Variance>
+    <Time>0.149253731343</Time>
+    <Variance>0.356338399591</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -64,8 +64,8 @@
         <Callerids>
           <Callerid>23</Callerid>
         </Callerids>
-        <Time>0.0820895522388</Time>
-        <Variance>0.274501106832</Variance>
+        <Time>0.149253731343</Time>
+        <Variance>0.356338399591</Variance>
       </Pragma>
     </Nodes>
     <Edges>
@@ -89,7 +89,7 @@
       </Parameter>
     </Parameters>
     <Line>35</Line>
-    <Time>35.0</Time>
+    <Time>34.0</Time>
     <Variance>0.0</Variance>
     <Callerids />
     <Nodes>
@@ -102,7 +102,7 @@
         <Callerids>
           <Callerid>35</Callerid>
         </Callerids>
-        <Time>35.0</Time>
+        <Time>34.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
       <Pragma id="4197">
@@ -114,7 +114,7 @@
         <Callerids>
           <Callerid>39</Callerid>
         </Callerids>
-        <Time>35.0</Time>
+        <Time>34.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
       <Pragma id="4469">
@@ -154,7 +154,7 @@
         <Callerids>
           <Callerid>41</Callerid>
         </Callerids>
-        <Time>18.0</Time>
+        <Time>17.0</Time>
         <Variance>0.0</Variance>
       </Pragma>
     </Nodes>

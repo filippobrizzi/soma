@@ -151,7 +151,10 @@ if __name__ == "__main__":
 	sched.make_white(main_flow)
 	sched.print_schedule(main_flow)
 	
-	sched.create_schedule(main_flow, len(optimal_flow))
+	if sched.check_schedule(main_flow):
+		sched.create_schedule(main_flow, len(optimal_flow))
+	else:
+		print "tasks not schedulable, try with more search time"
 
 	if output == 'True':
 		sched.make_white(main_flow)

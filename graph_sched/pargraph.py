@@ -684,10 +684,19 @@ def add_flow_id(optimal_flow, task_list):
 	for flow in optimal_flow:
 		for task in flow.tasks:
 			if "splitted" not in task.type:
-				id_map[task.start_line] = task.id
+				if task.start_line not in id_map:
+					id_map[task.start_line] = task.id
+				else:
+					id_map[task.start_line + str(1)] = task.id
 	for task in task_list:
 		if "splitted" not in task.type:
-			task.id = id_map[task.start_line]
+			if task.start_line in id_map:
+				task.id = id_map[task.start_line]
+				id_map.pop(task.start_line, None)
+			else:
+				task.id = id_map[task.start_line + str(1)]
+
+
 
 
 

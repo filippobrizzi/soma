@@ -5,23 +5,23 @@
   </Hardware>
   <Function>
     <FunctionLine>11</FunctionLine>
-    <Time>0.119402985075</Time>
-    <Variance>0.324262104215</Variance>
+    <Time>0.044776119403</Time>
+    <Variance>0.206812036725</Variance>
     <CallerId>[44, 72]</CallerId>
-    <ChildrenTime>0.119402985075</ChildrenTime>
+    <ChildrenTime>0.044776119403</ChildrenTime>
   </Function>
   <Function>
     <FunctionLine>35</FunctionLine>
-    <Time>35.0</Time>
+    <Time>34.0</Time>
     <Variance>0.0</Variance>
-    <ChildrenTime>35.0</ChildrenTime>
+    <ChildrenTime>34.0</ChildrenTime>
   </Function>
   <Function>
     <FunctionLine>23</FunctionLine>
-    <Time>0.0820895522388</Time>
-    <Variance>0.274501106832</Variance>
+    <Time>0.149253731343</Time>
+    <Variance>0.356338399591</Variance>
     <CallerId>[44, 72]</CallerId>
-    <ChildrenTime>0.0820895522388</ChildrenTime>
+    <ChildrenTime>0.149253731343</ChildrenTime>
   </Function>
   <Pragma>
     <FunctionLine>35</FunctionLine>
@@ -29,13 +29,13 @@
     <Time>17.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['41']</CallerId>
-    <ChildrenTime>12.0</ChildrenTime>
+    <ChildrenTime>13.0</ChildrenTime>
   </Pragma>
   <Pragma>
     <FunctionLine>23</FunctionLine>
     <PragmaLine>27</PragmaLine>
-    <Time>0.0820895522388</Time>
-    <Variance>0.274501106832</Variance>
+    <Time>0.149253731343</Time>
+    <Variance>0.356338399591</Variance>
     <Loops>1280.0</Loops>
     <CallerId>['23']</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
@@ -43,24 +43,24 @@
   <Pragma>
     <FunctionLine>35</FunctionLine>
     <PragmaLine>41</PragmaLine>
-    <Time>35.0</Time>
+    <Time>34.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['39']</CallerId>
-    <ChildrenTime>35.0</ChildrenTime>
+    <ChildrenTime>34.0</ChildrenTime>
   </Pragma>
   <Pragma>
     <FunctionLine>35</FunctionLine>
     <PragmaLine>72</PragmaLine>
-    <Time>18.0</Time>
+    <Time>17.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['41']</CallerId>
-    <ChildrenTime>15.0</ChildrenTime>
+    <ChildrenTime>13.0</ChildrenTime>
   </Pragma>
   <Pragma>
     <FunctionLine>11</FunctionLine>
     <PragmaLine>14</PragmaLine>
-    <Time>0.119402985075</Time>
-    <Variance>0.324262104215</Variance>
+    <Time>0.044776119403</Time>
+    <Variance>0.206812036725</Variance>
     <Loops>1280.0</Loops>
     <CallerId>['11']</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
@@ -68,9 +68,9 @@
   <Pragma>
     <FunctionLine>35</FunctionLine>
     <PragmaLine>39</PragmaLine>
-    <Time>35.0</Time>
+    <Time>34.0</Time>
     <Variance>0.0</Variance>
     <CallerId>['35']</CallerId>
-    <ChildrenTime>35.0</ChildrenTime>
+    <ChildrenTime>34.0</ChildrenTime>
   </Pragma>
 </Log_file>
