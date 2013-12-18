@@ -1,4 +1,4 @@
-#include "ProfileTracker.h"
+#include "/home/pippo/Documents/Project/soma/source_exctractor/src/profile_tracker/ProfileTracker.h"
 
 
 /*
@@ -55,12 +55,16 @@ ProfileTracker::ProfileTracker(const ProfileTrackParams & p) {
 	if(num_for_iteration_set_)
 		num_for_iteration_ = p.num_for_iteration_;
 
-	time(&start_time_);
+	//time(&start_time_);
+	start_time_ = clock();
 }
 
 ProfileTracker::~ProfileTracker() {
-	time(&end_time_);
-	elapsed_time_ = difftime(end_time_, start_time_);
+	//time(&end_time_);
+	end_time_ = clock();
+	//elapsed_time_ = difftime(end_time_, start_time_);
+	elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+	std::cout << elapsed_time_ << std::endl;
 	if(previous_pragma_executed_) {
 		previous_pragma_executed_->children_elapsed_time_ += elapsed_time_;
 	}	

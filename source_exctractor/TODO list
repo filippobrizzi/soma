@@ -15,4 +15,6 @@
 	*************************************************************************************************
 	-------------------------------------------------------------------------------------------------	
 
-	Check why the parser doesn't remove class and the double &
+	Check -> profile: why print in the file only integer??
+
+	Check -> thread_pool: my solution works with barrier??

@@ -1,0 +1,810 @@
+PUSH 39 - 3
+Barrier size: 2 - Waiting Pragma type: OMPParallelDirective id: 39
+PUSH 41 - 3
+PUSH 44 - 0
+PUSH 72 - 2
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 27
+PUSH 14 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 14
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 14
+PUSH 27 - 1
+Barrier size: 1 - Waiting Pragma type: OMPParallelForDirective id: 27
+Wait complete id: 27
+Wait complete id: 27
+Wait complete id: 41

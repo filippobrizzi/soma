@@ -4,11 +4,11 @@
 #include "opencv2/core/core.hpp"
 #include <iostream>
 #include <omp.h>
+#include "/home/pippo/Documents/Project/soma/source_exctractor/src/profile_tracker/ProfileTracker.h"
 
 using namespace cv;
 using namespace std;
 
-#include "ProfileTracker.h"
 int apply_filter_1(const Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(11, 0)) {
     int count = frame.cols;
