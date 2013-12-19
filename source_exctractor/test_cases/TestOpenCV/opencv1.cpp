@@ -14,7 +14,9 @@ int apply_filter_1(const Mat &frame){
     for (int i = 0; i < count; ++i)
     {
         Size gaussian_size(0, 0);
-        GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);     
+        GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);   
+        //erode(frame.col(i), frame.col(i), Mat());
+  
     }  
 
     return 0;

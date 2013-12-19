@@ -45,7 +45,7 @@ bool ProfilingRecursiveASTVisitor::VisitDecl(clang::Decl *decl) {
       && include_inserted_ == false) {
     include_inserted_ = true;
     std::string text_include = 
-      "#include \"/profile_tracker/profile_tracker.h\"\n";
+      "#include \"profile_tracker/profile_tracker.h\"\n";
     rewrite_profiling_.InsertText(cxx_start_src_loc, text_include, true, false);
   }
 
@@ -69,7 +69,7 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     /* Include the path to ProfileTracker.h */
     if(include_inserted_ == false) {
       std::string text_include = 
-      "#include \"/profile_tracker/profile_tracker.h\"\n";
+      "#include \"profile_tracker/profile_tracker.h\"\n";
       
       rewrite_profiling_.InsertText(start_src_loc, text_include, true, false);
       include_inserted_ = true;
@@ -271,7 +271,7 @@ void Program::ParseSourceCode(std::string fileName, std::vector<Root *> *root_ve
   size_t ext = out_name_pragma.rfind(".");
   if (ext == std::string::npos)
     ext = out_name_pragma.length();
-  out_name_pragma.insert(ext, "_tranformed");
+  out_name_pragma.insert(ext, "_transformed");
 
   llvm::errs() << "Output to: " << out_name_pragma << "\n";
   std::string out_error_info;
@@ -299,7 +299,7 @@ bool TransformRecursiveASTVisitor::VisitDecl(clang::Decl *decl) {
       && clang::isa<clang::CXXRecordDecl>(decl)
       && include_inserted_ == false) {
     include_inserted_ = true;
-    std::string text_include = "#include \"/home/pippo/Documents/Project/soma/source_exctractor/src/thread_pool/threads_pool.h\"\n";
+    std::string text_include = "#include \"thread_pool/threads_pool.h\"\n";
     rewrite_pragma_.InsertText(cxx_start_src_loc, text_include, true, false);
   }
 
@@ -313,7 +313,7 @@ bool TransformRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     if(include_inserted_ == false) {
       include_inserted_ = true;
 
-      std::string text_include = "#include \"/home/pippo/Documents/Project/soma/source_exctractor/src/thread_pool/threads_pool.h\"\n";
+      std::string text_include = "#include \"thread_pool/threads_pool.h\"\n";
 
       rewrite_pragma_.InsertText(f_start_src_loc, text_include, true, false);
     }

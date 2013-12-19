@@ -1,4 +1,4 @@
-#include "/home/pippo/Documents/Project/soma/source_exctractor/src/profile_tracker/ProfileTracker.h"
+#include "profile_tracker/profile_tracker.h"
 
 
 /*
@@ -18,9 +18,10 @@ void ProfileTrackerLog::WriteArchitecturesSpec() {
 }	
 
 size_t ProfileTrackerLog::getTotalSystemMemory() {
-   	long pages = sysconf(_SC_PHYS_PAGES);
+   	/*long pages = sysconf(_SC_PHYS_PAGES);
    	long page_size = sysconf(_SC_PAGE_SIZE);
-   	return (pages * page_size)/1024/1024;
+   	return (pages * page_size)/1024/1024;*/
+   	return 2000;
 }
 
 ProfileTrackerLog* ProfileTrackerLog::getInstance() {
