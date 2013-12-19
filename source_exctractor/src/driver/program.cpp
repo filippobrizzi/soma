@@ -45,7 +45,7 @@ bool ProfilingRecursiveASTVisitor::VisitDecl(clang::Decl *decl) {
       && include_inserted_ == false) {
     include_inserted_ = true;
     std::string text_include = 
-      "#include \"/home/pippo/Documents/Library/clomp-master/include/myprogram/profiling/ProfileTracker.h\"\n";
+      "#include \"/profile_tracker/profile_tracker.h\"\n";
     rewrite_profiling_.InsertText(cxx_start_src_loc, text_include, true, false);
   }
 
@@ -69,7 +69,7 @@ bool ProfilingRecursiveASTVisitor::VisitFunctionDecl(clang::FunctionDecl *f) {
     /* Include the path to ProfileTracker.h */
     if(include_inserted_ == false) {
       std::string text_include = 
-      "#include \"ProfileTracker.h\"\n";
+      "#include \"/profile_tracker/profile_tracker.h\"\n";
       
       rewrite_profiling_.InsertText(start_src_loc, text_include, true, false);
       include_inserted_ = true;
