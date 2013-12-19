@@ -127,12 +127,11 @@ if __name__ == "__main__":
 					best = i
 		optimal_flow = results[best]
 	else:
-			q = sched.Queue()
 			optimal_flow = []
 			flow_list = []
 			execution_time += time.clock()
 			print "searching best schedule"
-			sched.get_optimal_flow(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, execution_time, q )
+			sched.get_optimal_flow_single(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, execution_time )
 			#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
 
 	
