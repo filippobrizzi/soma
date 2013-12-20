@@ -74,6 +74,8 @@ if __name__ == "__main__":
 
 	#getting cores of the actual machine
 	cores = multiprocessing.cpu_count() / 2
+	if cores == 1:
+		cores = 2
 	
 	#initializing all the lists for the parallel scheduling algorithm
 	tasks_list = []
@@ -132,7 +134,6 @@ if __name__ == "__main__":
 			execution_time += time.clock()
 			print "searching best schedule"
 			sched.get_optimal_flow_single(flow_list, task_list, 0, optimal_flow, num_tasks, max_flows, execution_time )
-			#p_list.append(threading.Thread(target = sched.get_optimal_flow, args = (flows_list[core], tasks_list[core], 0, optimal_flow_list[core], num_tasks, max_flows, start_time, execution_time, )))
 
 	
 

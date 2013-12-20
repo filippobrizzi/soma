@@ -30,24 +30,24 @@ def profileCreator(cycle, executable):
 			if ('time' in pragma.attrib):
 				pragma_times[key].time = pragma.attrib['time']
 			if ('childrenTime' in pragma.attrib):
-				pragma_times[key].children_time.append(int(pragma.attrib['childrenTime']))
-			pragma_times[key].times.append(int(pragma.attrib['elapsedTime']))
+				pragma_times[key].children_time.append(float(pragma.attrib['childrenTime']))
+			pragma_times[key].times.append(float(pragma.attrib['elapsedTime']))
 
 				
 		for func in root.iter('Function'):
 			key = func.attrib['fid']
 			if (key in function_times):
-				function_times[key].times.append(int(func.attrib['elapsedTime']))
+				function_times[key].times.append(float(func.attrib['elapsedTime']))
 			else:
 				function_times[key] = par.Time_Node(int(func.attrib['fid']), 0)
-				function_times[key].times.append(int(func.attrib['elapsedTime']))
+				function_times[key].times.append(float(func.attrib['elapsedTime']))
 			if ('callerid' in func.attrib):
 				if int(func.attrib['callerid']) not in function_times[key].caller_list:
 					function_times[key].caller_list.append(int(func.attrib['callerid']))
 			if ('time' in func.attrib):
 				function_times[key].time = func.attrib['time']
 			if ('childrenTime' in func.attrib):
-				function_times[key].children_time.append(int(func.attrib['childrenTime']))
+				function_times[key].children_time.append(float(func.attrib['childrenTime']))
 
 		j += 1
 
