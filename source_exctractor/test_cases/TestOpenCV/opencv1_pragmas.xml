@@ -9,13 +9,13 @@
                 <Name>frame</Name>
             </Parameter>
         </Parameters>
-        <Line>11</Line>
+        <Line>16</Line>
         <Pragmas>
             <Pragma>
                 <Name>OMPParallelForDirective</Name>
                 <Position>
-                    <StartLine>14</StartLine>
-                    <EndLine>20</EndLine>
+                    <StartLine>19</StartLine>
+                    <EndLine>28</EndLine>
                 </Position>
                 <For>
                     <Declaration>
@@ -43,13 +43,13 @@
                 <Name>frame</Name>
             </Parameter>
         </Parameters>
-        <Line>25</Line>
+        <Line>33</Line>
         <Pragmas>
             <Pragma>
                 <Name>OMPParallelForDirective</Name>
                 <Position>
-                    <StartLine>29</StartLine>
-                    <EndLine>32</EndLine>
+                    <StartLine>37</StartLine>
+                    <EndLine>47</EndLine>
                 </Position>
                 <For>
                     <Declaration>
@@ -81,36 +81,36 @@
                 <Name>argv</Name>
             </Parameter>
         </Parameters>
-        <Line>37</Line>
+        <Line>52</Line>
         <Pragmas>
             <Pragma>
                 <Name>OMPParallelDirective</Name>
                 <Position>
-                    <StartLine>41</StartLine>
-                    <EndLine>100</EndLine>
+                    <StartLine>57</StartLine>
+                    <EndLine>119</EndLine>
                 </Position>
                 <Children>
                     <Pragmas>
                         <Pragma>
                             <Name>OMPSectionsDirective</Name>
                             <Position>
-                                <StartLine>43</StartLine>
-                                <EndLine>99</EndLine>
+                                <StartLine>59</StartLine>
+                                <EndLine>118</EndLine>
                             </Position>
                             <Children>
                                 <Pragmas>
                                     <Pragma>
                                         <Name>OMPSectionDirective</Name>
                                         <Position>
-                                            <StartLine>46</StartLine>
-                                            <EndLine>71</EndLine>
+                                            <StartLine>62</StartLine>
+                                            <EndLine>88</EndLine>
                                         </Position>
                                     </Pragma>
                                     <Pragma>
                                         <Name>OMPSectionDirective</Name>
                                         <Position>
-                                            <StartLine>74</StartLine>
-                                            <EndLine>98</EndLine>
+                                            <StartLine>91</StartLine>
+                                            <EndLine>117</EndLine>
                                         </Position>
                                     </Pragma>
                                 </Pragmas>
