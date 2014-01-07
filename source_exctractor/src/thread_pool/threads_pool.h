@@ -68,6 +68,8 @@ public:
     ~ThreadPool() { joinall(); }
 
 
+    std::map<std::thread::thread_id, int> thread_id_to_int_;
+
 private:
     struct ScheduleOptions {
         int pragma_id_;

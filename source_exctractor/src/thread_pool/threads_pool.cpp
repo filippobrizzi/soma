@@ -97,10 +97,20 @@ void ThreadPool::init(int pool_size)
 void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
     int thread_number = sched_opt_[nested_b->pragma_id_].threads_.size();
     int thread_id;
-
+    /* How to get my_id */
+    //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    int my_id = thread_id_to_int_[get_thread_id()];
     for(int i = 0; i < thread_number; i ++) {
         thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
-        push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
+        if(thread_id != my_id)
+            push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
+    }
+
+    /* If a son and a father are on the same thread!!! */
+    for(int i = 0; i < thread_number; i ++) {
+        thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
+        if(thread_id === my_id)
+            nested_b->clone()->callme(ForParameter(i, thread_number));
     }
 
     /* Only pragma Parallel and Parallel For must join in the caller thread */
@@ -164,6 +174,8 @@ void ThreadPool::push_termination_job(int thread_id) {
 
 
 void ThreadPool::run(int me) {
+    //TODO check the correct function !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    thread_id_to_int_[get_thread_id()] = me;
     while(true) {
         
         job_pop_mtx.lock();
