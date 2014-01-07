@@ -35,6 +35,7 @@ if __name__ == "__main__":
 	(visual_flow_graphs, flow_graphs) = par.getParalGraph(pragma_xml, profile_xml) 
 
 	i = 0
+
 	for g in visual_nested_graphs:
 		g.write_pdf('graphs/%s_code.pdf'%flow_graphs[i].type)
 		g.write_dot('graphs/%s_code.dot'%flow_graphs[i].type)
@@ -56,8 +57,6 @@ if __name__ == "__main__":
 	func_graph.write_pdf('graphs/function_graphs.pdf')
 	func_graph.write_dot('graphs/function_graphs.dot')
 
-	
-
 	#creating the expanded graph where the functions are inserted in the flow graph
 	exp_flows = copy.deepcopy(flow_graphs)
 	par.explode_graph(exp_flows)
@@ -72,7 +71,7 @@ if __name__ == "__main__":
 	#getting the number of physical cores of the machine profiled
 	max_flows = sched.get_core_num(profile_xml)
 
-	#getting cores of the actual machine
+	#getting cores of the actual machine, but the problem is multithreading
 	cores = multiprocessing.cpu_count() / 2
 	if cores == 1:
 		cores = 2
@@ -92,11 +91,6 @@ if __name__ == "__main__":
 		task_list.append(task)
 		num_tasks += 1
 	
-	#use just one core for a small number of tasks
-	if len(task_list) < 10:
-		cores = 1
-
-
 	if multi == 'parallel':
 		for core in range(cores):
 			tmp = []
@@ -157,11 +151,10 @@ if __name__ == "__main__":
 	#sets arrival times and deadlines using a modified version of the chetto algorithm
 	sched.chetto(main_flow, deadline, optimal_flow)
 	
-	sched.make_white(main_flow)
-	sched.print_schedule(main_flow)
-	
 	if sched.check_schedule(main_flow):
 		sched.create_schedule(main_flow, len(optimal_flow))
+		sched.make_white(main_flow)
+		sched.print_schedule(main_flow)
 	else:
 		print "tasks not schedulable, try with more search time"
 

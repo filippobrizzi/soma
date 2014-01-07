@@ -56,9 +56,10 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 						task.id = id
 					id += 1
 					optimal_flow.append(copy.deepcopy(flow))
-	elif q.set == False:
-		q.q.put(optimal_flow)
-		q.set = True
+				if not q.q.empty():
+					q.q.get()
+				q.q.put(optimal_flow)
+	
 
 def get_optimal_flow_single(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time):
 	curopt = get_cost(optimal_flow)
@@ -253,9 +254,9 @@ def create_schedule(graph, num_cores):
 			start.text = str(task.arrival)
 			end = ET.SubElement(pragma, 'Deadline')
 			end.text = str(task.d)
+			created = False
 			if 'BARRIER' not in task.children[0].type :
 				l = []
-				created = False
 				if 'Parallel' in task.type:
 					barrier = ET.SubElement(pragma, 'Barrier')
 					created = True
@@ -264,13 +265,16 @@ def create_schedule(graph, num_cores):
 				if not ('OMPParallelForDirective' in task.type and 'Parallel' in task.children[0].type) and not isinstance(task.children[0], par.Fx_Node):
 					if created == False:
 						barrier = ET.SubElement(pragma, 'Barrier')
+						created = True
 					for c in task.children:
 						if c.start_line not in l:
 							tmp_id = ET.SubElement(barrier, 'id')
 							tmp_id.text = str(c.start_line)
 							l.append(c.start_line)
 			elif ('OMPParallelForDirective' in task.type and 'BARRIER' in task.children[0].type):
-				barrier = ET.SubElement(pragma, 'Barrier')
+				if created == False:
+						barrier = ET.SubElement(pragma, 'Barrier')
+						created = True
 				first = ET.SubElement(barrier, 'id')
 				first.text = str(task.start_line)
 	par.indent(tree.getroot())			
@@ -323,7 +327,7 @@ def check_schedule(main_flow):
 	make_white(main_flow)
 	gen = generate_task(main_flow)
 	for node in gen:
-		if node.arrival < 0:
+		if node.d < 0:
 			return False
 	return True
 	
