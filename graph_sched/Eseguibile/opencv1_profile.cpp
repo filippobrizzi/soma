@@ -8,7 +8,7 @@
 using namespace cv;
 using namespace std;
 
-#include "ProfileTracker.h"
+#include "profile_tracker.h"
 int apply_filter_1(const Mat &frame){
 if( ProfileTracker x = ProfileTrackParams(11, 0)) {
     int count = frame.cols;

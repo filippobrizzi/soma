@@ -1,35 +1,35 @@
 digraph G {
-	graph [bb="0,0,1184,644",
+	graph [bb="0,0,1160,644",
 		compound=true
 	];
 	node [label="\N"];
 	subgraph cluster_0 {
-		graph [bb="534,8,856,210"];
+		graph [bb="534,8,822,210"];
 		11		 [height=0.74639,
-			label="apply_filter_1()\nexecution time 0.0970149",
-			pos="661,175",
+			label="apply_filter_1()\nexecution time 0.128704",
+			pos="656,175",
 			root=11,
-			width=3.2888];
+			width=3.1506];
 		14		 [height=1.3356,
-			label="OMPParallelForDirective@14\nfor( i = 0; i < count; i ++ )\nexecution time: 0.0970149253731\nvariance: 0.295978089777",
-			pos="695,64",
+			label="OMPParallelForDirective@14\nfor( i = 0; i < count; i ++ )\nexecution time: 0.1286445\nvariance: 0.00425204769063",
+			pos="678,64",
 			root=11,
-			width=4.2561];
-		11 -> 14		 [pos="e,680.34,111.99 669.06,148.17 671.56,140.13 674.43,130.93 677.33,121.65"];
+			width=3.7606];
+		11 -> 14		 [pos="e,668.47,112.21 661.27,147.89 662.86,140.03 664.66,131.07 666.49,122.02"];
 	}
 	subgraph cluster_1 {
-		graph [bb="864,8,1176,210"];
+		graph [bb="830,8,1152,210"];
 		27		 [height=1.3356,
-			label="OMPParallelForDirective@27\nfor( i = 0; i < count; i ++ )\nexecution time: 0.141791044776\nvariance: 0.348835698284",
-			pos="1020,64",
+			label="OMPParallelForDirective@27\nfor( i = 0; i < count; i ++ )\nexecution time: 0.0802435447761\nvariance: 0.00202737372802",
+			pos="991,64",
 			root=23,
-			width=4.0942];
+			width=4.2561];
 		23		 [height=0.74639,
-			label="apply_filter_2()\nexecution time 0.141791",
-			pos="986,175",
+			label="apply_filter_2()\nexecution time 0.0802873",
+			pos="957,175",
 			root=23,
-			width=3.1506];
-		23 -> 27		 [pos="e,1005.3,111.99 994.06,148.17 996.56,140.13 999.43,130.93 1002.3,121.65"];
+			width=3.2888];
+		23 -> 27		 [pos="e,976.34,111.99 965.06,148.17 967.56,140.13 970.43,130.93 973.33,121.65"];
 	}
 	subgraph cluster_2 {
 		graph [bb="8,38,526,636"];
@@ -43,49 +43,49 @@ digraph G {
 			pos="267,64",
 			root=35,
 			width=1.4305];
-		"41_end" -> "39_end"		 [color=dodgerblue,
+		"41_end" -> "39_end"		 [color=darkseagreen1,
 			pos="e,267,82.271 267,156.97 267,139.71 267,112.74 267,92.462"];
 		39		 [height=1.041,
-			label="OMPParallelDirective@39\nexecution time: 34.0\nvariance: 0.0",
+			label="OMPParallelDirective@39\nexecution time: 32.9775\nvariance: 0.0",
 			pos="267,500",
 			root=35,
 			width=3.346];
 		41		 [height=1.041,
-			label="OMPSectionsDirective@41\nexecution time: 34.0\nvariance: 0.0",
+			label="OMPSectionsDirective@41\nexecution time: 32.9774\nvariance: 0.0",
 			pos="267,388",
 			root=35,
 			width=3.4507];
-		39 -> 41		 [color=dodgerblue,
+		39 -> 41		 [color=darkseagreen1,
 			pos="e,267,425.84 267,462.37 267,453.93 267,444.83 267,436.01"];
 		44		 [height=1.041,
-			label="OMPSectionDirective@44\nexecution time: 17.0\nvariance: 0.0",
+			label="OMPSectionDirective@44\nexecution time: 16.3947\nvariance: 0.0",
 			pos="137,276",
 			root=35,
 			width=3.346];
-		44 -> "41_end"		 [color=darkolivegreen,
+		44 -> "41_end"		 [color=darkorange3,
 			pos="e,246.58,191.55 181.74,240.93 200.5,226.64 221.77,210.45 238.37,197.8"];
 		35		 [height=0.74639,
-			label="main()\nexecution time 34",
+			label="main()\nexecution time 32.9775",
 			pos="267,601",
 			root=35,
-			width=2.3354];
+			width=3.0026];
 		35 -> 39		 [pos="e,267,537.63 267,573.99 267,565.91 267,556.75 267,547.72"];
-		41 -> 44		 [color=darkolivegreen,
+		41 -> 44		 [color=darkorange3,
 			pos="e,177.63,311.38 226.22,352.5 213.28,341.54 198.83,329.32 185.4,317.96"];
 		72		 [height=1.041,
-			label="OMPSectionDirective@72\nexecution time: 17.0\nvariance: 0.0",
+			label="OMPSectionDirective@72\nexecution time: 16.5826\nvariance: 0.0",
 			pos="397,276",
 			root=35,
 			width=3.346];
-		41 -> 72		 [color=darkolivegreen,
+		41 -> 72		 [color=darkorange3,
 			pos="e,356.37,311.38 307.78,352.5 320.72,341.54 335.17,329.32 348.6,317.96"];
-		72 -> "41_end"		 [color=darkolivegreen,
+		72 -> "41_end"		 [color=darkorange3,
 			pos="e,287.42,191.55 352.26,240.93 333.5,226.64 312.23,210.45 295.63,197.8"];
 	}
-	44 -> 11	 [pos="e,589.7,196.55 220.76,248.89 236.03,244.78 251.91,240.93 267,238 382.4,215.61 414.35,231.05 530,210 546.18,207.06 563.3,203.18 579.64,\
-199.1"];
-	44 -> 23	 [pos="e,919.55,196.81 219.23,248.52 234.94,244.34 251.37,240.56 267,238 527.38,195.38 599.33,250.83 860,210 876.22,207.46 893.35,203.63 \
-909.58,199.45"];
-	72 -> 11	 [pos="e,601.26,198.4 472.65,246.63 510.14,232.57 555.08,215.72 591.67,202"];
-	72 -> 23	 [pos="e,916.72,196.35 510.41,263.06 604.56,252.2 741.7,234.17 860,210 875.21,206.89 891.29,203.02 906.71,199"];
+	44 -> 11	 [pos="e,587.79,196.51 220.76,248.89 236.03,244.78 251.91,240.93 267,238 382.4,215.61 414.45,231.6 530,210 545.68,207.07 562.26,203.18 \
+578.06,199.08"];
+	44 -> 23	 [pos="e,887.52,196.84 219.23,248.56 234.95,244.37 251.37,240.58 267,238 512.43,197.47 580.11,247.66 826,210 842.89,207.41 860.76,203.55 \
+877.68,199.35"];
+	72 -> 11	 [pos="e,597.97,198.18 471.57,246.5 508.47,232.39 552.68,215.49 588.56,201.78"];
+	72 -> 23	 [pos="e,884.21,196.32 508.22,261.36 595.15,249.93 718.81,231.97 826,210 841.73,206.78 858.39,202.85 874.37,198.83"];
 }
