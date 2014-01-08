@@ -1,3 +1,4 @@
+from __future__ import with_statement
 import os
 import pargraph as par
 import xml.etree.cElementTree as ET
@@ -5,16 +6,23 @@ import numpy
 import re
 
 
-
-
 def profileCreator(cycle, executable):
 	pragma_times = {}
 	function_times = {}
 	j = 0
+	param_string = ''
+
+	if os.path.exists("./parameters"):
+		with open("./parameters","r") as f:
+			parameters = f.readlines()
+		for s in parameters:
+			param_string +=  s.strip()
+
+	
 
 	for i in range(cycle):
 		print "profiling iteration: " + str((j + 1))
-		os.system("./" + executable + ">/dev/null")
+		os.system("./" + executable + " " + param_string + " >/dev/null")
 		os.system("mv log_file.xml " + "./logfile%s.xml" % j)
 		root = ET.ElementTree(file = "./logfile%s.xml" % j).getroot()
 

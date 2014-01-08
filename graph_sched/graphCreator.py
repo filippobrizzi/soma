@@ -118,7 +118,9 @@ if __name__ == "__main__":
 		optimal_flow = results[0]
 		best = 0
 		for i in range(len(results)):
+			print "result:"
 			for flow in results[i]:
+				flow.dump()
 				if sched.get_cost(results[i]) < sched.get_cost(optimal_flow):
 					best = i
 		optimal_flow = results[best]
@@ -154,7 +156,7 @@ if __name__ == "__main__":
 	if sched.check_schedule(main_flow):
 		sched.create_schedule(main_flow, len(optimal_flow))
 		sched.make_white(main_flow)
-		sched.print_schedule(main_flow)
+		#sched.print_schedule(main_flow)
 	else:
 		print "tasks not schedulable, try with more search time"
 
