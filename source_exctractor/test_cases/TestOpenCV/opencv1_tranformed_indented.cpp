@@ -152,13 +152,19 @@ int main(int argc, char* argv[]) {
                             }
 
                             //LAUNCH REMAINING LIST OF JOBS
+                            launch_todo_job();
                         }
+
+
                         void callme(ForParameter for_param) {
                             fx(for_param);
                         }
                     };
-                    ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(std::make_shared<Nested>(43));
+                    std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(43);
+                    if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b))
+                        todo_job_.push(nested_b);
                 }
+                launch_todo_job();
             }
             void callme(ForParameter for_param) {
                 fx(for_param);

@@ -88,36 +88,60 @@ ThreadPool::ThreadPool(std::string file_name) {
 
 void ThreadPool::init(int pool_size)
 {
+    /* This is needed cause otherwise the main process would be considered as thread num 0*/
+    thread_id_to_int_[std::this_thread::get_id()] = -1;
+
     threads_pool_.reserve(pool_size);
     for(int i = 0; i < pool_size; i++) {
         threads_pool_.push_back(std::thread(&ThreadPool::run,this, i));
     }
 }
 
-void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
+/* If a job has to allocate a job on its own thread, it first allocates all other job and then execute directly that job */
+/* This solve the problem of a parallel for. */
+bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
     int thread_number = sched_opt_[nested_b->pragma_id_].threads_.size();
     int thread_id;
-    /* How to get my_id */
-    //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    int my_id = thread_id_to_int_[get_thread_id()];
-    for(int i = 0; i < thread_number; i ++) {
-        thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
-        if(thread_id != my_id)
-            push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
+    /* Get the integer id of the running thread */
+    int my_id = thread_id_to_int_[std::this_thread::get_id()];
+
+    /* In case of a parallel for */
+    if(thread_number > 1) {
+        /*for(int i = 0; i < thread_number; i ++) {
+            thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
+            if(thread_id != my_id)
+                push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
+        }
+        for(int i = 0; i < thread_number; i ++) {
+            thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
+            if(thread_id === my_id)
+                nested_b->clone()->callme(ForParameter(i, thread_number));
+        }*/
+        call_for(nested_b);
+
+    }else {
+        thread_id = sched_opt_[nested_b->pragma_id_].threads_[0];
+        if(thread_id != my_id) {
+            push(nested_b->clone(), ForParameter(0, 1), thread_id);
+        }else {
+            if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0)
+                call_parallel(nested_b);
+            else if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPBarrierDirective") == 0)
+                call_barrier(nested_b);
+            else {
+                /* Remove this job from its barrier !!!!!!! */
+                return true;
+            }
+        }
+
     }
 
-    /* If a son and a father are on the same thread!!! */
-    for(int i = 0; i < thread_number; i ++) {
-        thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
-        if(thread_id === my_id)
-            nested_b->clone()->callme(ForParameter(i, thread_number));
-    }
+    return false;
+    
 
     /* Only pragma Parallel and Parallel For must join in the caller thread */
-    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0
+/*    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0
         || sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelForDirective") == 0) {
-        
-        /* In case of parallel the first barrerier is always the pragma itself */   
         int barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[0];        
         join(barriers_id, std::this_thread::get_id());
         
@@ -129,14 +153,72 @@ void ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
             join(barriers_id, t_id);
         }
     }
-
-    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPBarrierDirective") == 0) {
+*/
+    /*if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPBarrierDirective") == 0) {
         int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
         int barriers_id, threads_num;
         for (int i = 0; i < barriers_number; i ++) {
             barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
             join(barriers_id, std::this_thread::get_id());
         }
+    }*/
+}
+
+void ThreadPool::call_parallel(std::shared_ptr<NestedBase> nested_b) {
+    nested_b->callme(ForParameter(0, 1));
+    
+    int barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[0];        
+    join(barriers_id, std::this_thread::get_id());
+        
+    int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
+    for (int i = 1; i < barriers_number; i ++) {
+        barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
+        int thread_num = sched_opt_[barriers_id].threads_[0];
+        std::thread::id t_id = threads_pool_[thread_num].get_id();
+        join(barriers_id, t_id);
+    }
+
+}
+
+void ThreadPool::call_for(std::shared_ptr<NestedBase> nested_b) {
+    int thread_number = sched_opt_[nested_b->pragma_id_].threads_.size();
+    int thread_id;
+    /* Get the integer id of the running thread */
+    int my_id = thread_id_to_int_[std::this_thread::get_id()];
+
+    for(int i = 0; i < thread_number; i ++) {
+        thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
+        if(thread_id != my_id)
+            push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
+    }
+    /* If a son and a father are on the same thread!!! */
+    for(int i = 0; i < thread_number; i ++) {
+        thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
+        if(thread_id == my_id)
+            nested_b->clone()->callme(ForParameter(i, thread_number));
+    }
+
+    int barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[0];        
+    join(barriers_id, std::this_thread::get_id());
+        
+    /* Synchronization point in case of a parallel for */
+    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelForDirective") == 0) {
+        int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
+        for (int i = 1; i < barriers_number; i ++) {
+            barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
+            int thread_num = sched_opt_[barriers_id].threads_[0];
+            std::thread::id t_id = threads_pool_[thread_num].get_id();
+            join(barriers_id, t_id);
+        }
+    }
+}
+
+void ThreadPool::call_barrier(std::shared_ptr<NestedBase> nested_b) {
+    int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
+    int barriers_id, threads_num;
+    for (int i = 0; i < barriers_number; i ++) {
+        barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
+        join(barriers_id, std::this_thread::get_id());
     }
 }
 
@@ -174,8 +256,7 @@ void ThreadPool::push_termination_job(int thread_id) {
 
 
 void ThreadPool::run(int me) {
-    //TODO check the correct function !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    thread_id_to_int_[get_thread_id()] = me;
+    thread_id_to_int_[std::this_thread::get_id()] = me;
     while(true) {
         
         job_pop_mtx.lock();

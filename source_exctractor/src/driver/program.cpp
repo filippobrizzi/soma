@@ -458,6 +458,7 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
     else
       text << "void fx(ForParameter for_param, " << text_constructor_params.str() <<")";
   
+  unsigned stmt_end_line = utils::Line(s->getLocEnd(), sm);
   if(n->for_node_ != NULL) {
     
     std::string text_for;
@@ -468,11 +469,13 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
     rewrite_pragma_.InsertText(for_src_loc, text.str(), true, false);
     rewrite_pragma_.InsertText(stmt_start_src_loc, "//", true, false);
     
-    unsigned stmt_end_line = utils::Line(s->getLocEnd(), sm);
     clang::SourceLocation for_end_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_end_line + 1, 1);
-    rewrite_pragma_.InsertText(for_end_src_loc, "}\n", true, false);
+    rewrite_pragma_.InsertText(for_end_src_loc, "launch_todo_job(); \n }\n", true, false);
   }else {
     rewrite_pragma_.InsertText(stmt_start_src_loc, text.str(), true, true);
+    //clang::SourceLocation stmt_end_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_end_line - 1, 1);
+    
+    rewrite_pragma_.InsertText(s->getLocEnd(), "launch_todo_job(); \n", true, false);
   }
 
   /* Comment the pragma */
@@ -488,23 +491,23 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
 void callme(ForParameter for_param) {\n";
 
   if(text_fx_var.str().compare("") == 0)
-    text_after_pragma << "fx(for_param);\n";
+    text_after_pragma << "  fx(for_param);\n";
   else
-    text_after_pragma << "fx(for_param, " << text_fx_var.str() << ");\n";
+    text_after_pragma << "  fx(for_param, " << text_fx_var.str() << ");\n";
 
 text_after_pragma << 
 "}\n\
 };\n\
-ThreadPool::getInstance(\"" << utils::FileName(s->getLocStart(), sm) 
-    << "\")->call(std::make_shared<Nested>(" << n->getStartLine();
-  
-  if(text_constructor_var.str().compare("") != 0)
-      text_after_pragma << ", ";
-    
-    text_after_pragma << text_constructor_var.str() <<"));\n\
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(" << n->getStartLine();
+if(text_constructor_var.str().compare("") != 0)
+      text_after_pragma << ", ";    
+text_after_pragma << text_constructor_var.str() <<");\n";
+text_after_pragma << 
+"if(ThreadPool::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(nested_b)) \n\
+  todo_job_.push(nested_b); \n\
 }\n";
 
-  unsigned stmt_end_line = utils::Line(s->getLocEnd(), sm);
+  stmt_end_line = utils::Line(s->getLocEnd(), sm);
   clang::SourceLocation pragma_end_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_end_line + 1, 1);
 
   rewrite_pragma_.InsertText(pragma_end_src_loc, text_after_pragma.str(), true, false);

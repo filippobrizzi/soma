@@ -10,7 +10,6 @@ int main() {
 
 	int a = j_q[t1_id];
 	std::cout << "CIAO" << std::endl;
-	std::cout << "CIAO00 " << a << std::endl;
 	std::cout << "idd -  " << t1_id << std::endl;
 	return 1;
 

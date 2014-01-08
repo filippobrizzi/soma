@@ -30,6 +30,14 @@ public:
     NestedBase(int pragma_id) : pragma_id_(pragma_id) {}
     
     int pragma_id_;
+    std::queue<std::shared_ptr<NestedBase>> todo_job_;
+
+    void launch_todo_job() {
+        while(todo_job_.size() != 0) {
+            todo_job_.front()->callme(ForParameter(0, 1));
+            todo_job_.pop();
+        }
+    }
     
     virtual void callme(ForParameter for_param) = 0;
     virtual std::shared_ptr<NestedBase> clone() const = 0;
@@ -52,7 +60,10 @@ public:
     void init(int pool_size);
 
     /* Called by the task to be put in the job queue */
-    void call(std::shared_ptr<NestedBase> nested_base);
+    bool call(std::shared_ptr<NestedBase> nested_base);
+    void call_parallel(std::shared_ptr<NestedBase> nested_b);
+    void call_for(std::shared_ptr<NestedBase> nested_b);
+    void call_barrier(std::shared_ptr<NestedBase> nested_b);
 
     /* Push a job in the job queue */
     void push(std::shared_ptr<NestedBase> nested_base, ForParameter for_param, int thread_id);
@@ -65,10 +76,10 @@ public:
 
     static ThreadPool* getInstance(std::string file_name);
 
+    /* Map the thread::id to an integer going from 0 to num_thread - 1 */
+    std::map<std::thread::thread::id, int> thread_id_to_int_;
+
     ~ThreadPool() { joinall(); }
-
-
-    std::map<std::thread::thread_id, int> thread_id_to_int_;
 
 private:
     struct ScheduleOptions {
