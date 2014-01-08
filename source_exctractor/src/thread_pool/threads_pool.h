@@ -67,6 +67,7 @@ public:
 
     /* Push a job in the job queue */
     void push(std::shared_ptr<NestedBase> nested_base, ForParameter for_param, int thread_id);
+    void push_completed_job(std::shared_ptr<NestedBase> nested_base, ForParameter for_param);
     void push_termination_job(int thread_id);
 
     /* Pause a thread till the job[job_id] complete */ 

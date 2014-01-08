@@ -107,16 +107,7 @@ bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
 
     /* In case of a parallel for */
     if(thread_number > 1) {
-        /*for(int i = 0; i < thread_number; i ++) {
-            thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
-            if(thread_id != my_id)
-                push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
-        }
-        for(int i = 0; i < thread_number; i ++) {
-            thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
-            if(thread_id === my_id)
-                nested_b->clone()->callme(ForParameter(i, thread_number));
-        }*/
+        
         call_for(nested_b);
 
     }else {
@@ -129,7 +120,7 @@ bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
             else if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPBarrierDirective") == 0)
                 call_barrier(nested_b);
             else {
-                /* Remove this job from its barrier !!!!!!! */
+                push_completed_job(nested_b, ForParameter(0, 1));
                 return true;
             }
         }
@@ -137,31 +128,6 @@ bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
     }
 
     return false;
-    
-
-    /* Only pragma Parallel and Parallel For must join in the caller thread */
-/*    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0
-        || sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelForDirective") == 0) {
-        int barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[0];        
-        join(barriers_id, std::this_thread::get_id());
-        
-        int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
-        for (int i = 1; i < barriers_number; i ++) {
-            barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
-            int thread_num = sched_opt_[barriers_id].threads_[0];
-            std::thread::id t_id = threads_pool_[thread_num].get_id();
-            join(barriers_id, t_id);
-        }
-    }
-*/
-    /*if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPBarrierDirective") == 0) {
-        int barriers_number = sched_opt_[nested_b->pragma_id_].barriers_.size();
-        int barriers_id, threads_num;
-        for (int i = 0; i < barriers_number; i ++) {
-            barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
-            join(barriers_id, std::this_thread::get_id());
-        }
-    }*/
 }
 
 void ThreadPool::call_parallel(std::shared_ptr<NestedBase> nested_b) {
@@ -195,6 +161,7 @@ void ThreadPool::call_for(std::shared_ptr<NestedBase> nested_b) {
     for(int i = 0; i < thread_number; i ++) {
         thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
         if(thread_id == my_id)
+            push_completed_job(nested_b->clone(), ForParameter(i, thread_number));
             nested_b->clone()->callme(ForParameter(i, thread_number));
     }
 
@@ -220,6 +187,19 @@ void ThreadPool::call_barrier(std::shared_ptr<NestedBase> nested_b) {
         barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
         join(barriers_id, std::this_thread::get_id());
     }
+}
+/* Insert a job wich has the flag completed already setted. This is necessary in case a thread executes more
+   job consecutively */
+void ThreadPool::push_completed_job(std::shared_ptr<NestedBase> nested_base, 
+                                     ForParameter for_param) {
+    //known_jobs_[std::make_pair(job_id, caller_thread_id)][i].job_completed_ != true
+    Jobid_t id = nested_base->pragma_id_;
+        
+    JobIn job_in(nested_base, for_param);
+    job_in.job_id_ = id;
+    job_in.job_completed_ = true;
+
+    known_jobs_[std::make_pair(id, std::this_thread::get_id())].push_back(std::move(job_in));
 }
 
 
@@ -266,7 +246,8 @@ void ThreadPool::run(int me) {
             work_queue_[me].pop();
             job_pop_mtx.unlock();
             
-            int pragma_id = j_q.j_id_; int thread_id = j_q.thread_id_;
+            int pragma_id = j_q.j_id_; 
+            int thread_id = j_q.thread_id_;
 
             if(pragma_id == 0) 
                 break;            
