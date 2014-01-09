@@ -12,11 +12,9 @@
 	*************************************************************************************************
 	-------------------------------------------------------------------------------------------------	
 
-	** Change the fact that the parallels and sections are allocated in another thread.
 
-	** Check why it stucks...check if my solution works with a proper schedule.
-		* Add a print in push_completed_job_
-	
+	** Check wait in case of sections!! and parallel for (line 109)	
+
 	
 	** Fix (hope in a miracle) the problem that not always i am in nested_base...so i cant always use
 		todo_job_

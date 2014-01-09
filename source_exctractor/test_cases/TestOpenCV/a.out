@@ -1,0 +1,1210 @@
+work queue: 57, 0 thread: 0
+I am thread 0  Going to run pragma: 57
+PUSH completed 59
+PUSH completed 62
+work queue: 91, 0 thread: 1
+I am thread 1  Going to run pragma: 0
+I am thread 1  Going to run pragma: 91
+I am thread 3  Going to run pragma: 0
+I am thread 2  Going to run pragma: 0
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 0
+sx -- 1
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 2
+dx -- 1
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 3
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 4
+dx -- 2
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 5
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+dx -- 3
+sx -- 6
+I am thread 2  Going to run pragma: 19
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 7
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 4
+CIAOOOO
+Almost pushing 37
+sx -- 8
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 5
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+sx -- 9
+dx -- 6
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 10
+work queue: 19, 0 thread: 2
+sx -- 11
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 7
+sx -- 12
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 8
+sx -- 13
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+dx -- 9
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 14
+dx -- 10
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 15
+dx -- 11
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 16
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+dx -- 12
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 17
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+sx -- 18
+I am thread 2  Going to run pragma: 19
+dx -- 13
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+sx -- 19
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37work queue: 
+19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 14
+CIAOOOO
+Almost pushing 37
+sx -- 20
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 21
+I am thread 2  Going to run pragma: 19
+dx -- 15
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 22
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 23
+dx -- 16
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 17
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+dx -- 18
+sx -- 24
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 25
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 19
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+sx -- 26
+dx -- 20
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+I am thread 3  Going to run pragma: 37
+sx -- 27
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 21
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+dx -- 22
+sx -- 28
+CIAOOOO
+Almost pushing 37
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+sx -- 29
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 23
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 24
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 30
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+dx -- 25
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+I am thread 3  Going to run pragma: 37
+sx -- 31
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 26
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 32
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 27
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 33
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 28
+sx -- 34
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+dx -- 29
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 35
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 30
+work queue: 19, 0 thread: 2
+sx -- 36
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+sx -- 37
+I am thread 3  Going to run pragma: 37
+dx -- 31
+I am thread 2  Going to run pragma: 19
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 32
+CIAOOOO
+Almost pushing 37
+sx -- 38
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 39
+dx -- 33
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 40
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 34
+sx -- 41
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 35
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 42
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 36
+CIAOOOO
+Almost pushing 37
+sx -- 43
+I am thread 3  Going to run pragma: 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 37
+sx -- 44
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 38
+sx -- 45
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 39
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 46
+dx -- 40
+work queue: 19, 0 thread: 2
+sx -- 47
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 2  Going to run pragma: 19
+sx -- 48
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 41
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+dx -- 42
+sx -- 49
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 50
+I am thread 2  Going to run pragma: 19
+dx -- 43
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 44
+sx -- 51
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+sx -- 52
+dx -- 45
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+dx -- 46
+I am thread 3  Going to run pragma: 37
+sx -- 53
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+dx -- 47
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 54
+I am thread 3  Going to run pragma: 37
+dx -- 48
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 55
+dx -- 49
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+sx -- 56
+dx -- 50
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 57
+I am thread 2  Going to run pragma: 19
+dx -- 51
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+sx -- 58
+I am thread 3  Going to run pragma: 37
+dx -- 52
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 53
+sx -- 59
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 3  Going to run pragma: 37
+sx -- 60
+I am thread 2  Going to run pragma: 19
+dx -- 54
+work queue: 19, 0 thread: 2
+sx -- 61
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 62
+dx -- 55
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 56
+CIAOOOO
+Almost pushing 37
+sx -- 63
+work queue: 37, 0 thread: 3
+dx -- 57
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+sx -- 64
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 58
+I am thread 3  Going to run pragma: 37
+sx -- 65
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+dx -- 59
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 66
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 60
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 61
+sx -- 67
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 68
+dx -- 62
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+sx -- 69
+dx -- 63
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 64
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+sx -- 70
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 65
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 71
+work queue: 37, 0 thread: 3
+dx -- 66
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 67
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 72
+dx -- 68
+CIAOOOO
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 73
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 69
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 74
+I am thread 2  Going to run pragma: 19
+dx -- 70
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 75
+dx -- 71
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+dx -- 72
+sx -- 76
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 73
+sx -- 77
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 78
+dx -- 74
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 79
+dx -- 75
+work queue: 19, 0 thread: 2
+sx -- 80
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+sx -- 81
+I am thread 2  Going to run pragma: 19
+dx -- 76
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 82
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 83
+dx -- 77
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 84
+dx -- 78
+work queue: 19, 0 thread: 2
+sx -- 85
+I am thread 2  Going to run pragma: 19
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 86
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 79
+sx -- 87
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+dx -- 80
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 88
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 81
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 89
+work queue: 37, 0 thread: 3
+dx -- 82
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 90
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+sx -- 91
+I am thread 3  Going to run pragma: 37
+dx -- 83
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 92
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 84
+sx -- 93
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+sx -- 94
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 85
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 86
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 95
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+dx -- 87
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 96
+I am thread 3  Going to run pragma: 37
+dx -- 88
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+sx -- 97
+I am thread 3  Going to run pragma: 37
+dx -- 89
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+sx -- 98
+I am thread 3  Going to run pragma: 37
+dx -- 90
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 99
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 91
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 100
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 101
+I am thread 2  Going to run pragma: 19
+dx -- 92
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 102
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 103
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 93
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+sx -- 104
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+dx -- 94
+sx -- 105
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 95
+sx -- 106
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+sx -- 107
+dx -- 96
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 108
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+sx -- 109
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 97
+sx -- 110
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 111
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 112
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 98
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 113
+work queue: 37, 0 thread: 3
+dx -- 99
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 114
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 100
+sx -- 115
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 101
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 116
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+sx -- 117
+dx -- 102
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 118
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 103
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 119
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 120
+dx -- 104
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 121
+I am thread 3  Going to run pragma: 37
+dx -- 105
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+sx -- 122
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 106
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+sx -- 123
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+work queue: 19, 0 thread: 2
+dx -- 107
+I am thread 3  Going to run pragma: 37
+sx -- 124
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+dx -- 108
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+sx -- 125
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 109
+sx -- 126
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+dx -- 110
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+sx -- 127
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 111
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 128
+dx -- 112
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+sx -- 129
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 113
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+I am thread 2  Going to run pragma: 19
+dx -- 114
+I am thread 3  Going to run pragma: 37
+sx -- 130
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 115
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 116
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+sx -- 131
+I am thread 3  Going to run pragma: 37
+dx -- 117
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+sx -- 132
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 118
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+sx -- 133
+dx -- 119
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 134
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 120
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+sx -- 135
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+I am thread 2  Going to run pragma: 19
+dx -- 121
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+sx -- 136
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 122
+I am thread 2  Going to run pragma: 19
+sx -- 137
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+sx -- 138
+dx -- 123
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 139
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 140
+dx -- 124
+CIAOOOO
+Almost pushing 37
+work queue: 19, 0 thread: 2
+work queue: 37, 0 thread: 3
+sx -- 141
+I am thread 2  Going to run pragma: 19
+dx -- 125
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 142
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 126
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+sx -- 143
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 127
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+sx -- 144
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+sx -- 145
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+dx -- 128
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 129
+I am thread 3  Going to run pragma: 37
+sx -- 146
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+work queue: 19, 0 thread: 2
+dx -- 130
+I am thread 2  Going to run pragma: 19
+sx -- 147
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 3  Going to run pragma: 37
+sx -- 148
+I am thread 2  Going to run pragma: 19
+dx -- 131
+work queue: 19, 0 thread: 2
+CIAOOOO
+Almost pushing 37
+I am thread 2  Going to run pragma: 19
+work queue: 37, 0 thread: 3
+dx -- 132
+sx -- 149
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+work queue: 19, 0 thread: 2
+I am thread 2  Going to run pragma: 19
+I am thread 3  Going to run pragma: 37
+dx -- 133
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 134
+sx -- 150
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 135
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 136
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 137
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 138
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 139
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 140
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 141
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 142
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 143
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 144
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 145
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 146
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+dx -- 147
+I am thread 3  Going to run pragma: 37
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 148
+CIAOOOO
+Almost pushing 37
+work queue: 37, 0 thread: 3
+I am thread 3  Going to run pragma: 37
+dx -- 149
+I am thread 0  Going to run pragma: 0
