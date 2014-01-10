@@ -100,14 +100,15 @@ bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
     int my_id = thread_id_to_int_[std::this_thread::get_id()];
 
     /* In case of a parallel for */
-    if(thread_number > 1) {
-        
+    if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPForDirective") == 0
+        || sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelForDirective") == 0) {
         call_for(nested_b);
 
     }else {
         thread_id = sched_opt_[nested_b->pragma_id_].threads_[0];
         if(thread_id != my_id) {
             push(nested_b->clone(), ForParameter(0, 1), thread_id);
+            
             if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0) {
                 int barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[0];        
                 join(barriers_id, std::this_thread::get_id());

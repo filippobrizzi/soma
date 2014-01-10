@@ -18,37 +18,35 @@ int apply_filter_1(const Mat &frame){
     int count = frame.cols;
 //    #pragma omp parallel for
     //for (int i = 0; i < count; ++i)
+{
+  class Nested : public NestedBase {
+  public: 
+    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+    Nested(int pragma_id, int & count, const cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
+int & count_;
+const cv::Mat & frame_;
+
+void fx(ForParameter for_param, int & count, const cv::Mat & frame) {
+for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
     {
-        class Nested : public NestedBase {
-        public: 
-            virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-            Nested(int pragma_id, int & count, const cv::Mat & frame)  : NestedBase(pragma_id), count_(count) , frame_(frame) {}
-            int & count_;
-            const cv::Mat & frame_;
+        Size gaussian_size(0, 0);
+        GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);
+        medianBlur(frame.col(i), frame.col(i), 7);
+        erode(frame.col(i), frame.col(i), 1000);
 
-            void fx(ForParameter for_param, int & count, const cv::Mat & frame) {
-                std::cout << "Ciao da 19" << std::endl;
-                for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
-                {
-                    Size gaussian_size(0, 0);
-                    GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);
-                    medianBlur(frame.col(i), frame.col(i), 7);
-                    erode(frame.col(i), frame.col(i), 1000);
-
-                    //GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);
-                    //medianBlur(frame.col(i), frame.col(i), 7);
-                }  
-                launch_todo_job(); 
-            }
-            void callme(ForParameter for_param) {
-              std::cout << "ciao" << std::endl;
-              fx(for_param, count_, frame_);
-            }
-        };
-    std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(19, count, frame);
-    if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b))
-        nested_b->callme(ForParameter(0, 1));
-    }
+        //GaussianBlur(frame.col(i), frame.col(i), gaussian_size, 3);
+        //medianBlur(frame.col(i), frame.col(i), 7);
+    }  
+launch_todo_job(); 
+ }
+void callme(ForParameter for_param) {
+  fx(for_param, count_, frame_);
+}
+};
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(19, count, frame);
+if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b)) 
+  nested_b->callme(ForParameter(0,1));
+}
 
     return 0;
 };
@@ -67,7 +65,6 @@ int & count_;
 const cv::Mat & frame_;
 
 void fx(ForParameter for_param, int & count, const cv::Mat & frame) {
-    std::cout << "Ciao da 37" << std::endl;
 for(int i = 0 + for_param.thread_id_*(count - 0)/for_param.num_threads_; i < 0 + (for_param.thread_id_ + 1)*(count - 0)/for_param.num_threads_; i ++ )
     {        
         //blur(frame.col(i), frame.col(i), Size());
@@ -86,9 +83,9 @@ void callme(ForParameter for_param) {
 }
 };
 std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(37, count, frame);
-if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b))
-    nested_b->callme(ForParameter(0, 1));
-    }
+if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b)) 
+  nested_b->callme(ForParameter(0,1));
+}
     return 0;
 };
 
@@ -129,7 +126,7 @@ int main(int argc, char* argv[]) {
                 VideoWriter oVideoWriter_sx ("/home/pippo/Documents/Project/soma/source_exctractor/test_cases/TestOpenCV/mandelbrot_new_sx.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
                 //namedWindow("MyVideo_sx",CV_WINDOW_AUTOSIZE); //create a window called "MyVideo"
                 double fps = video_cap_sx.get(CV_CAP_PROP_FPS); //get the frames per seconds of the video
-                int count = 1;
+                int count = 0;
                 while(1)
                 {
                     Mat frame;
@@ -146,7 +143,6 @@ int main(int argc, char* argv[]) {
                     //imshow("MyVideo_sx", frame); //show the frame in "MyVideo" window
 
                     waitKey(1/fps*100);
-                    count ++;
                 }
             launch_todo_job(); 
 }
@@ -191,7 +187,6 @@ if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp"
                     std::cout << "dx -- " << count << std::endl;
 
                     waitKey(1/fps*100);
-                    count ++;
                 }
             launch_todo_job(); 
 }
@@ -220,7 +215,8 @@ void callme(ForParameter for_param) {
 }
 };
 std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(57);
-ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b);
+if(ThreadPool::getInstance("source_exctractor/test_cases/TestOpenCV/opencv1.cpp")->call(nested_b)) 
+  nested_b->callme(ForParameter(0,1));
 }
     return 0;
 
