@@ -12,8 +12,7 @@ import threading
 
 
 
-""" Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output)
-"""
+""" Usage: call with <filename> <pragma_xml_file> <executable_name> <profiling_interations> True/False (for output) """
 
 if __name__ == "__main__":
 	
@@ -91,6 +90,7 @@ if __name__ == "__main__":
 		task_list.append(task)
 		num_tasks += 1
 	
+	#starting the parallel or sequential search of the best solution with a timing constrain
 	if multi == 'parallel':
 		for core in range(cores):
 			tmp = []
@@ -139,20 +139,32 @@ if __name__ == "__main__":
 		flow.dump("\t")
 		print "\ttime:",flow.time
 
-	#substitutes for tasks with splitted versions if present in the optimal flows
+	#substitutes "for tasks" with splitted versions if present in the optimal flows
 	par.add_new_tasks(optimal_flow, main_flow)
 	sched.make_white(main_flow)
 	gen_ = sched.generate_task(main_flow)
 
+
 	t_list = []
 	for t in gen_:
 		t_list.append(t)
-
+		"""
+		print t.type," @ ", t.start_line, " has parents:"
+		for p in t.parent:
+			print "\t ",p.type," @ ", p.start_line
+		print "and children:"
+		for c in t.children:
+			print "\t ",c.type," @ ", c.start_line
+		print
+		"""
+	
+	#adds id's to all the tasks to retrive the flow to which they belong
 	par.add_flow_id(optimal_flow, t_list)
 
 	#sets arrival times and deadlines using a modified version of the chetto algorithm
 	sched.chetto(main_flow, deadline, optimal_flow)
 	
+	#checks if the schedule is feasible and in case creates the schedule file
 	if sched.check_schedule(main_flow):
 		sched.create_schedule(main_flow, len(optimal_flow))
 		sched.make_white(main_flow)
@@ -160,10 +172,11 @@ if __name__ == "__main__":
 	else:
 		print "tasks not schedulable, try with more search time"
 
+	#prints extended info of the entire pragma graph
 	if output == 'True':
 		sched.make_white(main_flow)
 		par.scanGraph(main_flow)
-
+	
 	
 	
 	

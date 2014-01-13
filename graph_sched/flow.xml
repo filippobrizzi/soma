@@ -11,8 +11,8 @@
       </Parameter>
     </Parameters>
     <Line>11</Line>
-    <Time>0.126383037313</Time>
-    <Variance>0.00315143959383</Variance>
+    <Time>0.1350035</Time>
+    <Variance>0.0037326093605</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -27,8 +27,8 @@
         <Callerids>
           <Callerid>11</Callerid>
         </Callerids>
-        <Time>0.126323962687</Time>
-        <Variance>0.00315096942772</Variance>
+        <Time>0.134934283582</Time>
+        <Variance>0.00372948417988</Variance>
       </Pragma>
     </Nodes>
     <Edges>
@@ -48,8 +48,8 @@
       </Parameter>
     </Parameters>
     <Line>23</Line>
-    <Time>0.0767922313433</Time>
-    <Variance>0.00153927650147</Variance>
+    <Time>0.0853777164179</Time>
+    <Variance>0.00291023395636</Variance>
     <Callerids>
       <Callerid>44</Callerid>
       <Callerid>72</Callerid>
@@ -64,8 +64,8 @@
         <Callerids>
           <Callerid>23</Callerid>
         </Callerids>
-        <Time>0.076769238806</Time>
-        <Variance>0.00153577564233</Variance>
+        <Time>0.0853210223881</Time>
+        <Variance>0.00290858561428</Variance>
       </Pragma>
     </Nodes>
     <Edges>
@@ -89,7 +89,7 @@
       </Parameter>
     </Parameters>
     <Line>35</Line>
-    <Time>32.2134</Time>
+    <Time>34.5328</Time>
     <Variance>0.0</Variance>
     <Callerids />
     <Nodes>
@@ -102,7 +102,7 @@
         <Callerids>
           <Callerid>35</Callerid>
         </Callerids>
-        <Time>32.2134</Time>
+        <Time>34.5328</Time>
         <Variance>0.0</Variance>
       </Pragma>
       <Pragma id="4197">
@@ -114,7 +114,7 @@
         <Callerids>
           <Callerid>39</Callerid>
         </Callerids>
-        <Time>32.2134</Time>
+        <Time>34.5327</Time>
         <Variance>0.0</Variance>
       </Pragma>
       <Pragma id="4469">
@@ -126,7 +126,7 @@
         <Callerids>
           <Callerid>41</Callerid>
         </Callerids>
-        <Time>16.2302</Time>
+        <Time>17.3169</Time>
         <Variance>0.0</Variance>
       </Pragma>
       <Pragma id="410">
@@ -154,7 +154,7 @@
         <Callerids>
           <Callerid>41</Callerid>
         </Callerids>
-        <Time>15.983</Time>
+        <Time>17.2158</Time>
         <Variance>0.0</Variance>
       </Pragma>
     </Nodes>

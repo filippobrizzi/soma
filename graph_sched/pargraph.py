@@ -573,11 +573,22 @@ def find_node(node, flow_graphs):
 		if tmp_node != None :
 			return tmp_node
 
-def find_node2(node, flow_graphs):
-	tmp_node = find_sub_node(node, flow_graphs) 
+def find_node2(key_start, key_parent, flow_graphs):
+	tmp_node = find_sub_node2(key_start, key_parent, flow_graphs) 
 	if tmp_node != None :
 		return tmp_node
 
+def find_sub_node2(key_start, key_parent, function):
+	if (function.start_line) == key_start and ('BARRIER' not in function.type):
+			return function
+	for child in function.children:
+		if (child.start_line) == key_start and ('BARRIER' not in child.type) and child.parent[0].start_line == key_parent:
+			return child
+		else:
+			tmp_node = find_sub_node2(key_start, key_parent, child)
+		if tmp_node != None:
+			return tmp_node
+	return None
 
 def find_sub_node(node, function):
 	if (function.start_line) == node and ('BARRIER' not in function.type):
@@ -647,7 +658,8 @@ def create_map(optimal_flow):
 	for flow in optimal_flow:
 		for task in flow.tasks:
 			if "splitted" in task.type:
-				id = re.findall(r'\d+',task.type)[0]
+				l = re.findall(r'\d+',task.type)
+				id = str(l[0]) + "_" + str(l[2])
 				if id in for_map:
 					for_map[id].count += 1
 					for_map[id].id.append(task.id)
@@ -658,9 +670,9 @@ def create_map(optimal_flow):
 def add_new_tasks(optimal_flow, main_flow):
 	for_map = create_map(optimal_flow)
 	for key in for_map:
-		node_to_replace = find_node2(key, main_flow)
+		l = re.findall(r'\d+',key)
+		node_to_replace = find_node2(l[0], l[1], main_flow)
 		nodes_to_add = []
-		print "replace ", node_to_replace.type, " @ ", node_to_replace.start_line
 
 		for i in range(for_map[key].count):
 			nodes_to_add.append(For_Node("splitted_" + node_to_replace.start_line + "." + str(i), node_to_replace.start_line, node_to_replace.init_type, node_to_replace.init_var, node_to_replace.init_value, node_to_replace.init_cond, node_to_replace.init_cond_value, node_to_replace.init_increment, node_to_replace.init_increment_value, node_to_replace.time, node_to_replace.variance, math.floor(float(node_to_replace.mean_loops) / (i + 1))))

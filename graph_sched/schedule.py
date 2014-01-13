@@ -38,7 +38,7 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 					tmp_task_list = []
 					#splits the for node in j nodes
 					for j in range(0, i):
-						task = par.For_Node("splitted_" + task_i.start_line + "." + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
+						task = par.For_Node("splitted_" + task_i.start_line + "." + str(j) + "_" + task_i.parent[0].start_line, task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
 						task.in_time = float(task_i.time) / i
 						task_list.append(task)
 						tmp_task_list.append(task)
@@ -46,19 +46,20 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 					for tmp_task in tmp_task_list:
 						task_list.remove(tmp_task)		
 		else:
-			if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur < curopt:
-				#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
-				del optimal_flow[:]
-				id = 0
-				#print "newflowset:"
-				for flow in flow_list:
-					for task in flow.tasks:
-						task.id = id
-					id += 1
-					optimal_flow.append(copy.deepcopy(flow))
-				if not q.q.empty():
-					q.q.get()
-				q.q.put(optimal_flow)
+			if len(task_list) == level and len(flow_list) == MAX_FLOWS and cur <= curopt:
+				if cur < curopt or (get_num_splitted(flow_list) > get_num_splitted(optimal_flow) and get_num_splitted(flow_list) < (MAX_FLOWS * 2)):
+					#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
+					del optimal_flow[:]
+					id = 0
+					#print "newflowset:"
+					for flow in flow_list:
+						for task in flow.tasks:
+							task.id = id
+						id += 1
+						optimal_flow.append(copy.deepcopy(flow))
+					while( not q.q.empty() ):
+						q.q.get()
+					q.q.put(optimal_flow)
 	
 
 def get_optimal_flow_single(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time):
@@ -84,7 +85,7 @@ def get_optimal_flow_single(flow_list, task_list, level, optimal_flow, NUM_TASKS
 					tmp_task_list = []
 					#splits the for node in j nodes
 					for j in range(0, i):
-						task = par.For_Node("splitted_" + task_i.start_line + "." + str(j), task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
+						task = par.For_Node("splitted_" + task_i.start_line + "." + str(j) + "_" + task_i.parent[0].start_line, task_i.start_line, task_i.init_type, task_i.init_var, task_i.init_value, task_i.init_cond, task_i.init_cond_value, task_i.init_increment, task_i.init_increment_value, task_i.time, task_i.variance, math.floor(float(task_i.mean_loops) / i))
 						task.in_time = float(task_i.time) / i
 						task_list.append(task)
 						tmp_task_list.append(task)
@@ -92,16 +93,26 @@ def get_optimal_flow_single(flow_list, task_list, level, optimal_flow, NUM_TASKS
 					for tmp_task in tmp_task_list:
 						task_list.remove(tmp_task)		
 		else:
-			if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur < curopt:
-				#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
-				del optimal_flow[:]
-				id = 0
-				#print "newflowset:"
-				for flow in flow_list:
-					for task in flow.tasks:
-						task.id = id
-					id += 1
-					optimal_flow.append(copy.deepcopy(flow))
+			if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur <= curopt:
+				if cur < curopt or (get_num_splitted(flow_list) > get_num_splitted(optimal_flow) and get_num_splitted(flow_list) < (MAX_FLOWS * 2)):
+					#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
+					del optimal_flow[:]
+					id = 0
+					#print "newflowset:"
+					for flow in flow_list:
+						for task in flow.tasks:
+							task.id = id
+						id += 1
+						optimal_flow.append(copy.deepcopy(flow))
+
+def get_num_splitted(flow_list):
+	num = 0
+	for flow in flow_list:
+		for task in flow.tasks:
+			if 'splitted' in task.type:
+				num += 1
+	return num
+
 				
 #generator for the tasks of the graph
 def generate_task(node):
