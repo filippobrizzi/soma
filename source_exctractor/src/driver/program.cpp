@@ -336,7 +336,7 @@ bool TransformRecursiveASTVisitor::VisitStmt(clang::Stmt *s) {
     if(associated_stmt) {
       clang::Stmt *captured_stmt = static_cast<clang::CapturedStmt *>(associated_stmt)->getCapturedStmt();
       if(strcmp(captured_stmt->getStmtClassName(), "OMPForDirective") != 0)
-        RewriteOMPPragma(associated_stmt);
+        RewriteOMPPragma(associated_stmt, omp_stmt->getStmtClassName());
 
     }else if(strcmp(omp_stmt->getStmtClassName(), "OMPBarrierDirective") == 0
             || strcmp(omp_stmt->getStmtClassName(), "OMPTaskwaitDirective") == 0){
@@ -371,7 +371,7 @@ void TransformRecursiveASTVisitor::RewriteOMPBarrier(clang::OMPExecutableDirecti
 }
 
 
-void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt) {
+void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt, std::string pragma_name) {
   
   clang::Stmt *s = static_cast<clang::CapturedStmt *>(associated_stmt)->getCapturedStmt();
 
@@ -503,10 +503,19 @@ if(text_constructor_var.str().compare("") != 0)
       text_after_pragma << ", ";    
 text_after_pragma << text_constructor_var.str() <<");\n";
 text_after_pragma << 
-"if(ThreadPool::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(nested_b)) \n\
-  todo_job_.push(nested_b); \n\
-}\n";
+"if(ThreadPool::getInstance(\"" << utils::FileName(s->getLocStart(), sm) << "\")->call(nested_b)) \n";
+    
+  std::cout << "classname " << pragma_name << std::endl;
 
+  if(pragma_name.compare("OMPParallelDirective") == 0 || pragma_name.compare("OMPForDirective") == 0) {
+
+text_after_pragma << "  nested_b->callme(ForParameter(0,1));\n";
+  }else {
+text_after_pragma << "  todo_job_.push(nested_b); \n";
+  }
+text_after_pragma << "}\n";
+
+/* If ForDirective no need to add the if, cause everything is solved inside */
   stmt_end_line = utils::Line(s->getLocEnd(), sm);
   clang::SourceLocation pragma_end_src_loc = sm.translateLineCol(sm.getMainFileID(), stmt_end_line + 1, 1);
 

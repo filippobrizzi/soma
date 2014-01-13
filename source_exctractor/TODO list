@@ -1,7 +1,4 @@
 
- 	Investigate why the condition variables in Cloth.cpp are not detected
-
-
 
 	-------------------------------------------------------------------------------------------------
 	*************************************************************************************************
@@ -15,8 +12,13 @@
 	*************************************************************************************************
 	-------------------------------------------------------------------------------------------------	
 
-	** Add in threadpool a method that return me if I have to invoke call or launch the function in the 
-	current thread.
 
-	** Add in threadpool a method that return me the ForParameter obj for the given pragma.
+	** Check wait in case of sections!! and parallel for (line 109)	
+
+	
+	** Fix (hope in a miracle) the problem that not always i am in nested_base...so i cant always use
+		todo_job_
+
+	** 
+
 
