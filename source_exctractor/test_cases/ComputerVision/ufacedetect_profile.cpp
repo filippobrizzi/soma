@@ -36,12 +36,15 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
 
     }
 
-    /*#pragma omp parallel
+//    #pragma omp parallel
+    if( ProfileTracker x = ProfileTrackParams(22, 38))
     {
-        #pragma omp sections
+//        #pragma omp sections
+        if( ProfileTracker x = ProfileTrackParams(22, 40))
         {
-            #pragma omp section
-            {*/
+//            #pragma omp section
+            if( ProfileTracker x = ProfileTrackParams(22, 42))
+            {
 
                 UMat *frame_sx = new UMat[4]; 
                 UMat image_sx;
@@ -70,9 +73,10 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
                         //imwrite(filename_sx.str(), canvas_sx[j]);
                    }
                 }
-        /*    }
-            #pragma omp section
-            {*/
+            }
+//            #pragma omp section
+            if( ProfileTracker x = ProfileTrackParams(22, 72))
+            {
                 UMat *frame_dx = new UMat[4];
                 UMat image_dx;
                 Mat *canvas_dx = new Mat[4];
@@ -101,9 +105,9 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
 
                    }
                 }
-            /*}
+            }
         }
-    }*/
+    }
 
     return 0;
 }

@@ -33,7 +33,7 @@
     <id>62</id>
     <Type>OMPParallelForDirective</Type>
     <Threads>
-      <Thread>0</Thread>
+      <!--<Thread>0</Thread>-->
       <Thread>1</Thread>
     </Threads>
     <Barrier>
@@ -51,7 +51,7 @@
     <id>91</id>
     <Type>OMPParallelForDirective</Type>
     <Threads>
-      <Thread>2</Thread>
+      <!--<Thread>2</Thread>-->
       <Thread>3</Thread>
     </Threads>
     <Barrier>

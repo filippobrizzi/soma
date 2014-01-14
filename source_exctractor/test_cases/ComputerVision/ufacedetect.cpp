@@ -34,12 +34,12 @@ int main( int argc, const char** argv ){
 
     }
 
-    /*#pragma omp parallel
+    #pragma omp parallel
     {
         #pragma omp sections
         {
             #pragma omp section
-            {*/
+            {
 
                 UMat *frame_sx = new UMat[4]; 
                 UMat image_sx;
@@ -67,9 +67,9 @@ int main( int argc, const char** argv ){
                         //imwrite(filename_sx.str(), canvas_sx[j]);
                    }
                 }
-        /*    }
+            }
             #pragma omp section
-            {*/
+            {
                 UMat *frame_dx = new UMat[4];
                 UMat image_dx;
                 Mat *canvas_dx = new Mat[4];
@@ -97,9 +97,9 @@ int main( int argc, const char** argv ){
 
                    }
                 }
-            /*}
+            }
         }
-    }*/
+    }
 
     return 0;
 }

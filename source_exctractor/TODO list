@@ -13,12 +13,6 @@
 	-------------------------------------------------------------------------------------------------	
 
 
-	** Check wait in case of sections!! and parallel for (line 109)	
-
-	
-	** Fix (hope in a miracle) the problem that not always i am in nested_base...so i cant always use
-		todo_job_
-
-	** 
+	** Check why with for splitted in two doesn't work!
 
 
