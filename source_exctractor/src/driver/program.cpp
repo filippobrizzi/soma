@@ -413,10 +413,12 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
       text_constructor_params << ", ";
     }else
       text << ", ";
-
+    std::cout << var_type << " - ";
     size_t pos_class = var_type.find("class");
-    if(pos_class != std::string::npos)
-      var_type.erase(pos_class, pos_class);
+    if(pos_class != std::string::npos){
+      std::cout << "removing class - ";
+      var_type.erase(pos_class, pos_class + 5);
+    }
     
     size_t pos_uppersand = var_type.find("&");
     if(pos_uppersand != std::string::npos)
@@ -442,6 +444,7 @@ void TransformRecursiveASTVisitor::RewriteOMPPragma(clang::Stmt *associated_stmt
       text_constructor_params << var_type << " & " << var_decl->getNameAsString();
       text_class_var << var_type << " & " << var_decl->getNameAsString() << "_;\n";
     }
+    std::cout << var_type << std::endl;
 
     text_constructor << ", " << var_decl->getNameAsString() << "_(" << var_decl->getNameAsString() << ") ";
     text_fx_var << var_decl->getNameAsString() << "_";

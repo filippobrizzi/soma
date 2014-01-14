@@ -61,6 +61,7 @@ public:
 
     /* Called by the task to be put in the job queue */
     bool call(std::shared_ptr<NestedBase> nested_base);
+    void call_sections(std::shared_ptr<NestedBase> nested_b);
     void call_parallel(std::shared_ptr<NestedBase> nested_b);
     void call_for(std::shared_ptr<NestedBase> nested_b);
     void call_barrier(std::shared_ptr<NestedBase> nested_b);
