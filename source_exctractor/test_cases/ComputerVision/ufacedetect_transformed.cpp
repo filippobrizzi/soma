@@ -34,7 +34,7 @@ int main( int argc, const char** argv ){
         return -1;
 
     }
-
+    //omp_set_num_threads(4);
 //    #pragma omp parallel
     {
       class Nested : public NestedBase {
@@ -100,8 +100,8 @@ for(int j = 0 + for_param.thread_id_*(4 - 0)/for_param.num_threads_; j < 0 + (fo
                         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
                         stringstream filename_sx;
                         filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-                        std::cout << "--------------- " << filename_sx.str() << std::endl;
-                        //imwrite(filename_sx.str(), canvas_sx[j]);
+                        //std::cout << "--------------- " << filename_sx.str() << std::endl;
+                        imwrite(filename_sx.str(), canvas_sx[j]);
                    }
 launch_todo_job(); 
  }
@@ -168,8 +168,8 @@ for(int j = 0 + for_param.thread_id_*(4 - 0)/for_param.num_threads_; j < 0 + (fo
                         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
                         stringstream filename_dx;
                         filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-                        std::cout << "--------------- " << filename_dx.str() << std::endl;
-                        //imwrite(filename_dx.str(), canvas_dx[j]);
+                        //std::cout << "--------------- " << filename_dx.str() << std::endl;
+                        imwrite(filename_dx.str(), canvas_dx[j]);
 
                    }
 launch_todo_job(); 

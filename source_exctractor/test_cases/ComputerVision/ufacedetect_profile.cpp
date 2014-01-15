@@ -35,7 +35,7 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
         return -1;
 
     }
-
+    //omp_set_num_threads(4);
 //    #pragma omp parallel
     if( ProfileTracker x = ProfileTrackParams(22, 38))
     {
@@ -69,8 +69,8 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
                         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
                         stringstream filename_sx;
                         filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-                        std::cout << "--------------- " << filename_sx.str() << std::endl;
-                        //imwrite(filename_sx.str(), canvas_sx[j]);
+                        //std::cout << "--------------- " << filename_sx.str() << std::endl;
+                        imwrite(filename_sx.str(), canvas_sx[j]);
                    }
                 }
             }
@@ -100,8 +100,8 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
                         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
                         stringstream filename_dx;
                         filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-                        std::cout << "--------------- " << filename_dx.str() << std::endl;
-                        //imwrite(filename_dx.str(), canvas_dx[j]);
+                        //std::cout << "--------------- " << filename_dx.str() << std::endl;
+                        imwrite(filename_dx.str(), canvas_dx[j]);
 
                    }
                 }

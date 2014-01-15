@@ -77,8 +77,8 @@ ThreadPool::ThreadPool(std::string file_name) {
         sched_opt_[id] = sched_opt;
         pragma_element = pragma_element->NextSiblingElement("Pragma");
     }
-        for(std::map<int, ScheduleOptions>::iterator itr = sched_opt_.begin(); itr != sched_opt_.end(); ++ itr)
-        std::cout << "Pragma id: " << (*itr).second.pragma_id_ << ", type: " << (*itr).second.pragma_type_ << std::endl;
+        //for(std::map<int, ScheduleOptions>::iterator itr = sched_opt_.begin(); itr != sched_opt_.end(); ++ itr)
+        //std::cout << "Pragma id: " << (*itr).second.pragma_id_ << ", type: " << (*itr).second.pragma_type_ << std::endl;
 
 }
 
@@ -87,7 +87,7 @@ void ThreadPool::init(int pool_size)
 {
     /* This is needed cause otherwise the main process would be considered as thread num 0*/
     thread_id_to_int_[std::this_thread::get_id()] = -1;
-    std::cout << std::this_thread::get_id() << " = -1 " << std::endl;
+    //std::cout << std::this_thread::get_id() << " = -1 " << std::endl;
 
     threads_pool_.reserve(pool_size);
     for(int i = 0; i < pool_size; i++) {
@@ -116,7 +116,7 @@ bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
             
             if(sched_opt_[nested_b->pragma_id_].pragma_type_.compare("OMPParallelDirective") == 0) {
                 int barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[0];        
-                std::cout << "Pragma " << nested_b->pragma_id_ << " waiting on pragma " << barriers_id << std::endl;
+                //std::cout << "Pragma " << nested_b->pragma_id_ << " waiting on pragma " << barriers_id << std::endl;
 
                 join(barriers_id, std::this_thread::get_id());
                 
@@ -126,7 +126,7 @@ bool ThreadPool::call(std::shared_ptr<NestedBase> nested_b) {
                 
                 for (int i = 1; i < barriers_number; i ++) {
                     barriers_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
-                    std::cout << "Pragma " << nested_b->pragma_id_ << " waiting on pragma " << barriers_id << std::endl;
+                    //std::cout << "Pragma " << nested_b->pragma_id_ << " waiting on pragma " << barriers_id << std::endl;
                     join(barriers_id, t_id);
                 }
             }
@@ -155,7 +155,7 @@ void ThreadPool::call_sections(std::shared_ptr<NestedBase> nested_b){
     int barrier_id;
     for(int i = 0; i < barriers_number; i ++) {
         barrier_id = sched_opt_[nested_b->pragma_id_].barriers_[i];
-        std::cout << "Pragma " << nested_b->pragma_id_ << " waiting " << barrier_id << std::endl;
+        //std::cout << "Pragma " << nested_b->pragma_id_ << " waiting " << barrier_id << std::endl;
         join(barrier_id, std::this_thread::get_id());
     }
     push_completed_job(nested_b, ForParameter(0, 1));
@@ -185,8 +185,9 @@ void ThreadPool::call_for(std::shared_ptr<NestedBase> nested_b) {
     int my_id = thread_id_to_int_[std::this_thread::get_id()];
     for(int i = 0; i < thread_number; i ++) {
         thread_id = sched_opt_[nested_b->pragma_id_].threads_[i];
-        if(thread_id != my_id)
+        if(thread_id != my_id) {
             push(nested_b->clone(), ForParameter(i, thread_number), thread_id);
+        }
     }
     /* If a son and a father are on the same thread!!! */
     for(int i = 0; i < thread_number; i ++) {
@@ -223,7 +224,7 @@ void ThreadPool::push_completed_job(std::shared_ptr<NestedBase> nested_base,
     job_in.job_id_ = id;
     job_in.job_completed_ = true;
 
-    std::cout << "PUSH completed: " << id << " thread: " << std::endl;
+    //std::cout << "PUSH completed: " << id << " thread: " << std::endl;
 
     known_jobs_[std::make_pair(id, std::this_thread::get_id())].push_back(std::move(job_in));
 }
@@ -245,7 +246,7 @@ void ThreadPool::push(std::shared_ptr<NestedBase> nested_base,
     known_jobs_[std::make_pair(id, std::this_thread::get_id())].push_back(std::move(job_in));
     
     JobQueue j_q(id, for_param.thread_id_, std::this_thread::get_id());
-    std::cout << "PUSH work queue: " << j_q.j_id_ << ", " << j_q.thread_id_ << " thread: " << thread_id << std::endl;
+    //std::cout << "PUSH work queue: " << j_q.j_id_ << ", " << j_q.thread_id_ << " thread: " << thread_id << std::endl;
     work_queue_[thread_id].push(j_q);
     
     job_pop_mtx.unlock();
@@ -262,7 +263,7 @@ void ThreadPool::push_termination_job(int thread_id) {
 
 void ThreadPool::run(int me) {
     thread_id_to_int_[std::this_thread::get_id()] = me;
-    std::cout << std::this_thread::get_id() << " = " << me << std::endl;
+    //std::cout << std::this_thread::get_id() << " = " << me << std::endl;
     while(true) {
         
         job_pop_mtx.lock();
@@ -297,7 +298,7 @@ void ThreadPool::run(int me) {
                     int barrier_id;
                     for(int i = 0; i < barriers_number; i ++) {
                         barrier_id = sched_opt_[pragma_id].barriers_[i];
-                        std::cout << "Pragma " << pragma_id << " waiting on pragma " << barrier_id << std::endl;
+                        //std::cout << "Pragma " << pragma_id << " waiting on pragma " << barrier_id << std::endl;
 
                         join(barrier_id, std::this_thread::get_id());
                     }
@@ -321,7 +322,7 @@ void ThreadPool::join(Jobid_t job_id, std::thread::id caller_thread_id) {
             known_jobs_[std::make_pair(job_id, caller_thread_id)][i].done_cond_var_->wait(lk);
         }
     }
-    std::cout << "i am " << thread_id_to_int_[std::this_thread::get_id()] << " - Pragma " << job_id << " completed" << std::endl;
+    //std::cout << "i am " << thread_id_to_int_[std::this_thread::get_id()] << " - Pragma " << job_id << " completed" << std::endl;
     known_jobs_.erase(std::make_pair(job_id, caller_thread_id));
 }
 
