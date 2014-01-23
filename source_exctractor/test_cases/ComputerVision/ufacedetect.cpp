@@ -36,7 +36,7 @@ int main( int argc, const char** argv ){
         return -1;
 
     }
-    omp_set_num_threads(2);
+    //omp_set_num_threads(2);
     #pragma omp parallel
     {
         #pragma omp sections
@@ -94,31 +94,28 @@ int main( int argc, const char** argv ){
 
 
 void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
-    omp_set_num_threads(2);
-    omp_set_nested(1);
+    //omp_set_num_threads(2);
+    //omp_set_nested(1);
     #pragma omp parallel for
     for(int j = 0; j < 4; j ++){
         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
         stringstream filename_dx;
         filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-        //std::cout << "--------------- " << filename_dx.str() << std::endl;
-        std::cout << "---------" << omp_get_thread_num() << "------ " << filename_dx.str() << std::endl;
-
+        std::cout << "--------------- " << filename_dx.str() << std::endl;
         //imwrite(filename_dx.str(), canvas_dx[j]);
     }
 
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
-    omp_set_num_threads(2);
-    omp_set_nested(1);
+    //omp_set_num_threads(2);
+    //omp_set_nested(1);
     #pragma omp parallel for
     for(int j = 0; j < 4; j ++){
         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
         stringstream filename_sx;
         filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-        std::cout << "---------" << omp_get_thread_num() << " / " << omp_get_num_threads() << "------ " << filename_sx.str() << std::endl;
-        //std::cout << "--------------- " << filename_sx.str() << std::endl;
+        std::cout << "--------------- " << filename_sx.str() << std::endl;
         //imwrite(filename_sx.str(), canvas_sx[j]);
     }
 }

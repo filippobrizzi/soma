@@ -17,6 +17,9 @@ using namespace cv;
 
 #include "thread_pool/threads_pool.h"
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale);
+void dx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
+void sx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
+
 
 string cascadeName = "/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/haarcascade_frontalface_alt.xml";
 
@@ -34,7 +37,7 @@ int main( int argc, const char** argv ){
         return -1;
 
     }
-    //omp_set_num_threads(4);
+    //omp_set_num_threads(2);
 //    #pragma omp parallel
     {
       class Nested : public NestedBase {
@@ -82,37 +85,7 @@ int main( int argc, const char** argv ){
                     for(int j = 0; j < 4; j ++)
                         capture_sx >> frame_sx[j];
 
-//                    #pragma omp parallel for
-                    //for(int j = 0; j < 4; j ++){
-{
-  class Nested : public NestedBase {
-  public: 
-    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i)  : NestedBase(pragma_id), frame_sx_(frame_sx) , canvas_sx_(canvas_sx) , cascade_sx_(cascade_sx) , scale_sx_(scale_sx) , i_(i) {}
- cv::UMat * frame_sx_;
- cv::Mat * canvas_sx_;
- cv::CascadeClassifier * cascade_sx_;
-double & scale_sx_;
-int & i_;
-
-void fx(ForParameter for_param,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i) {
-for(int j = 0 + for_param.thread_id_*(4 - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(4 - 0)/for_param.num_threads_; j ++ ) { 
-                        detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
-                        stringstream filename_sx;
-                        filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-                        //std::cout << "--------------- " << filename_sx.str() << std::endl;
-                        imwrite(filename_sx.str(), canvas_sx[j]);
-                   }
-launch_todo_job(); 
- }
-void callme(ForParameter for_param) {
-  fx(for_param, frame_sx_, canvas_sx_, cascade_sx_, scale_sx_, i_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(62, frame_sx, canvas_sx, cascade_sx, scale_sx, i);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  nested_b->callme(ForParameter(0,1));
-}
+                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, i);
                 }
             launch_todo_job(); 
 }
@@ -120,7 +93,7 @@ void callme(ForParameter for_param) {
   fx(for_param, capture_sx_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(42, capture_sx);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(45, capture_sx);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
   todo_job_.push(nested_b); 
 }
@@ -150,8 +123,48 @@ if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedet
                     for(int j = 0; j < 4; j ++)
                         capture_dx >> frame_dx[j];
 
-//                    #pragma omp parallel for
-                    //for(int j = 0; j < 4; j ++){
+                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, i);
+                }
+            launch_todo_job(); 
+}
+void callme(ForParameter for_param) {
+  fx(for_param, capture_dx_);
+}
+};
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(68, capture_dx);
+if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+  todo_job_.push(nested_b); 
+}
+        launch_todo_job(); 
+}
+void callme(ForParameter for_param) {
+  fx(for_param, capture_sx_, capture_dx_);
+}
+};
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(43, capture_sx, capture_dx);
+if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+  todo_job_.push(nested_b); 
+}
+    launch_todo_job(); 
+}
+void callme(ForParameter for_param) {
+  fx(for_param, capture_sx_, capture_dx_);
+}
+};
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(41, capture_sx, capture_dx);
+if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+  nested_b->callme(ForParameter(0,1));
+}
+
+    return 0;
+}
+
+
+void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
+    //omp_set_num_threads(2);
+    //omp_set_nested(1);
+//    #pragma omp parallel for
+    //for(int j = 0; j < 4; j ++){
 {
   class Nested : public NestedBase {
   public: 
@@ -165,61 +178,62 @@ int & i_;
 
 void fx(ForParameter for_param,  cv::UMat * frame_dx,  cv::Mat * canvas_dx,  cv::CascadeClassifier * cascade_dx, double & scale_dx, int & i) {
 for(int j = 0 + for_param.thread_id_*(4 - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(4 - 0)/for_param.num_threads_; j ++ ) { 
-                        detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
-                        stringstream filename_dx;
-                        filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-                        //std::cout << "--------------- " << filename_dx.str() << std::endl;
-                        imwrite(filename_dx.str(), canvas_dx[j]);
-
-                   }
+        detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
+        stringstream filename_dx;
+        filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
+        std::cout << "--------------- " << filename_dx.str() << std::endl;
+        //imwrite(filename_dx.str(), canvas_dx[j]);
+    }
 launch_todo_job(); 
  }
 void callme(ForParameter for_param) {
   fx(for_param, frame_dx_, canvas_dx_, cascade_dx_, scale_dx_, i_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(91, frame_dx, canvas_dx, cascade_dx, scale_dx, i);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  nested_b->callme(ForParameter(0,1));
-}
-                }
-            launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_dx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(72, capture_dx);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  todo_job_.push(nested_b); 
-}
-        launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_sx_, capture_dx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(40, capture_sx, capture_dx);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  todo_job_.push(nested_b); 
-}
-    launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_sx_, capture_dx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(38, capture_sx, capture_dx);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(100, frame_dx, canvas_dx, cascade_dx, scale_dx, i);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
   nested_b->callme(ForParameter(0,1));
 }
 
-    return 0;
 }
 
+void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
+    //omp_set_num_threads(2);
+    //omp_set_nested(1);
+//    #pragma omp parallel for
+    //for(int j = 0; j < 4; j ++){
+{
+  class Nested : public NestedBase {
+  public: 
+    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+    Nested(int pragma_id,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i)  : NestedBase(pragma_id), frame_sx_(frame_sx) , canvas_sx_(canvas_sx) , cascade_sx_(cascade_sx) , scale_sx_(scale_sx) , i_(i) {}
+ cv::UMat * frame_sx_;
+ cv::Mat * canvas_sx_;
+ cv::CascadeClassifier * cascade_sx_;
+double & scale_sx_;
+int & i_;
 
-void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade,
-                    double scale0)
+void fx(ForParameter for_param,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i) {
+for(int j = 0 + for_param.thread_id_*(4 - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(4 - 0)/for_param.num_threads_; j ++ ) { 
+        detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
+        stringstream filename_sx;
+        filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
+        std::cout << "--------------- " << filename_sx.str() << std::endl;
+        //imwrite(filename_sx.str(), canvas_sx[j]);
+    }
+launch_todo_job(); 
+ }
+void callme(ForParameter for_param) {
+  fx(for_param, frame_sx_, canvas_sx_, cascade_sx_, scale_sx_, i_);
+}
+};
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(114, frame_sx, canvas_sx, cascade_sx, scale_sx, i);
+if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+  nested_b->callme(ForParameter(0,1));
+}
+}
+
+void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale0)
 {
     int i = 0;
     double t = 0, scale=1;

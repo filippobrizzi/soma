@@ -30,14 +30,14 @@
     </Threads>
   </Pragma>
   <Pragma>
-    <id>114</id>
+    <id>100</id>
     <Type>OMPParallelForDirective</Type>
     <Threads>
       <Thread>1</Thread>
       <Thread>0</Thread>
     </Threads>
     <Barrier>
-      <id>114</id>
+      <id>100</id>
     </Barrier>
   </Pragma>
   <Pragma>
@@ -48,14 +48,14 @@
     </Threads>
   </Pragma>
   <Pragma>
-    <id>100</id>
+    <id>114</id>
     <Type>OMPParallelForDirective</Type>
     <Threads>
       <Thread>3</Thread>
       <Thread>2</Thread>
     </Threads>
     <Barrier>
-      <id>100</id>
+      <id>114</id>
     </Barrier>
   </Pragma>
 </Schedule>

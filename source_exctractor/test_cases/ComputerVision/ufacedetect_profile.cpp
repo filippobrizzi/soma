@@ -16,12 +16,15 @@ using namespace std;
 using namespace cv;
 
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale);
+void dx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
+void sx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
+
 
 string cascadeName = "/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/haarcascade_frontalface_alt.xml";
 
 #include "profile_tracker/profile_tracker.h"
 int main( int argc, const char** argv ){
-if( ProfileTracker x = ProfileTrackParams(22, 0)) {
+if( ProfileTracker x = ProfileTrackParams(25, 0)) {
    
     String inputName;
 
@@ -35,15 +38,15 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
         return -1;
 
     }
-    //omp_set_num_threads(4);
+    //omp_set_num_threads(2);
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(22, 38))
+    if( ProfileTracker x = ProfileTrackParams(25, 41))
     {
 //        #pragma omp sections
-        if( ProfileTracker x = ProfileTrackParams(22, 40))
+        if( ProfileTracker x = ProfileTrackParams(25, 43))
         {
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(22, 42))
+            if( ProfileTracker x = ProfileTrackParams(25, 45))
             {
 
                 UMat *frame_sx = new UMat[4]; 
@@ -63,19 +66,11 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
                     for(int j = 0; j < 4; j ++)
                         capture_sx >> frame_sx[j];
 
-//                    #pragma omp parallel for
-                    if( ProfileTracker x = ProfileTrackParams(22, 62, 4 - 0))
-                    for(int j = 0; j < 4; j ++){
-                        detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
-                        stringstream filename_sx;
-                        filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-                        //std::cout << "--------------- " << filename_sx.str() << std::endl;
-                        imwrite(filename_sx.str(), canvas_sx[j]);
-                   }
+                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, i);
                 }
             }
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(22, 72))
+            if( ProfileTracker x = ProfileTrackParams(25, 68))
             {
                 UMat *frame_dx = new UMat[4];
                 UMat image_dx;
@@ -94,16 +89,7 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
                     for(int j = 0; j < 4; j ++)
                         capture_dx >> frame_dx[j];
 
-//                    #pragma omp parallel for
-                    if( ProfileTracker x = ProfileTrackParams(22, 91, 4 - 0))
-                    for(int j = 0; j < 4; j ++){
-                        detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
-                        stringstream filename_dx;
-                        filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-                        //std::cout << "--------------- " << filename_dx.str() << std::endl;
-                        imwrite(filename_dx.str(), canvas_dx[j]);
-
-                   }
+                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, i);
                 }
             }
         }
@@ -114,10 +100,42 @@ if( ProfileTracker x = ProfileTrackParams(22, 0)) {
 }
 
 
-void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade,
-                    double scale0)
+void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
+if( ProfileTracker x = ProfileTrackParams(96, 0)) {
+    //omp_set_num_threads(2);
+    //omp_set_nested(1);
+//    #pragma omp parallel for
+    if( ProfileTracker x = ProfileTrackParams(96, 100, 4 - 0))
+    for(int j = 0; j < 4; j ++){
+        detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
+        stringstream filename_dx;
+        filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
+        std::cout << "--------------- " << filename_dx.str() << std::endl;
+        //imwrite(filename_dx.str(), canvas_dx[j]);
+    }
+
+}
+}
+
+void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
+if( ProfileTracker x = ProfileTrackParams(110, 0)) {
+    //omp_set_num_threads(2);
+    //omp_set_nested(1);
+//    #pragma omp parallel for
+    if( ProfileTracker x = ProfileTrackParams(110, 114, 4 - 0))
+    for(int j = 0; j < 4; j ++){
+        detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
+        stringstream filename_sx;
+        filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
+        std::cout << "--------------- " << filename_sx.str() << std::endl;
+        //imwrite(filename_sx.str(), canvas_sx[j]);
+    }
+}
+}
+
+void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale0)
 {
-if( ProfileTracker x = ProfileTrackParams(108, 0)) {
+if( ProfileTracker x = ProfileTrackParams(123, 0)) {
     int i = 0;
     double t = 0, scale=1;
     vector<Rect> faces, faces2;
