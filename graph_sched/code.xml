@@ -1,93 +1,5 @@
 <File>
-  <Name>test_cases/TestOpenCV/opencv1.cpp</Name>
-  <Function>
-    <Name>apply_filter_1</Name>
-    <ReturnType>int</ReturnType>
-    <Parameters>
-      <Parameter>
-        <Type>const class cv::Mat &amp;</Type>
-        <Name>frame</Name>
-      </Parameter>
-    </Parameters>
-    <Line>11</Line>
-    <Pragmas>
-      <Pragma>
-        <Name>OMPParallelForDirective</Name>
-        <Position>
-          <StartLine>14</StartLine>
-          <EndLine>18</EndLine>
-        </Position>
-        <For>
-          <Declaration>
-            <Type>int</Type>
-            <LoopVariable>i</LoopVariable>
-            <InitValue>0</InitValue>
-          </Declaration>
-          <Condition>
-            <Op>&lt;</Op>
-            <ConditionVariable>count</ConditionVariable>
-          </Condition>
-          <Increment>
-            <Op>++</Op>
-          </Increment>
-        </For>
-        <Time>0.134934283582</Time>
-        <Variance>0.00372948417988</Variance>
-        <Loops>1280.0</Loops>
-        <Callerid>11</Callerid>
-      </Pragma>
-    </Pragmas>
-    <Time>0.1350035</Time>
-    <Variance>0.0037326093605</Variance>
-    <Callerids>
-      <Callerid>44</Callerid>
-      <Callerid>72</Callerid>
-    </Callerids>
-  </Function>
-  <Function>
-    <Name>apply_filter_2</Name>
-    <ReturnType>int</ReturnType>
-    <Parameters>
-      <Parameter>
-        <Type>const class cv::Mat &amp;</Type>
-        <Name>frame</Name>
-      </Parameter>
-    </Parameters>
-    <Line>23</Line>
-    <Pragmas>
-      <Pragma>
-        <Name>OMPParallelForDirective</Name>
-        <Position>
-          <StartLine>27</StartLine>
-          <EndLine>30</EndLine>
-        </Position>
-        <For>
-          <Declaration>
-            <Type>int</Type>
-            <LoopVariable>i</LoopVariable>
-            <InitValue>0</InitValue>
-          </Declaration>
-          <Condition>
-            <Op>&lt;</Op>
-            <ConditionVariable>count</ConditionVariable>
-          </Condition>
-          <Increment>
-            <Op>++</Op>
-          </Increment>
-        </For>
-        <Time>0.0853210223881</Time>
-        <Variance>0.00290858561428</Variance>
-        <Loops>1280.0</Loops>
-        <Callerid>23</Callerid>
-      </Pragma>
-    </Pragmas>
-    <Time>0.0853777164179</Time>
-    <Variance>0.00291023395636</Variance>
-    <Callerids>
-      <Callerid>44</Callerid>
-      <Callerid>72</Callerid>
-    </Callerids>
-  </Function>
+  <Name>source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp</Name>
   <Function>
     <Name>main</Name>
     <ReturnType>int</ReturnType>
@@ -101,59 +13,177 @@
         <Name>argv</Name>
       </Parameter>
     </Parameters>
-    <Line>35</Line>
+    <Line>62</Line>
     <Pragmas>
       <Pragma>
         <Name>OMPParallelDirective</Name>
         <Position>
-          <StartLine>39</StartLine>
-          <EndLine>98</EndLine>
+          <StartLine>81</StartLine>
+          <EndLine>138</EndLine>
         </Position>
         <Children>
           <Pragmas>
             <Pragma>
               <Name>OMPSectionsDirective</Name>
               <Position>
-                <StartLine>41</StartLine>
-                <EndLine>97</EndLine>
+                <StartLine>83</StartLine>
+                <EndLine>137</EndLine>
               </Position>
               <Children>
                 <Pragmas>
                   <Pragma>
                     <Name>OMPSectionDirective</Name>
                     <Position>
-                      <StartLine>44</StartLine>
-                      <EndLine>69</EndLine>
+                      <StartLine>85</StartLine>
+                      <EndLine>110</EndLine>
                     </Position>
-                    <Time>17.3169</Time>
+                    <Time>102.65</Time>
                     <Variance>0.0</Variance>
-                    <Callerid>41</Callerid>
+                    <Callerid>83</Callerid>
                   </Pragma>
                   <Pragma>
                     <Name>OMPSectionDirective</Name>
                     <Position>
-                      <StartLine>72</StartLine>
-                      <EndLine>96</EndLine>
+                      <StartLine>112</StartLine>
+                      <EndLine>136</EndLine>
                     </Position>
-                    <Time>17.2158</Time>
+                    <Time>100.92</Time>
                     <Variance>0.0</Variance>
-                    <Callerid>41</Callerid>
+                    <Callerid>83</Callerid>
                   </Pragma>
                 </Pragmas>
               </Children>
-              <Time>34.5327</Time>
+              <Time>203.57</Time>
               <Variance>0.0</Variance>
-              <Callerid>39</Callerid>
+              <Callerid>81</Callerid>
             </Pragma>
           </Pragmas>
         </Children>
-        <Time>34.5328</Time>
+        <Time>203.57</Time>
         <Variance>0.0</Variance>
-        <Callerid>35</Callerid>
+        <Callerid>62</Callerid>
       </Pragma>
     </Pragmas>
-    <Time>34.5328</Time>
+    <Time>203.58</Time>
     <Variance>0.0</Variance>
+  </Function>
+  <Function>
+    <Name>dx</Name>
+    <ReturnType>void</ReturnType>
+    <Parameters>
+      <Parameter>
+        <Type>class cv::UMat *</Type>
+        <Name>frame_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::Mat *</Type>
+        <Name>canvas_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::CascadeClassifier *</Type>
+        <Name>cascade_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>double</Type>
+        <Name>scale_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>int</Type>
+        <Name>i</Name>
+      </Parameter>
+    </Parameters>
+    <Line>144</Line>
+    <Pragmas>
+      <Pragma>
+        <Name>OMPParallelForDirective</Name>
+        <Position>
+          <StartLine>146</StartLine>
+          <EndLine>153</EndLine>
+        </Position>
+        <For>
+          <Declaration>
+            <Type>int</Type>
+            <LoopVariable>j</LoopVariable>
+            <InitValue>0</InitValue>
+          </Declaration>
+          <Condition>
+            <Op>&lt;</Op>
+            <ConditionVariable>farm_size</ConditionVariable>
+          </Condition>
+          <Increment>
+            <Op>++</Op>
+          </Increment>
+        </For>
+        <Time>6.285625</Time>
+        <Variance>0.0291480595409</Variance>
+        <Loops>4.0</Loops>
+        <Callerid>144</Callerid>
+      </Pragma>
+    </Pragmas>
+    <Time>6.285625</Time>
+    <Variance>0.0291480595409</Variance>
+    <Callerids>
+      <Callerid>112</Callerid>
+    </Callerids>
+  </Function>
+  <Function>
+    <Name>sx</Name>
+    <ReturnType>void</ReturnType>
+    <Parameters>
+      <Parameter>
+        <Type>class cv::UMat *</Type>
+        <Name>frame_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::Mat *</Type>
+        <Name>canvas_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::CascadeClassifier *</Type>
+        <Name>cascade_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>double</Type>
+        <Name>scale_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>int</Type>
+        <Name>i</Name>
+      </Parameter>
+    </Parameters>
+    <Line>156</Line>
+    <Pragmas>
+      <Pragma>
+        <Name>OMPParallelForDirective</Name>
+        <Position>
+          <StartLine>158</StartLine>
+          <EndLine>165</EndLine>
+        </Position>
+        <For>
+          <Declaration>
+            <Type>int</Type>
+            <LoopVariable>j</LoopVariable>
+            <InitValue>0</InitValue>
+          </Declaration>
+          <Condition>
+            <Op>&lt;</Op>
+            <ConditionVariable>farm_size</ConditionVariable>
+          </Condition>
+          <Increment>
+            <Op>++</Op>
+          </Increment>
+        </For>
+        <Time>6.391875</Time>
+        <Variance>0.0760935895789</Variance>
+        <Loops>4.0</Loops>
+        <Callerid>156</Callerid>
+      </Pragma>
+    </Pragmas>
+    <Time>6.391875</Time>
+    <Variance>0.0760935895789</Variance>
+    <Callerids>
+      <Callerid>85</Callerid>
+    </Callerids>
   </Function>
   <GraphType>Code</GraphType>
 </File>

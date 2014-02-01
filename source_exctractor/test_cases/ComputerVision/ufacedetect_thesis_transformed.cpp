@@ -17,7 +17,7 @@
 using namespace std;
 using namespace cv;
 
-string cascadeName = "./haarcascade_frontalface_alt.xml";
+string cascadeName;
 int write_on_disk;
 int farm_size; 
 string images_destinations;
@@ -32,6 +32,7 @@ int usage (char *exec) {
     printf("\t-s (left video path), -d (right video path)\n"); 
     printf("\t[-i] (destination path of the annotated immages, if left empty write on disk will be disabled)\n");
     printf("\t-f (farm size)\n");
+    printf("\t-c (cascade file path\n");
     return(0);
 };
 
@@ -47,18 +48,18 @@ int parse(string *video_name_sx,
     write_on_disk = 0;
     char ch;
     extern char* optarg;
-    while ( (ch = getopt(argc, argv, "s:d:i:w:f:?:h:"))!=-1 ) {
+    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:"))!=-1 ) {
         switch(ch) {
             case 's': *video_name_sx = optarg; break;
             case 'd': *video_name_dx = optarg; break;
             case 'i': images_destinations = optarg; write_on_disk = 1; break;
             case 'f': farm_size = atoi(optarg); break;
+            case 'c': cascadeName = optarg; break;
             default: usage(argv[0]); return(1);
         }
     }
     return(0);
 };
-
 int main( int argc, char** argv ){
    
     string video_name_sx; 
@@ -136,7 +137,7 @@ void callme(ForParameter for_param) {
   fx(for_param, capture_sx_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(84, capture_sx);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(85, capture_sx);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp")->call(nested_b)) 
   todo_job_.push(nested_b); 
 }
@@ -178,7 +179,7 @@ void callme(ForParameter for_param) {
   fx(for_param, capture_dx_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(111, capture_dx);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(112, capture_dx);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp")->call(nested_b)) 
   todo_job_.push(nested_b); 
 }
@@ -188,7 +189,7 @@ void callme(ForParameter for_param) {
   fx(for_param, capture_sx_, capture_dx_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(82, capture_sx, capture_dx);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(83, capture_sx, capture_dx);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp")->call(nested_b)) 
   todo_job_.push(nested_b); 
 }
@@ -198,7 +199,7 @@ void callme(ForParameter for_param) {
   fx(for_param, capture_sx_, capture_dx_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(80, capture_sx, capture_dx);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(81, capture_sx, capture_dx);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp")->call(nested_b)) 
   nested_b->callme(ForParameter(0,1));
 }
@@ -236,7 +237,7 @@ void callme(ForParameter for_param) {
   fx(for_param, frame_dx_, canvas_dx_, cascade_dx_, scale_dx_, i_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(145, frame_dx, canvas_dx, cascade_dx, scale_dx, i);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(146, frame_dx, canvas_dx, cascade_dx, scale_dx, i);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp")->call(nested_b)) 
   nested_b->callme(ForParameter(0,1));
 }
@@ -271,7 +272,7 @@ void callme(ForParameter for_param) {
   fx(for_param, frame_sx_, canvas_sx_, cascade_sx_, scale_sx_, i_);
 }
 };
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(157, frame_sx, canvas_sx, cascade_sx, scale_sx, i);
+std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(158, frame_sx, canvas_sx, cascade_sx, scale_sx, i);
 if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect_thesis.cpp")->call(nested_b)) 
   nested_b->callme(ForParameter(0,1));
 }

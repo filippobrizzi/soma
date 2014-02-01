@@ -1,0 +1,7 @@
+digraph G {
+	node [label="\N"];
+	graph [bb="0,0,290,212"];
+	3 [label="work()\nexecution time 8", root=3, pos="145,181", width="2.5833", height="0.86111"];
+	5 [label="OMPParallelForDirective@5\nfor( i = 0; i < bar; i ++ )\nexecution time: 8.0\nvariance: 0.0", root=3, pos="145,57", width="4.0278", height="1.5694"];
+	3 -> 5 [pos="e,145,113.87 145,149.71 145,141.79 145,132.97 145,124.01"];
+}

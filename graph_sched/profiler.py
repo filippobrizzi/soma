@@ -12,8 +12,8 @@ def profileCreator(cycle, executable):
 	j = 0
 	param_string = ''
 
-	if os.path.exists("./parameters"):
-		with open("./parameters","r") as f:
+	if os.path.exists("./parameters.txt"):
+		with open("./parameters.txt","r") as f:
 			parameters = f.readlines()
 		for s in parameters:
 			param_string +=  s.strip()
@@ -22,7 +22,7 @@ def profileCreator(cycle, executable):
 
 	for i in range(cycle):
 		print "profiling iteration: " + str((j + 1))
-		os.system("./" + executable + " " + param_string + " >/dev/null")
+		os.system("./" + executable + " " param_string + " >/dev/null")	
 		os.system("mv log_file.xml " + "./logfile%s.xml" % j)
 		root = ET.ElementTree(file = "./logfile%s.xml" % j).getroot()
 

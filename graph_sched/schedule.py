@@ -63,6 +63,7 @@ def get_optimal_flow(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_F
 	
 
 def get_optimal_flow_single(flow_list, task_list, level, optimal_flow, NUM_TASKS, MAX_FLOWS, execution_time):
+	#print "time: ", time.clock() - execution_time
 	if time.clock() < execution_time :
 		curopt = get_cost(optimal_flow)
 		cur = get_cost(flow_list)
@@ -93,8 +94,8 @@ def get_optimal_flow_single(flow_list, task_list, level, optimal_flow, NUM_TASKS
 					for tmp_task in tmp_task_list:
 						task_list.remove(tmp_task)		
 		else:
-			if len(task_list) == level and len(flow_list) <= MAX_FLOWS and cur <= curopt:
-				if cur < curopt or (get_num_splitted(flow_list) > get_num_splitted(optimal_flow) and get_num_splitted(flow_list) < (MAX_FLOWS * 2)):
+			if len(task_list) == level and len(flow_list) == MAX_FLOWS and cur <= curopt:
+				if cur < curopt and get_num_splitted(flow_list) <  MAX_FLOWS/2 or (get_num_splitted(flow_list) > get_num_splitted(optimal_flow) and get_num_splitted(flow_list) <  MAX_FLOWS/2) :
 					#print "acutal cost: ", get_cost(flow_list), "optimal cost: ", get_cost(optimal_flow)
 					del optimal_flow[:]
 					id = 0
@@ -133,7 +134,7 @@ def generate_list(l, node):
 #returns the number or physical cores
 def get_core_num(profile):
 	root = ET.ElementTree(file = profile).getroot()
-	return int(root.find('Hardware/NumberofCores').text) / 2
+	return int(root.find('Hardware/NumberofCores').text)
 
 #sets the color of each node to white
 def make_white(node):

@@ -1,91 +1,37 @@
 digraph G {
-	graph [bb="0,0,1184,644",
-		compound=true
-	];
+	graph [compound=true];
 	node [label="\N"];
+	graph [bb="0,0,1306,714"];
 	subgraph cluster_0 {
-		graph [bb="534,8,846,210"];
-		11		 [height=0.74639,
-			label="apply_filter_1()\nexecution time 0.135003",
-			pos="656,175",
-			root=11,
-			width=3.1506];
-		14		 [height=1.3356,
-			label="OMPParallelForDirective@14\nfor( i = 0; i < count; i ++ )\nexecution time: 0.134934283582\nvariance: 0.00372948417988",
-			pos="690,64",
-			root=11,
-			width=4.0942];
-		11 -> 14		 [pos="e,675.34,111.99 664.06,148.17 666.56,140.13 669.43,130.93 672.33,121.65"];
+		graph [bb="8,46,602,706"];
+		81 [label="OMPParallelDirective@81\nexecution time: 203.57\nvariance: 0.0", root=62, pos="305,556", width="3.7778", height="1.2222"];
+		62 [label="main()\nexecution time 203.58", root=62, pos="305,667", width="3.3889", height="0.86111"];
+		112 [label="OMPSectionDirective@112\nexecution time: 100.92\nvariance: 0.0", root=62, pos="159,308", width="3.9722", height="1.2222"];
+		83 [label="OMPSectionsDirective@83\nexecution time: 203.57\nvariance: 0.0", root=62, pos="305,432", width="3.9444", height="1.2222"];
+		"83_end" [label=BARRIER, root=62, pos="308,197", width="1.5556", height="0.51389"];
+		"81_end" [label=BARRIER, root=62, pos="308,73", width="1.5556", height="0.51389"];
+		85 [label="OMPSectionDirective@85\nexecution time: 102.65\nvariance: 0.0", root=62, pos="457,308", width="3.8056", height="1.2222"];
+		83 -> 85 [color=darkseagreen2, pos="e,406.61,349.11 355.61,390.71 369.46,379.42 384.57,367.09 398.81,355.47"];
+		81 -> 83 [color=blueviolet, pos="e,305,476.34 305,511.93 305,503.72 305,495.04 305,486.56"];
+		62 -> 81 [pos="e,305,600.23 305,635.78 305,627.86 305,619.11 305,610.39"];
+		85 -> "83_end" [color=darkseagreen2, pos="e,330.7,213.91 402.36,267.3 381.09,251.45 357.49,233.87 339.22,220.25"];
+		112 -> "83_end" [color=darkseagreen2, pos="e,285.3,213.91 213.64,267.3 234.91,251.45 258.51,233.87 276.78,220.25"];
+		"83_end" -> "81_end" [color=blueviolet, pos="e,308,91.691 308,178.44 308,158.16 308,125.44 308,101.82"];
+		83 -> 112 [color=darkseagreen2, pos="e,208.14,349.74 255.98,390.36 243.1,379.43 229.1,367.53 215.84,356.28"];
 	}
 	subgraph cluster_1 {
-		graph [bb="854,8,1176,210"];
-		27		 [height=1.3356,
-			label="OMPParallelForDirective@27\nfor( i = 0; i < count; i ++ )\nexecution time: 0.0853210223881\nvariance: 0.00290858561428",
-			pos="1015,64",
-			root=23,
-			width=4.2561];
-		23		 [height=0.74639,
-			label="apply_filter_2()\nexecution time 0.0853777",
-			pos="981,175",
-			root=23,
-			width=3.2888];
-		23 -> 27		 [pos="e,1000.3,111.99 989.06,148.17 991.56,140.13 994.43,130.93 997.33,121.65"];
+		graph [bb="610,8,950,236"];
+		146 [label="OMPParallelForDirective@146\nfor( j = 0; j < farm_size; j ++ )\nexecution time: 6.285625\nvariance: 0.0291480595409", root=144, pos="780,73", width="4.5", height="1.5694"];
+		144 [label="dx()\nexecution time 6.28562", root=144, pos="763,197", width="3.5556", height="0.86111"];
+		144 -> 146 [pos="e,772.2,129.87 767.29,165.71 768.38,157.79 769.59,148.97 770.81,140.01"];
 	}
 	subgraph cluster_2 {
-		graph [bb="8,38,526,636"];
-		"41_end"		 [height=0.5,
-			label=BARRIER,
-			pos="267,175",
-			root=35,
-			width=1.4305];
-		"39_end"		 [height=0.5,
-			label=BARRIER,
-			pos="267,64",
-			root=35,
-			width=1.4305];
-		"41_end" -> "39_end"		 [color=chartreuse,
-			pos="e,267,82.271 267,156.97 267,139.71 267,112.74 267,92.462"];
-		39		 [height=1.041,
-			label="OMPParallelDirective@39\nexecution time: 34.5328\nvariance: 0.0",
-			pos="267,500",
-			root=35,
-			width=3.346];
-		41		 [height=1.041,
-			label="OMPSectionsDirective@41\nexecution time: 34.5327\nvariance: 0.0",
-			pos="267,388",
-			root=35,
-			width=3.4507];
-		39 -> 41		 [color=chartreuse,
-			pos="e,267,425.84 267,462.37 267,453.93 267,444.83 267,436.01"];
-		44		 [height=1.041,
-			label="OMPSectionDirective@44\nexecution time: 17.3169\nvariance: 0.0",
-			pos="137,276",
-			root=35,
-			width=3.346];
-		44 -> "41_end"		 [color=coral4,
-			pos="e,246.58,191.55 181.74,240.93 200.5,226.64 221.77,210.45 238.37,197.8"];
-		35		 [height=0.74639,
-			label="main()\nexecution time 34.5328",
-			pos="267,601",
-			root=35,
-			width=3.0026];
-		35 -> 39		 [pos="e,267,537.63 267,573.99 267,565.91 267,556.75 267,547.72"];
-		41 -> 44		 [color=coral4,
-			pos="e,177.63,311.38 226.22,352.5 213.28,341.54 198.83,329.32 185.4,317.96"];
-		72		 [height=1.041,
-			label="OMPSectionDirective@72\nexecution time: 17.2158\nvariance: 0.0",
-			pos="397,276",
-			root=35,
-			width=3.346];
-		41 -> 72		 [color=coral4,
-			pos="e,356.37,311.38 307.78,352.5 320.72,341.54 335.17,329.32 348.6,317.96"];
-		72 -> "41_end"		 [color=coral4,
-			pos="e,287.42,191.55 352.26,240.93 333.5,226.64 312.23,210.45 295.63,197.8"];
+		graph [bb="958,8,1298,236"];
+		158 [label="OMPParallelForDirective@158\nfor( j = 0; j < farm_size; j ++ )\nexecution time: 6.391875\nvariance: 0.0760935895789", root=156, pos="1128,73", width="4.5", height="1.5694"];
+		156 [label="sx()\nexecution time 6.39187", root=156, pos="1111,197", width="3.5556", height="0.86111"];
+		156 -> 158 [pos="e,1120.2,129.87 1115.3,165.71 1116.4,157.79 1117.6,148.97 1118.8,140.01"];
 	}
-	44 -> 11	 [pos="e,587.79,196.51 220.76,248.89 236.03,244.78 251.91,240.93 267,238 382.4,215.61 414.45,231.6 530,210 545.68,207.07 562.26,203.18 \
-578.06,199.08"];
-	44 -> 23	 [pos="e,911.53,196.87 219.23,248.53 234.94,244.35 251.37,240.56 267,238 522.99,196 593.54,249.01 850,210 866.89,207.43 884.76,203.58 901.69,\
-199.38"];
-	72 -> 11	 [pos="e,597.97,198.18 471.57,246.5 508.47,232.39 552.68,215.49 588.56,201.78"];
-	72 -> 23	 [pos="e,908.58,196.33 509.29,262.42 601.32,251.26 734.71,233.16 850,210 865.83,206.82 882.61,202.9 898.68,198.86"];
+	112 -> 144 [pos="e,678.75,220.38 258.51,276.31 275.88,271.62 293.86,267.26 311,264 440.37,239.36 476.18,258.16 606,236 626.46,232.51 648.19,227.78\
+ 668.76,222.82"];
+	85 -> 156 [pos="e,1025,220.01 585.8,292.92 686.48,280.27 829.73,260.37 954,236 973.9,232.1 995.05,227.3 1015.2,222.41"];
 }

@@ -1,32 +1,13 @@
 digraph G {
-	graph [bb="0,0,500,412"];
 	node [label="\N"];
-	main	 [height=1.041,
-		label="main()\n execution time: 34.532800\nvariance: 0.0",
-		pos="250,374",
-		width=3.4507];
-	"OMPParallelDirective@39"	 [height=1.041,
-		label="OMPParallelDirective@39\n execution time: 34.5328\nvariance: 0.0",
-		pos="250,262",
-		width=3.346];
-	main -> "OMPParallelDirective@39"	 [color=darkorchid3,
-		pos="e,250,299.84 250,336.37 250,327.93 250,318.83 250,310.01"];
-	"OMPSectionsDirective@41"	 [height=1.041,
-		label="OMPSectionsDirective@41\n execution time: 34.5327\nvariance: 0.0",
-		pos="250,150",
-		width=3.4507];
-	"OMPParallelDirective@39" -> "OMPSectionsDirective@41"	 [color=cornflowerblue,
-		pos="e,250,187.84 250,224.37 250,215.93 250,206.83 250,198.01"];
-	"OMPSectionDirective@44"	 [height=1.041,
-		label="OMPSectionDirective@44\n execution time: 17.3169\nvariance: 0.0",
-		pos="120,38",
-		width=3.346];
-	"OMPSectionsDirective@41" -> "OMPSectionDirective@44"	 [color=dodgerblue3,
-		pos="e,160.63,73.38 209.22,114.5 196.28,103.54 181.83,91.32 168.4,79.956"];
-	"OMPSectionDirective@72"	 [height=1.041,
-		label="OMPSectionDirective@72\n execution time: 17.2158\nvariance: 0.0",
-		pos="380,38",
-		width=3.346];
-	"OMPSectionsDirective@41" -> "OMPSectionDirective@72"	 [color=dodgerblue3,
-		pos="e,339.37,73.38 290.78,114.5 303.72,103.54 318.17,91.32 331.6,79.956"];
+	graph [bb="0,0,578,460"];
+	main [label="main()\n execution time: 203.580000\nvariance: 0.0", pos="286,416", width="4.2778", height="1.2222"];
+	"OMPParallelDirective@81" [label="OMPParallelDirective@81\n execution time: 203.57\nvariance: 0.0", pos="286,292", width="3.7778", height="1.2222"];
+	"OMPSectionsDirective@83" [label="OMPSectionsDirective@83\n execution time: 203.57\nvariance: 0.0", pos="286,168", width="3.9444", height="1.2222"];
+	"OMPSectionDirective@85" [label="OMPSectionDirective@85\n execution time: 102.65\nvariance: 0.0", pos="137,44", width="3.8056", height="1.2222"];
+	"OMPSectionDirective@112" [label="OMPSectionDirective@112\n execution time: 100.92\nvariance: 0.0", pos="435,44", width="3.9722", height="1.2222"];
+	main -> "OMPParallelDirective@81" [color=deepskyblue3, pos="e,286,336.34 286,371.93 286,363.72 286,355.04 286,346.56"];
+	"OMPParallelDirective@81" -> "OMPSectionsDirective@83" [color=darkslateblue, pos="e,286,212.34 286,247.93 286,239.72 286,231.04 286,222.56"];
+	"OMPSectionsDirective@83" -> "OMPSectionDirective@85" [color=dodgerblue, pos="e,186.4,85.11 236.39,126.71 222.94,115.52 208.27,103.31 194.43,91.797"];
+	"OMPSectionsDirective@83" -> "OMPSectionDirective@112" [color=dodgerblue, pos="e,385.35,85.321 335.61,126.71 348.99,115.58 363.57,103.44 377.35,91.979"];
 }

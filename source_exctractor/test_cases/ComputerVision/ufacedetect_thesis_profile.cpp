@@ -17,7 +17,7 @@
 using namespace std;
 using namespace cv;
 
-string cascadeName = "./haarcascade_frontalface_alt.xml";
+string cascadeName;
 int write_on_disk;
 int farm_size; 
 string images_destinations;
@@ -33,6 +33,7 @@ if( ProfileTracker x = ProfileTrackParams(29, 0)) {
     printf("\t-s (left video path), -d (right video path)\n"); 
     printf("\t[-i] (destination path of the annotated immages, if left empty write on disk will be disabled)\n");
     printf("\t-f (farm size)\n");
+    printf("\t-c (cascade file path\n");
     return(0);
 }
 };
@@ -40,7 +41,7 @@ if( ProfileTracker x = ProfileTrackParams(29, 0)) {
 int parse(string *video_name_sx, 
           string *video_name_dx,
           char* argv[], int argc){
-if( ProfileTracker x = ProfileTrackParams(37, 0)) {
+if( ProfileTracker x = ProfileTrackParams(38, 0)) {
     // set parameters wrt argv and argc
     if(argc == 1){
         usage(argv[0]);
@@ -50,21 +51,21 @@ if( ProfileTracker x = ProfileTrackParams(37, 0)) {
     write_on_disk = 0;
     char ch;
     extern char* optarg;
-    while ( (ch = getopt(argc, argv, "s:d:i:w:f:?:h:"))!=-1 ) {
+    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:"))!=-1 ) {
         switch(ch) {
             case 's': *video_name_sx = optarg; break;
             case 'd': *video_name_dx = optarg; break;
             case 'i': images_destinations = optarg; write_on_disk = 1; break;
             case 'f': farm_size = atoi(optarg); break;
+            case 'c': cascadeName = optarg; break;
             default: usage(argv[0]); return(1);
         }
     }
     return(0);
 }
 };
-
 int main( int argc, char** argv ){
-if( ProfileTracker x = ProfileTrackParams(61, 0)) {
+if( ProfileTracker x = ProfileTrackParams(62, 0)) {
    
     string video_name_sx; 
     string video_name_dx;
@@ -83,13 +84,13 @@ if( ProfileTracker x = ProfileTrackParams(61, 0)) {
 
     }
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(61, 80))
+    if( ProfileTracker x = ProfileTrackParams(62, 81))
     {
 //        #pragma omp sections
-        if( ProfileTracker x = ProfileTrackParams(61, 82))
+        if( ProfileTracker x = ProfileTrackParams(62, 83))
         {
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(61, 84))
+            if( ProfileTracker x = ProfileTrackParams(62, 85))
             {
 
                 UMat *frame_sx = new UMat[farm_size]; 
@@ -117,7 +118,7 @@ if( ProfileTracker x = ProfileTrackParams(61, 0)) {
                 }
             }
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(61, 111))
+            if( ProfileTracker x = ProfileTrackParams(62, 112))
             {
                 UMat *frame_dx = new UMat[farm_size];
                 UMat image_dx;
@@ -152,9 +153,9 @@ if( ProfileTracker x = ProfileTrackParams(61, 0)) {
 
 
 void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
-if( ProfileTracker x = ProfileTrackParams(143, 0)) {
+if( ProfileTracker x = ProfileTrackParams(144, 0)) {
 //    #pragma omp parallel for
-    if( ProfileTracker x = ProfileTrackParams(143, 145, farm_size - 0))
+    if( ProfileTracker x = ProfileTrackParams(144, 146, farm_size - 0))
     for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
         if(write_on_disk) {
@@ -167,9 +168,9 @@ if( ProfileTracker x = ProfileTrackParams(143, 0)) {
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
-if( ProfileTracker x = ProfileTrackParams(155, 0)) {
+if( ProfileTracker x = ProfileTrackParams(156, 0)) {
 //    #pragma omp parallel for
-    if( ProfileTracker x = ProfileTrackParams(155, 157, farm_size - 0))
+    if( ProfileTracker x = ProfileTrackParams(156, 158, farm_size - 0))
     for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
         if(write_on_disk) {
@@ -183,7 +184,7 @@ if( ProfileTracker x = ProfileTrackParams(155, 0)) {
 
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale0)
 {
-if( ProfileTracker x = ProfileTrackParams(167, 0)) {
+if( ProfileTracker x = ProfileTrackParams(168, 0)) {
     int i = 0;
     double t = 0, scale=1;
     vector<Rect> faces, faces2;

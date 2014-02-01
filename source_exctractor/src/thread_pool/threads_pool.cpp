@@ -33,12 +33,16 @@ ThreadPool::ThreadPool(std::string file_name) {
     tinyxml2::XMLDocument xml_doc;
     //xml_doc.LoadFile(in_xml_file.c_str());
     xml_doc.LoadFile("schedule.xml");
+    std::cout << "CIAOO " << std::endl;
 
     tinyxml2::XMLElement *threads_num_element = xml_doc.FirstChildElement("Schedule")->FirstChildElement("Cores");
+    std::cout << "CIAO 1" << std::endl;
+
     const char* threads_num = threads_num_element->GetText();
     /* Set the number of thread as the number of cores plus one thread wich is used to run parallel and sections job */
     init(chartoint(threads_num));   
 
+    std::cout << "CIAO t " << threads_num << std::endl;
 
     tinyxml2::XMLElement *pragma_element = xml_doc.FirstChildElement("Schedule")->FirstChildElement("Pragma");
     while(pragma_element != NULL) {

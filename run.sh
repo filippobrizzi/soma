@@ -31,24 +31,36 @@ SCHEDULE_TIME=$5
 PROGRAM_DEADLINE=$6
 PARALLEL=$7
 
-echo "Launching the source manipulation program."
-./source_exctractor/pragma_exctractor.exec -fopenmp $SRC_FILE > /dev/null
+PAR_FILE=$FILE_PATH/parameters.txt
+PARAMETERS=$(sed -n '1p' < $PAR_FILE)
 
-echo $FILE_PATH/$EXECUTABLE_PROFILE
+echo "Launching the source manipulation program."
+#./source_exctractor/pragma_exctractor.exec -fopenmp $SRC_FILE > a.out
+
+echo "Compiling sequential"
+#$CXX -std=c++11 $OPENCV_CONFIG $SRC_FILE -o $FILE_PATH/sequential.o
+
+echo "Compiling OpenMP"
+#$CXX -std=c++11 $OPENCV_CONFIG $SRC_FILE -fopenmp -o $FILE_PATH/parallel_omp.o
 
 echo "Compiling the profiler."
-echo $CXX -std=c++11 $PROFILE_LIB $PROFILE_FILE $PROFILE_RTS $OPENCV_CONFIG  -o $FILE_PATH/$EXECUTABLE_PROFILE
 $CXX -std=c++11 $PROFILE_LIB $PROFILE_FILE $PROFILE_RTS $OPENCV_CONFIG  -o $FILE_PATH/$EXECUTABLE_PROFILE
 
 echo "Compiling the final program."
 $CXX -std=c++11 $FINAL_LIB $TRANSFORMED_FILE $FINAL_RTS $OPENCV_CONFIG -o $FILE_PATH/$EXECUTABLE_FINAL
 
 echo "Launching the profiler and scheduler."
+cp $FILE_PATH/parameters.txt graph_sched/
 cd graph_sched/
-python graphCreator.py ../$XML_FILE ../$FILE_PATH/$EXECUTABLE_PROFILE $PROFILE_ITER $VERBOSE $SCHEDULE_TIME $PROGRAM_DEADLINE $PARALLEL
+#python graphCreator.py ../$XML_FILE ../$FILE_PATH/$EXECUTABLE_PROFILE $PROFILE_ITER $VERBOSE $SCHEDULE_TIME $PROGRAM_DEADLINE $PARALLEL
 cd ..
-cp graph_sched/schedule.xml $FILE_PATH
+#cp graph_sched/schedule.xml $FILE_PATH
+
+
 
 echo "Launching the final program."
 cd $FILE_PATH
-time ./$EXECUTABLE_FINAL
+echo ./$EXECUTABLE_FINAL $PARAMETERS
+#time ./sequential.o
+#time ./parallel_omp.o
+time ./$EXECUTABLE_FINAL $PARAMETERS

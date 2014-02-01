@@ -1,0 +1,18 @@
+digraph G {
+	node [label="\N"];
+	graph [bb="0,0,650,582"];
+	125 [label="detectAndDraw_dx()\nexecution time 1.51825", root=125, pos="325,551", width="3.5556", height="0.86111"];
+	150 [label="OMPParallelDirective@150\nexecution time: 1.5095\nvariance: 0.0124398553046", root=125, pos="325,440", width="4.2222", height="1.2222"];
+	152 [label="OMPSectionsDirective@152\nexecution time: 1.5095\nvariance: 0.0124398553046", root=125, pos="325,316", width="4.2222", height="1.2222"];
+	154 [label="OMPSectionDirective@154\nexecution time: 0.757\nvariance: 0.00748331477355", root=125, pos="158,192", width="4.3889", height="1.2222"];
+	"152_end" [label=BARRIER, root=125, pos="325,93", width="1.5556", height="0.51389"];
+	163 [label="OMPSectionDirective@163\nexecution time: 0.75225\nvariance: 0.00757875319561", root=125, pos="492,192", width="4.3889", height="1.2222"];
+	"150_end" [label=BARRIER, root=125, pos="325,19", width="1.5556", height="0.51389"];
+	125 -> 150 [pos="e,325,484.23 325,519.78 325,511.86 325,503.11 325,494.39"];
+	150 -> 152 [color=deepskyblue3, pos="e,325,360.34 325,395.93 325,387.72 325,379.04 325,370.56"];
+	152 -> 154 [color=darkorchid, pos="e,213.65,233.32 269.39,274.71 254.12,263.37 237.44,250.99 221.75,239.34"];
+	154 -> "152_end" [color=darkorchid, pos="e,297.39,109.37 225.44,152.02 247.07,139.2 270.19,125.49 288.7,114.52"];
+	152 -> 163 [color=darkorchid, pos="e,436.35,233.32 380.61,274.71 395.88,263.37 412.56,250.99 428.25,239.34"];
+	163 -> "152_end" [color=darkorchid, pos="e,352.61,109.37 424.56,152.02 402.93,139.2 379.81,125.49 361.3,114.52"];
+	"152_end" -> "150_end" [color=deepskyblue3, pos="e,325,37.667 325,74.327 325,66.264 325,56.648 325,47.711"];
+}

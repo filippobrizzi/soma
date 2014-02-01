@@ -69,9 +69,9 @@ if __name__ == "__main__":
 
 	#getting the number of physical cores of the machine profiled
 	max_flows = sched.get_core_num(profile_xml)
-
+	max_flows = 4
 	#getting cores of the actual machine, but the problem is multithreading
-	cores = multiprocessing.cpu_count() / 2
+	cores = multiprocessing.cpu_count()
 	if cores == 1:
 		cores = 2
 	
@@ -89,6 +89,10 @@ if __name__ == "__main__":
 	for task in gen:
 		task_list.append(task)
 		num_tasks += 1
+
+	if output == 'True':
+		sched.make_white(main_flow)
+		par.scanGraph(main_flow)
 	
 	#starting the parallel or sequential search of the best solution with a timing constrain
 	if multi == 'parallel':
@@ -139,6 +143,8 @@ if __name__ == "__main__":
 		flow.dump("\t")
 		print "\ttime:",flow.time
 
+
+
 	#substitutes "for tasks" with splitted versions if present in the optimal flows
 	par.add_new_tasks(optimal_flow, main_flow)
 	sched.make_white(main_flow)
@@ -173,9 +179,7 @@ if __name__ == "__main__":
 		print "tasks not schedulable, try with more search time"
 
 	#prints extended info of the entire pragma graph
-	if output == 'True':
-		sched.make_white(main_flow)
-		par.scanGraph(main_flow)
+	
 	
 	
 	

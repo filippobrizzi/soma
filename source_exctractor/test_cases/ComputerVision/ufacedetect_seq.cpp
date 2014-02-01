@@ -17,7 +17,7 @@
 using namespace std;
 using namespace cv;
 
-string cascadeName = "./haarcascade_frontalface_alt.xml";
+string cascadeName;
 int write_on_disk;
 int farm_size; 
 string images_destinations;
@@ -31,6 +31,7 @@ int usage (char *exec) {
     printf("\t-s (left video path), -d (right video path)\n"); 
     printf("\t[-i] (destination path of the annotated immages, if left empty write on disk will be disabled)\n");
     printf("\t-f (farm size)\n");
+    printf("\t-c (cascade file path\n");
     return(0);
 };
 
@@ -46,14 +47,13 @@ int parse(string *video_name_sx,
     write_on_disk = 0;
     char ch;
     extern char* optarg;
-    while ( (ch = getopt(argc, argv, "s:d:i:w:f:?:h:"))!=-1 ) {
+    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:"))!=-1 ) {
         switch(ch) {
-            //case 's': strncpy(video_name_sx, optarg, 254); break;
             case 's': *video_name_sx = optarg; break;
             case 'd': *video_name_dx = optarg; break;
-            //case 'i': strncpy(&images_destinations, optarg, 254); write_on_disk = 1; break; 
             case 'i': images_destinations = optarg; write_on_disk = 1; break;
             case 'f': farm_size = atoi(optarg); break;
+            case 'c': cascadeName = optarg; break;
             default: usage(argv[0]); return(1);
         }
     }

@@ -1,0 +1,13 @@
+digraph G {
+	node [label="\N"];
+	graph [bb="0,0,638,460"];
+	detectAndDraw [label="detectAndDraw()\n execution time: 1.540500\nvariance: 0.0126392246598", pos="316,416", width="4.2222", height="1.2222"];
+	"OMPParallelDirective@149" [label="OMPParallelDirective@149\n execution time: 1.5325\nvariance: 0.0126984250992", pos="316,292", width="4.2222", height="1.2222"];
+	"OMPSectionsDirective@151" [label="OMPSectionsDirective@151\n execution time: 1.5325\nvariance: 0.0126984250992", pos="316,168", width="4.2222", height="1.2222"];
+	"OMPSectionDirective@153" [label="OMPSectionDirective@153\n execution time: 0.769375\nvariance: 0.0076393307953", pos="152,44", width="4.2222", height="1.2222"];
+	"OMPSectionDirective@162" [label="OMPSectionDirective@162\n execution time: 0.763\nvariance: 0.00781024967591", pos="480,44", width="4.3889", height="1.2222"];
+	detectAndDraw -> "OMPParallelDirective@149" [color=cyan2, pos="e,316,336.34 316,371.93 316,363.72 316,355.04 316,346.56"];
+	"OMPParallelDirective@149" -> "OMPSectionsDirective@151" [color=goldenrod, pos="e,316,212.34 316,247.93 316,239.72 316,231.04 316,222.56"];
+	"OMPSectionsDirective@151" -> "OMPSectionDirective@153" [color=gold1, pos="e,206.37,85.11 261.39,126.71 246.31,115.31 229.84,102.86 214.36,91.152"];
+	"OMPSectionsDirective@151" -> "OMPSectionDirective@162" [color=gold1, pos="e,425.35,85.321 370.61,126.71 385.47,115.47 401.68,103.21 416.97,91.658"];
+}

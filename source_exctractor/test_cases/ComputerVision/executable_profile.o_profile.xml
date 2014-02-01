@@ -4,23 +4,87 @@
     <MemorySize>2000</MemorySize>
   </Hardware>
   <Function>
-    <FunctionLine>61</FunctionLine>
+    <FunctionLine>144</FunctionLine>
+    <Time>6.285625</Time>
+    <Variance>0.0291480595409</Variance>
+    <CallerId>[112]</CallerId>
+    <ChildrenTime>6.285625</ChildrenTime>
+  </Function>
+  <Function>
+    <FunctionLine>38</FunctionLine>
     <Time>0.0</Time>
     <Variance>0.0</Variance>
+    <CallerId>[62]</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
   </Function>
   <Function>
-    <FunctionLine>37</FunctionLine>
-    <Time>0.0</Time>
-    <Variance>0.0</Variance>
-    <CallerId>[61]</CallerId>
+    <FunctionLine>168</FunctionLine>
+    <Time>1.576796875</Time>
+    <Variance>0.0222532860547</Variance>
+    <CallerId>[158, 146]</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
   </Function>
   <Function>
-    <FunctionLine>29</FunctionLine>
-    <Time>0.0</Time>
+    <FunctionLine>62</FunctionLine>
+    <Time>203.58</Time>
     <Variance>0.0</Variance>
-    <CallerId>[37]</CallerId>
-    <ChildrenTime>0.0</ChildrenTime>
+    <ChildrenTime>203.57</ChildrenTime>
   </Function>
+  <Function>
+    <FunctionLine>156</FunctionLine>
+    <Time>6.391875</Time>
+    <Variance>0.0760935895789</Variance>
+    <CallerId>[85]</CallerId>
+    <ChildrenTime>6.391875</ChildrenTime>
+  </Function>
+  <Pragma>
+    <FunctionLine>62</FunctionLine>
+    <PragmaLine>112</PragmaLine>
+    <Time>100.92</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['83']</CallerId>
+    <ChildrenTime>100.57</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>62</FunctionLine>
+    <PragmaLine>85</PragmaLine>
+    <Time>102.65</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['83']</CallerId>
+    <ChildrenTime>102.27</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>62</FunctionLine>
+    <PragmaLine>81</PragmaLine>
+    <Time>203.57</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['62']</CallerId>
+    <ChildrenTime>203.57</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>62</FunctionLine>
+    <PragmaLine>83</PragmaLine>
+    <Time>203.57</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['81']</CallerId>
+    <ChildrenTime>203.57</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>144</FunctionLine>
+    <PragmaLine>146</PragmaLine>
+    <Time>6.285625</Time>
+    <Variance>0.0291480595409</Variance>
+    <Loops>4.0</Loops>
+    <CallerId>['144']</CallerId>
+    <ChildrenTime>6.25375</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>156</FunctionLine>
+    <PragmaLine>158</PragmaLine>
+    <Time>6.391875</Time>
+    <Variance>0.0760935895789</Variance>
+    <Loops>4.0</Loops>
+    <CallerId>['156']</CallerId>
+    <ChildrenTime>6.360625</ChildrenTime>
+  </Pragma>
 </Log_file>
