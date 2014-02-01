@@ -16,7 +16,6 @@ std::vector<Root *> *CreateTree(std::vector<clang::OMPExecutableDirective *> *pr
 
     function_decl_tmp = GetFunctionForPragma(*omp_itr, function_list, sm);
     Node * n = new Node(*omp_itr, function_decl_tmp, sm);
-      std::cout << "CIAO 1 - " << (*omp_itr)->getStmtClassName() << std::endl;
 
     /* In case of parallel for skip one stmt. 
        Parallel for is represented with two OMPExecutableDirective,

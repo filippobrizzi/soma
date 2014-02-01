@@ -56,17 +56,15 @@ ProfileTracker::ProfileTracker(const ProfileTrackParams & p) {
 	if(num_for_iteration_set_)
 		num_for_iteration_ = p.num_for_iteration_;
 
-	time(&start_time_);
-	//start_time_ = clock();
-	std::cout << "start_time_ " << start_time_ << std::endl;
+	//time(&start_time_);
+	start_time_ = clock();
 }
 
 ProfileTracker::~ProfileTracker() {
-	time(&end_time_);
-	//end_time_ = clock();
-	elapsed_time_ = difftime(end_time_, start_time_);
-	//elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
-	std::cout << "start_time_ " << start_time_ << " end_time_ " << end_time_  << " Elapsed time " << elapsed_time_ << std::endl;
+	//time(&end_time_);
+	end_time_ = clock();
+	//elapsed_time_ = difftime(end_time_, start_time_);
+	elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
 	if(previous_pragma_executed_) {
 		previous_pragma_executed_->children_elapsed_time_ += elapsed_time_;
 	}	

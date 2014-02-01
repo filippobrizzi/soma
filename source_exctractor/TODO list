@@ -13,6 +13,5 @@
 	-------------------------------------------------------------------------------------------------	
 
 
-	** Check why with for splitted in two doesn't work!
-
+FUNCTION THAT NOT CONTAIN PRAGMA SHOULD NOT APPEAR IN THE LOGFILE AND MORE GENERAL IN THE FRAMEWORKS
 

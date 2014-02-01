@@ -135,7 +135,6 @@ if( ProfileTracker x = ProfileTrackParams(110, 0)) {
 
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale0)
 {
-if( ProfileTracker x = ProfileTrackParams(123, 0)) {
     int i = 0;
     double t = 0, scale=1;
     vector<Rect> faces, faces2;
@@ -199,5 +198,5 @@ if( ProfileTracker x = ProfileTrackParams(123, 0)) {
                        color, 3, 8, 0);
 
     }
-}
+
 }

@@ -15,21 +15,52 @@
 using namespace std;
 using namespace cv;
 
+string cascadeName = "./haarcascade_frontalface_alt.xml";
+int write_on_disk;
+int farm_size; 
+string images_destinations;
+
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale);
 void dx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
 void sx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
 
+int usage (char *exec) {
+    printf("\nUsage :\n\n\t%s ",exec);
+    printf("-s (left video path), -d (right video path)"; 
+    printf("-i (destination path of the annotated immages, if left empty write on disk will be disabled)");
+    printf("-f (farm size");
+    return(0);
+};
 
-string cascadeName = "/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/haarcascade_frontalface_alt.xml";
+int parse(string *video_name_sx, 
+          string *video_name_dx,
+          char* argv[], int argc){
+    // set parameters wrt argv and argc
+    write_on_disk = 0;
+    char ch;
+    extern char* optarg;
+    while ( (ch = getopt(argc, argv, "s:d:i:w:f"))!=-1 ) {
+        switch(ch) {
+            case 's': strncpy(video_name_sx, optarg, 254); break;
+            case 'd': strncpy(video_name_dx, optarg, 254); break; 
+            case 'i': strncpy(&images_destinations, optarg, 254); write_on_disk = 1; break; 
+            case 'f': farm_size = atoi(optarg); break;
+            default: usage(argv[0]); return(1);
+        }
+    }
+    return(0);
+};
+
 
 int main( int argc, const char** argv ){
    
-    String inputName;
+    string video_name_sx, 
+    string video_name_dx,
 
     VideoCapture capture_dx;
     VideoCapture capture_sx;
-    capture_dx.open("/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/MyVideo_dx.avi");
-    capture_sx.open("/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/MyVideo_sx.avi");
+    capture_dx.open(video_name_dx);
+    capture_sx.open(video_name_sx);
 
     if(!capture_dx.isOpened() || !capture_sx.isOpened()) {
         cout << "VIDEO NOT OPENED" << endl;
@@ -44,44 +75,49 @@ int main( int argc, const char** argv ){
             #pragma omp section
             {
 
-                UMat *frame_sx = new UMat[4]; 
+                UMat *frame_sx = new UMat[farm_size]; 
                 UMat image_sx;
-                Mat *canvas_sx = new Mat[4];
+                Mat *canvas_sx = new Mat[farm_size];
                 double scale_sx = 1;
 
-                CascadeClassifier *cascade_sx = new CascadeClassifier[4];
+                CascadeClassifier *cascade_sx = new CascadeClassifier[farm_size];
 
-                cout << "Video sx capturing has been started ..." << endl;
-
-                for(int i = 0; i < 4; i ++)
+                for(int i = 0; i < farm_size; i ++)
                     cascade_sx[i].load(cascadeName);
 
-                for(int i = 0 ; i < 10; i ++) {
+                cout << "Video sx capturing has been started ..." << endl;
+                bool frame_success;
+                while(1)
                     
-                    for(int j = 0; j < 4; j ++)
-                        capture_sx >> frame_sx[j];
+                    for(int j = 0; j < farm_size; j ++)
+                        frame_success = capture_sx.read(frame_sx[j]); // read a new frame from video
+
+                    if (!frame_success) break;
 
                     sx(frame_sx, canvas_sx, cascade_sx, scale_sx, i);
                 }
             }
             #pragma omp section
             {
-                UMat *frame_dx = new UMat[4];
+                UMat *frame_dx = new UMat[farm_size];
                 UMat image_dx;
-                Mat *canvas_dx = new Mat[4];
+                Mat *canvas_dx = new Mat[farm_size];
                 double scale_dx = 1;
 
-                CascadeClassifier *cascade_dx = new CascadeClassifier[4];
+                CascadeClassifier *cascade_dx = new CascadeClassifier[farm_size];
 
-                cout << "Video dx capturing has been started ..." << endl;
-
-                for(int i = 0; i < 4; i ++)
+                for(int i = 0; i < farm_size; i ++)
                     cascade_dx[i].load(cascadeName);
 
+                cout << "Video dx capturing has been started ..." << endl;
                 for(int i = 0 ; i < 10; i ++) {
+                bool frame_success;
+                while(1) {    
+
+                    for(int j = 0; j < farm_size; j ++)
+                        frame_success = capture_dx.read(frame_dx[j]);
                     
-                    for(int j = 0; j < 4; j ++)
-                        capture_dx >> frame_dx[j];
+                    if (!frame_success) break;
 
                     dx(frame_dx, canvas_dx, cascade_dx, scale_dx, i);
                 }
@@ -97,26 +133,27 @@ void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double sc
     //omp_set_num_threads(2);
     //omp_set_nested(1);
     #pragma omp parallel for
-    for(int j = 0; j < 4; j ++){
+    for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
-        stringstream filename_dx;
-        filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-        std::cout << "--------------- " << filename_dx.str() << std::endl;
-        //imwrite(filename_dx.str(), canvas_dx[j]);
+        if(write_on_disk) {
+            stringstream filename_dx;
+            filename_dx << images_destinations << "/img_" << i << "_" << j << "_dx.jpg";
+            imwrite(filename_dx.str(), canvas_dx[j]);
+        }
     }
-
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
     //omp_set_num_threads(2);
     //omp_set_nested(1);
     #pragma omp parallel for
-    for(int j = 0; j < 4; j ++){
+    for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
-        stringstream filename_sx;
-        filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-        std::cout << "--------------- " << filename_sx.str() << std::endl;
-        //imwrite(filename_sx.str(), canvas_sx[j]);
+        if(write_on_disk) {
+            stringstream filename_sx;
+            filename_sx << images_destinations << "/img_" << i << "_" << j << "_sx.jpg";
+            imwrite(filename_sx.str(), canvas_sx[j]);
+        }
     }
 }
 

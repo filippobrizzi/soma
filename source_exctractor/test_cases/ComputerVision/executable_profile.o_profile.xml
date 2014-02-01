@@ -4,80 +4,23 @@
     <MemorySize>2000</MemorySize>
   </Hardware>
   <Function>
-    <FunctionLine>25</FunctionLine>
-    <Time>124.0</Time>
+    <FunctionLine>61</FunctionLine>
+    <Time>0.0</Time>
     <Variance>0.0</Variance>
-    <ChildrenTime>124.0</ChildrenTime>
-  </Function>
-  <Function>
-    <FunctionLine>123</FunctionLine>
-    <Time>1.5375</Time>
-    <Variance>0.498591766879</Variance>
-    <CallerId>[114, 100]</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
   </Function>
   <Function>
-    <FunctionLine>110</FunctionLine>
-    <Time>6.1</Time>
-    <Variance>0.3</Variance>
-    <CallerId>[45]</CallerId>
-    <ChildrenTime>6.1</ChildrenTime>
+    <FunctionLine>37</FunctionLine>
+    <Time>0.0</Time>
+    <Variance>0.0</Variance>
+    <CallerId>[61]</CallerId>
+    <ChildrenTime>0.0</ChildrenTime>
   </Function>
   <Function>
-    <FunctionLine>96</FunctionLine>
-    <Time>6.2</Time>
-    <Variance>0.4</Variance>
-    <CallerId>[68]</CallerId>
-    <ChildrenTime>6.2</ChildrenTime>
+    <FunctionLine>29</FunctionLine>
+    <Time>0.0</Time>
+    <Variance>0.0</Variance>
+    <CallerId>[37]</CallerId>
+    <ChildrenTime>0.0</ChildrenTime>
   </Function>
-  <Pragma>
-    <FunctionLine>25</FunctionLine>
-    <PragmaLine>43</PragmaLine>
-    <Time>124.0</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['41']</CallerId>
-    <ChildrenTime>124.0</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>25</FunctionLine>
-    <PragmaLine>68</PragmaLine>
-    <Time>62.0</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['43']</CallerId>
-    <ChildrenTime>62.0</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>25</FunctionLine>
-    <PragmaLine>41</PragmaLine>
-    <Time>124.0</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['25']</CallerId>
-    <ChildrenTime>124.0</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>25</FunctionLine>
-    <PragmaLine>45</PragmaLine>
-    <Time>62.0</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['43']</CallerId>
-    <ChildrenTime>61.0</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>110</FunctionLine>
-    <PragmaLine>114</PragmaLine>
-    <Time>6.1</Time>
-    <Variance>0.3</Variance>
-    <Loops>4.0</Loops>
-    <CallerId>['110']</CallerId>
-    <ChildrenTime>6.1</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>96</FunctionLine>
-    <PragmaLine>100</PragmaLine>
-    <Time>6.2</Time>
-    <Variance>0.4</Variance>
-    <Loops>4.0</Loops>
-    <CallerId>['96']</CallerId>
-    <ChildrenTime>6.2</ChildrenTime>
-  </Pragma>
 </Log_file>
