@@ -1,7 +1,7 @@
 digraph G {
 	node [label="\N"];
-	graph [bb="0,0,316,212"];
-	sx [label="sx()\n execution time: 6.391875\nvariance: 0.0760935895789", pos="158,168", width="4.2222", height="1.2222"];
-	"OMPParallelForDirective@158" [label="OMPParallelForDirective@158\n execution time: 6.391875\nvariance: 0.0760935895789", pos="158,44", width="4.3889", height="1.2222"];
-	sx -> "OMPParallelForDirective@158" [color=darkorange, pos="e,158,88.343 158,123.93 158,115.72 158,107.04 158,98.557"];
+	graph [bb="0,0,346,212"];
+	sx [label="sx()\n execution time: 1.389639\nvariance: 0.0312951662279", pos="173,168", width="4.2222", height="1.2222"];
+	"OMPParallelForDirective@169" [label="OMPParallelForDirective@169\n execution time: 1.38963855422\nvariance: 0.0312951662279", pos="173,44", width="4.8056", height="1.2222"];
+	sx -> "OMPParallelForDirective@169" [color=cadetblue2, pos="e,173,88.343 173,123.93 173,115.72 173,107.04 173,98.557"];
 }

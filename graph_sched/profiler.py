@@ -18,11 +18,9 @@ def profileCreator(cycle, executable):
 		for s in parameters:
 			param_string +=  s.strip()
 
-	
-
 	for i in range(cycle):
 		print "profiling iteration: " + str((j + 1))
-		os.system("./" + executable + " " param_string + " >/dev/null")	
+		os.system("./" + executable + " " + param_string + " >/dev/null")	
 		os.system("mv log_file.xml " + "./logfile%s.xml" % j)
 		root = ET.ElementTree(file = "./logfile%s.xml" % j).getroot()
 

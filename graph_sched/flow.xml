@@ -1,0 +1,222 @@
+<File>
+  <Name>source_exctractor/test_cases/ComputerVision/ufacedetect.cpp</Name>
+  <GraphType>flow</GraphType>
+  <Function id="680">
+    <Name>main</Name>
+    <ReturnType>int</ReturnType>
+    <Parameters>
+      <Parameter>
+        <Type>int</Type>
+        <Name>argc</Name>
+      </Parameter>
+      <Parameter>
+        <Type>char **</Type>
+        <Name>argv</Name>
+      </Parameter>
+    </Parameters>
+    <Line>68</Line>
+    <Time>2394.87</Time>
+    <Variance>0.0</Variance>
+    <Callerids />
+    <Nodes>
+      <Pragma id="87144">
+        <Name>OMPParallelDirective</Name>
+        <Position>
+          <StartLine>87</StartLine>
+          <EndLine>144</EndLine>
+        </Position>
+        <Callerids>
+          <Callerid>68</Callerid>
+        </Callerids>
+        <Time>2394.77</Time>
+        <Variance>0.0</Variance>
+      </Pragma>
+      <Pragma id="89143">
+        <Name>OMPSectionsDirective</Name>
+        <Position>
+          <StartLine>89</StartLine>
+          <EndLine>143</EndLine>
+        </Position>
+        <Callerids>
+          <Callerid>87</Callerid>
+        </Callerids>
+        <Time>2394.77</Time>
+        <Variance>0.0</Variance>
+      </Pragma>
+      <Pragma id="91116">
+        <Name>OMPSectionDirective</Name>
+        <Position>
+          <StartLine>91</StartLine>
+          <EndLine>116</EndLine>
+        </Position>
+        <Callerids>
+          <Callerid>89</Callerid>
+        </Callerids>
+        <Time>122.45</Time>
+        <Variance>0.0</Variance>
+      </Pragma>
+      <Pragma id="890">
+        <Name>BARRIER</Name>
+        <Position>
+          <StartLine>89</StartLine>
+        </Position>
+        <Callerids />
+        <Variance>0</Variance>
+      </Pragma>
+      <Pragma id="870">
+        <Name>BARRIER</Name>
+        <Position>
+          <StartLine>87</StartLine>
+        </Position>
+        <Callerids />
+        <Variance>0</Variance>
+      </Pragma>
+      <Pragma id="118142">
+        <Name>OMPSectionDirective</Name>
+        <Position>
+          <StartLine>118</StartLine>
+          <EndLine>142</EndLine>
+        </Position>
+        <Callerids>
+          <Callerid>89</Callerid>
+        </Callerids>
+        <Time>2272.32</Time>
+        <Variance>0.0</Variance>
+      </Pragma>
+    </Nodes>
+    <Edges>
+      <Edge>
+        <Source>680</Source>
+        <Dest>87144</Dest>
+      </Edge>
+      <Edge>
+        <Source>87144</Source>
+        <Dest>89143</Dest>
+      </Edge>
+      <Edge>
+        <Source>89143</Source>
+        <Dest>91116</Dest>
+      </Edge>
+      <Edge>
+        <Source>91116</Source>
+        <Dest>890</Dest>
+      </Edge>
+      <Edge>
+        <Source>890</Source>
+        <Dest>870</Dest>
+      </Edge>
+      <Edge>
+        <Source>89143</Source>
+        <Dest>118142</Dest>
+      </Edge>
+      <Edge>
+        <Source>118142</Source>
+        <Dest>890</Dest>
+      </Edge>
+    </Edges>
+  </Function>
+  <Function id="1500">
+    <Name>dx</Name>
+    <ReturnType>void</ReturnType>
+    <Parameters>
+      <Parameter>
+        <Type>class cv::UMat *</Type>
+        <Name>frame_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::Mat *</Type>
+        <Name>canvas_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::CascadeClassifier *</Type>
+        <Name>cascade_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>double</Type>
+        <Name>scale_dx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>int</Type>
+        <Name>i</Name>
+      </Parameter>
+    </Parameters>
+    <Line>150</Line>
+    <Time>6.46202312139</Time>
+    <Variance>0.114133881113</Variance>
+    <Callerids>
+      <Callerid>118</Callerid>
+    </Callerids>
+    <Nodes>
+      <Pragma id="152164">
+        <Name>OMPParallelForDirective</Name>
+        <Position>
+          <StartLine>152</StartLine>
+          <EndLine>164</EndLine>
+        </Position>
+        <Callerids>
+          <Callerid>150</Callerid>
+        </Callerids>
+        <Time>6.46187861272</Time>
+        <Variance>0.114157872909</Variance>
+      </Pragma>
+    </Nodes>
+    <Edges>
+      <Edge>
+        <Source>1500</Source>
+        <Dest>152164</Dest>
+      </Edge>
+    </Edges>
+  </Function>
+  <Function id="1670">
+    <Name>sx</Name>
+    <ReturnType>void</ReturnType>
+    <Parameters>
+      <Parameter>
+        <Type>class cv::UMat *</Type>
+        <Name>frame_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::Mat *</Type>
+        <Name>canvas_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>class cv::CascadeClassifier *</Type>
+        <Name>cascade_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>double</Type>
+        <Name>scale_sx</Name>
+      </Parameter>
+      <Parameter>
+        <Type>int</Type>
+        <Name>i</Name>
+      </Parameter>
+    </Parameters>
+    <Line>167</Line>
+    <Time>1.38963855422</Time>
+    <Variance>0.0312951662279</Variance>
+    <Callerids>
+      <Callerid>91</Callerid>
+    </Callerids>
+    <Nodes>
+      <Pragma id="169181">
+        <Name>OMPParallelForDirective</Name>
+        <Position>
+          <StartLine>169</StartLine>
+          <EndLine>181</EndLine>
+        </Position>
+        <Callerids>
+          <Callerid>167</Callerid>
+        </Callerids>
+        <Time>1.38963855422</Time>
+        <Variance>0.0312951662279</Variance>
+      </Pragma>
+    </Nodes>
+    <Edges>
+      <Edge>
+        <Source>1670</Source>
+        <Dest>169181</Dest>
+      </Edge>
+    </Edges>
+  </Function>
+</File>

@@ -62,10 +62,9 @@ cd ..
 
 echo "Launching the final program."
 cd $FILE_PATH
-rm images/*.jpg
-#echo ./$EXECUTABLE_FINAL $PARAMETERS
-time ./sequential.o $PARAMETERS > ./sequential_time.txt
-rm images/*.jpg
-time ./parallel_omp.o $PARAMETERS > ./omp_time.txt
+#rm images/*.jpg
+#time ./sequential.o $PARAMETERS > ./sequential_time.txt
+#rm images/*.jpg
+#time ./parallel_omp.o $PARAMETERS > ./omp_time.txt
 rm images/*.jpg
 time ./$EXECUTABLE_FINAL $PARAMETERS > ./bomber_time.txt

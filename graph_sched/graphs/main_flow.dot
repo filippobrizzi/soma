@@ -1,18 +1,18 @@
 digraph G {
 	node [label="\N"];
 	graph [bb="0,0,578,582"];
-	62 [label="main()\nexecution time 203.58", root=62, pos="286,551", width="3.3889", height="0.86111"];
-	81 [label="OMPParallelDirective@81\nexecution time: 203.57\nvariance: 0.0", root=62, pos="286,440", width="3.7778", height="1.2222"];
-	83 [label="OMPSectionsDirective@83\nexecution time: 203.57\nvariance: 0.0", root=62, pos="286,316", width="3.9444", height="1.2222"];
-	85 [label="OMPSectionDirective@85\nexecution time: 102.65\nvariance: 0.0", root=62, pos="137,192", width="3.8056", height="1.2222"];
-	"83_end" [label=BARRIER, root=62, pos="286,93", width="1.5556", height="0.51389"];
-	112 [label="OMPSectionDirective@112\nexecution time: 100.92\nvariance: 0.0", root=62, pos="435,192", width="3.9722", height="1.2222"];
-	"81_end" [label=BARRIER, root=62, pos="286,19", width="1.5556", height="0.51389"];
-	62 -> 81 [pos="e,286,484.23 286,519.78 286,511.86 286,503.11 286,494.39"];
-	81 -> 83 [color=blueviolet, pos="e,286,360.34 286,395.93 286,387.72 286,379.04 286,370.56"];
-	83 -> 85 [color=darkseagreen2, pos="e,186.4,233.11 236.39,274.71 222.94,263.52 208.27,251.31 194.43,239.8"];
-	85 -> "83_end" [color=darkseagreen2, pos="e,260.83,109.72 196.75,152.3 215.6,139.78 235.77,126.38 252.15,115.49"];
-	83 -> 112 [color=darkseagreen2, pos="e,385.35,233.32 335.61,274.71 348.99,263.58 363.57,251.44 377.35,239.98"];
-	112 -> "83_end" [color=darkseagreen2, pos="e,311.01,109.62 374.83,152.02 356.02,139.52 335.94,126.18 319.64,115.35"];
-	"83_end" -> "81_end" [color=blueviolet, pos="e,286,37.667 286,74.327 286,66.264 286,56.648 286,47.711"];
+	68 [label="main()\nexecution time 2394.87", root=68, pos="286,551", width="3.5556", height="0.86111"];
+	87 [label="OMPParallelDirective@87\nexecution time: 2394.77\nvariance: 0.0", root=68, pos="286,440", width="3.7778", height="1.2222"];
+	89 [label="OMPSectionsDirective@89\nexecution time: 2394.77\nvariance: 0.0", root=68, pos="286,316", width="3.9444", height="1.2222"];
+	91 [label="OMPSectionDirective@91\nexecution time: 122.45\nvariance: 0.0", root=68, pos="137,192", width="3.8056", height="1.2222"];
+	"89_end" [label=BARRIER, root=68, pos="286,93", width="1.5556", height="0.51389"];
+	118 [label="OMPSectionDirective@118\nexecution time: 2272.32\nvariance: 0.0", root=68, pos="435,192", width="3.9722", height="1.2222"];
+	"87_end" [label=BARRIER, root=68, pos="286,19", width="1.5556", height="0.51389"];
+	68 -> 87 [pos="e,286,484.23 286,519.78 286,511.86 286,503.11 286,494.39"];
+	87 -> 89 [color=deepskyblue4, pos="e,286,360.34 286,395.93 286,387.72 286,379.04 286,370.56"];
+	89 -> 91 [color=firebrick1, pos="e,186.4,233.11 236.39,274.71 222.94,263.52 208.27,251.31 194.43,239.8"];
+	91 -> "89_end" [color=firebrick1, pos="e,260.83,109.72 196.75,152.3 215.6,139.78 235.77,126.38 252.15,115.49"];
+	89 -> 118 [color=firebrick1, pos="e,385.35,233.32 335.61,274.71 348.99,263.58 363.57,251.44 377.35,239.98"];
+	118 -> "89_end" [color=firebrick1, pos="e,311.01,109.62 374.83,152.02 356.02,139.52 335.94,126.18 319.64,115.35"];
+	"89_end" -> "87_end" [color=deepskyblue4, pos="e,286,37.667 286,74.327 286,66.264 286,56.648 286,47.711"];
 }

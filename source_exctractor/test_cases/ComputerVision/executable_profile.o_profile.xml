@@ -4,87 +4,87 @@
     <MemorySize>2000</MemorySize>
   </Hardware>
   <Function>
-    <FunctionLine>144</FunctionLine>
-    <Time>6.285625</Time>
-    <Variance>0.0291480595409</Variance>
-    <CallerId>[112]</CallerId>
-    <ChildrenTime>6.285625</ChildrenTime>
+    <FunctionLine>68</FunctionLine>
+    <Time>2394.87</Time>
+    <Variance>0.0</Variance>
+    <ChildrenTime>2394.77</ChildrenTime>
   </Function>
   <Function>
-    <FunctionLine>38</FunctionLine>
+    <FunctionLine>150</FunctionLine>
+    <Time>6.46202312139</Time>
+    <Variance>0.114133881113</Variance>
+    <CallerId>[118]</CallerId>
+    <ChildrenTime>6.46187861272</ChildrenTime>
+  </Function>
+  <Function>
+    <FunctionLine>167</FunctionLine>
+    <Time>1.38963855422</Time>
+    <Variance>0.0312951662279</Variance>
+    <CallerId>[91]</CallerId>
+    <ChildrenTime>1.38963855422</ChildrenTime>
+  </Function>
+  <Function>
+    <FunctionLine>184</FunctionLine>
+    <Time>1.36265151515</Time>
+    <Variance>0.499619106439</Variance>
+    <CallerId>[169, 152]</CallerId>
+    <ChildrenTime>0.0</ChildrenTime>
+  </Function>
+  <Function>
+    <FunctionLine>40</FunctionLine>
     <Time>0.0</Time>
     <Variance>0.0</Variance>
-    <CallerId>[62]</CallerId>
+    <CallerId>[68]</CallerId>
     <ChildrenTime>0.0</ChildrenTime>
   </Function>
-  <Function>
-    <FunctionLine>168</FunctionLine>
-    <Time>1.576796875</Time>
-    <Variance>0.0222532860547</Variance>
-    <CallerId>[158, 146]</CallerId>
-    <ChildrenTime>0.0</ChildrenTime>
-  </Function>
-  <Function>
-    <FunctionLine>62</FunctionLine>
-    <Time>203.58</Time>
-    <Variance>0.0</Variance>
-    <ChildrenTime>203.57</ChildrenTime>
-  </Function>
-  <Function>
-    <FunctionLine>156</FunctionLine>
-    <Time>6.391875</Time>
-    <Variance>0.0760935895789</Variance>
-    <CallerId>[85]</CallerId>
-    <ChildrenTime>6.391875</ChildrenTime>
-  </Function>
   <Pragma>
-    <FunctionLine>62</FunctionLine>
-    <PragmaLine>112</PragmaLine>
-    <Time>100.92</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['83']</CallerId>
-    <ChildrenTime>100.57</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>62</FunctionLine>
-    <PragmaLine>85</PragmaLine>
-    <Time>102.65</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['83']</CallerId>
-    <ChildrenTime>102.27</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>62</FunctionLine>
-    <PragmaLine>81</PragmaLine>
-    <Time>203.57</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['62']</CallerId>
-    <ChildrenTime>203.57</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>62</FunctionLine>
-    <PragmaLine>83</PragmaLine>
-    <Time>203.57</Time>
-    <Variance>0.0</Variance>
-    <CallerId>['81']</CallerId>
-    <ChildrenTime>203.57</ChildrenTime>
-  </Pragma>
-  <Pragma>
-    <FunctionLine>144</FunctionLine>
-    <PragmaLine>146</PragmaLine>
-    <Time>6.285625</Time>
-    <Variance>0.0291480595409</Variance>
+    <FunctionLine>150</FunctionLine>
+    <PragmaLine>152</PragmaLine>
+    <Time>6.46187861272</Time>
+    <Variance>0.114157872909</Variance>
     <Loops>4.0</Loops>
-    <CallerId>['144']</CallerId>
-    <ChildrenTime>6.25375</ChildrenTime>
+    <CallerId>['150']</CallerId>
+    <ChildrenTime>6.42768786127</ChildrenTime>
   </Pragma>
   <Pragma>
-    <FunctionLine>156</FunctionLine>
-    <PragmaLine>158</PragmaLine>
-    <Time>6.391875</Time>
-    <Variance>0.0760935895789</Variance>
+    <FunctionLine>167</FunctionLine>
+    <PragmaLine>169</PragmaLine>
+    <Time>1.38963855422</Time>
+    <Variance>0.0312951662279</Variance>
     <Loops>4.0</Loops>
-    <CallerId>['156']</CallerId>
-    <ChildrenTime>6.360625</ChildrenTime>
+    <CallerId>['167']</CallerId>
+    <ChildrenTime>1.37746987952</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>68</FunctionLine>
+    <PragmaLine>91</PragmaLine>
+    <Time>122.45</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['89']</CallerId>
+    <ChildrenTime>115.34</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>68</FunctionLine>
+    <PragmaLine>87</PragmaLine>
+    <Time>2394.77</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['68']</CallerId>
+    <ChildrenTime>2394.77</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>68</FunctionLine>
+    <PragmaLine>118</PragmaLine>
+    <Time>2272.32</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['89']</CallerId>
+    <ChildrenTime>2235.86</ChildrenTime>
+  </Pragma>
+  <Pragma>
+    <FunctionLine>68</FunctionLine>
+    <PragmaLine>89</PragmaLine>
+    <Time>2394.77</Time>
+    <Variance>0.0</Variance>
+    <CallerId>['87']</CallerId>
+    <ChildrenTime>2394.77</ChildrenTime>
   </Pragma>
 </Log_file>

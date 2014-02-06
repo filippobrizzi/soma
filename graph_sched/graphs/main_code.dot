@@ -1,13 +1,13 @@
 digraph G {
 	node [label="\N"];
 	graph [bb="0,0,578,460"];
-	main [label="main()\n execution time: 203.580000\nvariance: 0.0", pos="286,416", width="4.2778", height="1.2222"];
-	"OMPParallelDirective@81" [label="OMPParallelDirective@81\n execution time: 203.57\nvariance: 0.0", pos="286,292", width="3.7778", height="1.2222"];
-	"OMPSectionsDirective@83" [label="OMPSectionsDirective@83\n execution time: 203.57\nvariance: 0.0", pos="286,168", width="3.9444", height="1.2222"];
-	"OMPSectionDirective@85" [label="OMPSectionDirective@85\n execution time: 102.65\nvariance: 0.0", pos="137,44", width="3.8056", height="1.2222"];
-	"OMPSectionDirective@112" [label="OMPSectionDirective@112\n execution time: 100.92\nvariance: 0.0", pos="435,44", width="3.9722", height="1.2222"];
-	main -> "OMPParallelDirective@81" [color=deepskyblue3, pos="e,286,336.34 286,371.93 286,363.72 286,355.04 286,346.56"];
-	"OMPParallelDirective@81" -> "OMPSectionsDirective@83" [color=darkslateblue, pos="e,286,212.34 286,247.93 286,239.72 286,231.04 286,222.56"];
-	"OMPSectionsDirective@83" -> "OMPSectionDirective@85" [color=dodgerblue, pos="e,186.4,85.11 236.39,126.71 222.94,115.52 208.27,103.31 194.43,91.797"];
-	"OMPSectionsDirective@83" -> "OMPSectionDirective@112" [color=dodgerblue, pos="e,385.35,85.321 335.61,126.71 348.99,115.58 363.57,103.44 377.35,91.979"];
+	main [label="main()\n execution time: 2394.870000\nvariance: 0.0", pos="286,416", width="4.4444", height="1.2222"];
+	"OMPParallelDirective@87" [label="OMPParallelDirective@87\n execution time: 2394.77\nvariance: 0.0", pos="286,292", width="3.7778", height="1.2222"];
+	"OMPSectionsDirective@89" [label="OMPSectionsDirective@89\n execution time: 2394.77\nvariance: 0.0", pos="286,168", width="3.9444", height="1.2222"];
+	"OMPSectionDirective@91" [label="OMPSectionDirective@91\n execution time: 122.45\nvariance: 0.0", pos="137,44", width="3.8056", height="1.2222"];
+	"OMPSectionDirective@118" [label="OMPSectionDirective@118\n execution time: 2272.32\nvariance: 0.0", pos="435,44", width="3.9722", height="1.2222"];
+	main -> "OMPParallelDirective@87" [color=gold, pos="e,286,336.34 286,371.93 286,363.72 286,355.04 286,346.56"];
+	"OMPParallelDirective@87" -> "OMPSectionsDirective@89" [color=darkorchid2, pos="e,286,212.34 286,247.93 286,239.72 286,231.04 286,222.56"];
+	"OMPSectionsDirective@89" -> "OMPSectionDirective@91" [color=darkolivegreen3, pos="e,186.4,85.11 236.39,126.71 222.94,115.52 208.27,103.31 194.43,91.797"];
+	"OMPSectionsDirective@89" -> "OMPSectionDirective@118" [color=darkolivegreen3, pos="e,385.35,85.321 335.61,126.71 348.99,115.58 363.57,103.44 377.35,91.979"];
 }

@@ -1,37 +1,37 @@
 digraph G {
 	graph [compound=true];
 	node [label="\N"];
-	graph [bb="0,0,1306,714"];
+	graph [bb="0,0,1334,714"];
 	subgraph cluster_0 {
 		graph [bb="8,46,602,706"];
-		81 [label="OMPParallelDirective@81\nexecution time: 203.57\nvariance: 0.0", root=62, pos="305,556", width="3.7778", height="1.2222"];
-		62 [label="main()\nexecution time 203.58", root=62, pos="305,667", width="3.3889", height="0.86111"];
-		112 [label="OMPSectionDirective@112\nexecution time: 100.92\nvariance: 0.0", root=62, pos="159,308", width="3.9722", height="1.2222"];
-		83 [label="OMPSectionsDirective@83\nexecution time: 203.57\nvariance: 0.0", root=62, pos="305,432", width="3.9444", height="1.2222"];
-		"83_end" [label=BARRIER, root=62, pos="308,197", width="1.5556", height="0.51389"];
-		"81_end" [label=BARRIER, root=62, pos="308,73", width="1.5556", height="0.51389"];
-		85 [label="OMPSectionDirective@85\nexecution time: 102.65\nvariance: 0.0", root=62, pos="457,308", width="3.8056", height="1.2222"];
-		83 -> 85 [color=darkseagreen2, pos="e,406.61,349.11 355.61,390.71 369.46,379.42 384.57,367.09 398.81,355.47"];
-		81 -> 83 [color=blueviolet, pos="e,305,476.34 305,511.93 305,503.72 305,495.04 305,486.56"];
-		62 -> 81 [pos="e,305,600.23 305,635.78 305,627.86 305,619.11 305,610.39"];
-		85 -> "83_end" [color=darkseagreen2, pos="e,330.7,213.91 402.36,267.3 381.09,251.45 357.49,233.87 339.22,220.25"];
-		112 -> "83_end" [color=darkseagreen2, pos="e,285.3,213.91 213.64,267.3 234.91,251.45 258.51,233.87 276.78,220.25"];
-		"83_end" -> "81_end" [color=blueviolet, pos="e,308,91.691 308,178.44 308,158.16 308,125.44 308,101.82"];
-		83 -> 112 [color=darkseagreen2, pos="e,208.14,349.74 255.98,390.36 243.1,379.43 229.1,367.53 215.84,356.28"];
+		87 [label="OMPParallelDirective@87\nexecution time: 2394.77\nvariance: 0.0", root=68, pos="304,556", width="3.7778", height="1.2222"];
+		91 [label="OMPSectionDirective@91\nexecution time: 122.45\nvariance: 0.0", root=68, pos="153,308", width="3.8056", height="1.2222"];
+		89 [label="OMPSectionsDirective@89\nexecution time: 2394.77\nvariance: 0.0", root=68, pos="304,432", width="3.9444", height="1.2222"];
+		"89_end" [label=BARRIER, root=68, pos="302,197", width="1.5556", height="0.51389"];
+		"87_end" [label=BARRIER, root=68, pos="302,73", width="1.5556", height="0.51389"];
+		68 [label="main()\nexecution time 2394.87", root=68, pos="304,667", width="3.5556", height="0.86111"];
+		118 [label="OMPSectionDirective@118\nexecution time: 2272.32\nvariance: 0.0", root=68, pos="451,308", width="3.9722", height="1.2222"];
+		"89_end" -> "87_end" [color=deepskyblue4, pos="e,302,91.691 302,178.44 302,158.16 302,125.44 302,101.82"];
+		68 -> 87 [pos="e,304,600.23 304,635.78 304,627.86 304,619.11 304,610.39"];
+		89 -> 118 [color=firebrick1, pos="e,401.77,349.53 353.36,390.36 366.4,379.37 380.57,367.41 393.98,356.1"];
+		87 -> 89 [color=deepskyblue4, pos="e,304,476.34 304,511.93 304,503.72 304,495.04 304,486.56"];
+		118 -> "89_end" [color=firebrick1, pos="e,324.7,213.91 396.36,267.3 375.09,251.45 351.49,233.87 333.22,220.25"];
+		89 -> 91 [color=firebrick1, pos="e,203.06,349.11 253.72,390.71 239.97,379.42 224.95,367.09 210.81,355.47"];
+		91 -> "89_end" [color=firebrick1, pos="e,279.3,213.91 207.64,267.3 228.91,251.45 252.51,233.87 270.78,220.25"];
 	}
 	subgraph cluster_1 {
-		graph [bb="610,8,950,236"];
-		146 [label="OMPParallelForDirective@146\nfor( j = 0; j < farm_size; j ++ )\nexecution time: 6.285625\nvariance: 0.0291480595409", root=144, pos="780,73", width="4.5", height="1.5694"];
-		144 [label="dx()\nexecution time 6.28562", root=144, pos="763,197", width="3.5556", height="0.86111"];
-		144 -> 146 [pos="e,772.2,129.87 767.29,165.71 768.38,157.79 769.59,148.97 770.81,140.01"];
+		graph [bb="972,8,1326,236"];
+		150 [label="dx()\nexecution time 6.46202", root=150, pos="1128,197", width="3.5556", height="0.86111"];
+		152 [label="OMPParallelForDirective@152\nfor( j = 0; j < farm_size; j ++ )\nexecution time: 6.46187861272\nvariance: 0.114157872909", root=150, pos="1149,73", width="4.6944", height="1.5694"];
+		150 -> 152 [pos="e,1139.4,129.87 1133.3,165.71 1134.6,157.79 1136.1,148.97 1137.7,140.01"];
 	}
 	subgraph cluster_2 {
-		graph [bb="958,8,1298,236"];
-		158 [label="OMPParallelForDirective@158\nfor( j = 0; j < farm_size; j ++ )\nexecution time: 6.391875\nvariance: 0.0760935895789", root=156, pos="1128,73", width="4.5", height="1.5694"];
-		156 [label="sx()\nexecution time 6.39187", root=156, pos="1111,197", width="3.5556", height="0.86111"];
-		156 -> 158 [pos="e,1120.2,129.87 1115.3,165.71 1116.4,157.79 1117.6,148.97 1118.8,140.01"];
+		graph [bb="610,8,964,236"];
+		167 [label="sx()\nexecution time 1.38964", root=167, pos="766,197", width="3.5556", height="0.86111"];
+		169 [label="OMPParallelForDirective@169\nfor( j = 0; j < farm_size; j ++ )\nexecution time: 1.38963855422\nvariance: 0.0312951662279", root=167, pos="787,73", width="4.6944", height="1.5694"];
+		167 -> 169 [pos="e,777.37,129.87 771.3,165.71 772.64,157.79 774.13,148.97 775.65,140.01"];
 	}
-	112 -> 144 [pos="e,678.75,220.38 258.51,276.31 275.88,271.62 293.86,267.26 311,264 440.37,239.36 476.18,258.16 606,236 626.46,232.51 648.19,227.78\
- 668.76,222.82"];
-	85 -> 156 [pos="e,1025,220.01 585.8,292.92 686.48,280.27 829.73,260.37 954,236 973.9,232.1 995.05,227.3 1015.2,222.41"];
+	118 -> 150 [pos="e,1041.2,219.85 585.51,293.03 690.21,280.48 838.93,260.65 968,236 988.61,232.06 1010.5,227.18 1031.4,222.22"];
+	91 -> 167 [pos="e,680.96,220.21 248.12,276.33 264.93,271.6 282.37,267.23 299,264 433.5,237.88 470.85,258.51 606,236 627.18,232.47 649.71,227.66 \
+670.96,222.62"];
 }
