@@ -19,6 +19,7 @@ using namespace cv;
 
 string cascadeName;
 int write_on_disk;
+int print_time;
 int farm_size; 
 string images_destinations;
 
@@ -32,6 +33,7 @@ int usage (char *exec) {
     printf("\t[-i] (destination path of the annotated immages, if left empty write on disk will be disabled)\n");
     printf("\t-f (farm size)\n");
     printf("\t-c (cascade file path\n");
+    printf("\t -t (print images time)\n");        
     return(0);
 };
 
@@ -45,15 +47,17 @@ int parse(string *video_name_sx,
     }
 
     write_on_disk = 0;
+    print_time = 0;
     char ch;
     extern char* optarg;
-    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:"))!=-1 ) {
+    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:t:"))!=-1 ) {
         switch(ch) {
             case 's': *video_name_sx = optarg; break;
             case 'd': *video_name_dx = optarg; break;
             case 'i': images_destinations = optarg; write_on_disk = 1; break;
             case 'f': farm_size = atoi(optarg); break;
             case 'c': cascadeName = optarg; break;
+            case 't': print_time = 1; break;
             default: usage(argv[0]); return(1);
         }
     }
@@ -61,11 +65,12 @@ int parse(string *video_name_sx,
 };
 
 
-int main(int argc, char** argv ){
-   
+clock_t start_time_;
+int main( int argc, char** argv ){
+    start_time_ = clock();
+
     string video_name_sx; 
     string video_name_dx;
-
     if(parse(&video_name_sx, &video_name_dx, argv, argc) == 1)
         return 1;
 
@@ -73,7 +78,7 @@ int main(int argc, char** argv ){
     VideoCapture capture_sx;
     capture_dx.open(video_name_dx);
     capture_sx.open(video_name_sx);
-
+    std::cout << "CIAO" << std::endl;
     if(!capture_dx.isOpened() || !capture_sx.isOpened()) {
         cout << "VIDEO NOT OPENED" << endl;
         return -1;
@@ -140,6 +145,11 @@ void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double sc
             filename_dx << images_destinations << "/img_" << i << "_" << j << "_dx.jpg";
             imwrite(filename_dx.str(), canvas_dx[j]);
         }
+        if(print_time) {
+            clock_t end_time_ = clock();
+            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+            std::cout << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+        }
     }
 }
 
@@ -152,6 +162,11 @@ void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double sc
             stringstream filename_sx;
             filename_sx << images_destinations << "/img_" << i << "_" << j << "_sx.jpg";
             imwrite(filename_sx.str(), canvas_sx[j]);
+        }
+        if(print_time) {
+            clock_t end_time_ = clock();
+            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+            std::cout << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
         }
     }
 }

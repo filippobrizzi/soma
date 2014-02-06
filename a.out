@@ -4,47 +4,47 @@ CIAO 1 - OMPSectionDirective
 CIAO 1 - OMPSectionDirective
 CIAO 1 - OMPParallelDirective
 CIAO 1 - OMPParallelDirective
-source_exctractor/test_cases/ComputerVision/ufacedetect_thesis
-source_exctractor/test_cases/ComputerVision/ufacedetect_thesis_pragmas.xml
+source_exctractor/test_cases/ComputerVision/ufacedetect
+source_exctractor/test_cases/ComputerVision/ufacedetect_pragmas.xml
 FUNCTION INFO 
 Name = main  ReturnType = int
 OMPParallelDirective
 Num clauses = 0
-Start Line = 81   End Line = 138
-Parent function line = 62
+Start Line = 87   End Line = 144
+Parent function line = 68
 
 Child 
 OMPSectionsDirective
 Num clauses = 0
-Start Line = 83   End Line = 137
-Parent function line = 62
+Start Line = 89   End Line = 143
+Parent function line = 68
 
 Child 
 OMPSectionDirective
 Num clauses = 0
-Start Line = 85   End Line = 110
-Parent function line = 62
+Start Line = 91   End Line = 116
+Parent function line = 68
 
 Child 
 OMPSectionDirective
 Num clauses = 0
-Start Line = 112   End Line = 136
-Parent function line = 62
+Start Line = 118   End Line = 142
+Parent function line = 68
 
 FUNCTION INFO 
 Name = dx  ReturnType = void
 OMPParallelForDirective
 Num clauses = 0
-Start Line = 146   End Line = 153
-Parent function line = 144
+Start Line = 152   End Line = 164
+Parent function line = 150
 for( int j = 0; j < farm_size; j ++;)
 
 FUNCTION INFO 
 Name = sx  ReturnType = void
 OMPParallelForDirective
 Num clauses = 0
-Start Line = 158   End Line = 165
-Parent function line = 156
+Start Line = 169   End Line = 181
+Parent function line = 167
 for( int j = 0; j < farm_size; j ++;)
 
 class cv::VideoCapture - removing class -  cv::VideoCapture

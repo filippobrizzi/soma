@@ -11,12 +11,15 @@
 #include <iostream>
 #include <iterator>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 using namespace std;
 using namespace cv;
 
-string cascadeName = "./haarcascade_frontalface_alt.xml";
+string cascadeName;
 int write_on_disk;
+int print_time;
 int farm_size; 
 string images_destinations;
 
@@ -25,10 +28,12 @@ void dx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i
 void sx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
 
 int usage (char *exec) {
-    printf("\nUsage :\n\n\t%s ",exec);
-    printf("-s (left video path), -d (right video path)"; 
-    printf("-i (destination path of the annotated immages, if left empty write on disk will be disabled)");
-    printf("-f (farm size");
+    printf("\nUsage : %s\n",exec);
+    printf("\t-s (left video path), -d (right video path)\n"); 
+    printf("\t[-i] (destination path of the annotated immages, if left empty write on disk will be disabled)\n");
+    printf("\t-f (farm size)\n");
+    printf("\t-c (cascade file path\n");
+    printf("\t -t (print images time)\n");
     return(0);
 };
 
@@ -36,26 +41,37 @@ int parse(string *video_name_sx,
           string *video_name_dx,
           char* argv[], int argc){
     // set parameters wrt argv and argc
+    if(argc == 1){
+        usage(argv[0]);
+        return(1);
+    }
+
     write_on_disk = 0;
+    print_time = 0;
     char ch;
     extern char* optarg;
-    while ( (ch = getopt(argc, argv, "s:d:i:w:f"))!=-1 ) {
+    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:t:"))!=-1 ) {
         switch(ch) {
-            case 's': strncpy(video_name_sx, optarg, 254); break;
-            case 'd': strncpy(video_name_dx, optarg, 254); break; 
-            case 'i': strncpy(&images_destinations, optarg, 254); write_on_disk = 1; break; 
+            case 's': *video_name_sx = optarg; break;
+            case 'd': *video_name_dx = optarg; break;
+            case 'i': images_destinations = optarg; write_on_disk = 1; break;
             case 'f': farm_size = atoi(optarg); break;
+            case 'c': cascadeName = optarg; break;
+            case 't': print_time = 1; break;
             default: usage(argv[0]); return(1);
         }
     }
     return(0);
 };
 
+clock_t start_time_;
+int main( int argc, char** argv ){
+    start_time_ = clock();
+    string video_name_sx; 
+    string video_name_dx;
 
-int main( int argc, const char** argv ){
-   
-    string video_name_sx, 
-    string video_name_dx,
+    if(parse(&video_name_sx, &video_name_dx, argv, argc) == 1)
+        return 1;
 
     VideoCapture capture_dx;
     VideoCapture capture_sx;
@@ -67,7 +83,6 @@ int main( int argc, const char** argv ){
         return -1;
 
     }
-    //omp_set_num_threads(2);
     #pragma omp parallel
     {
         #pragma omp sections
@@ -87,14 +102,16 @@ int main( int argc, const char** argv ){
 
                 cout << "Video sx capturing has been started ..." << endl;
                 bool frame_success;
-                while(1)
+                int count = 0;
+                while(1){
                     
                     for(int j = 0; j < farm_size; j ++)
                         frame_success = capture_sx.read(frame_sx[j]); // read a new frame from video
 
                     if (!frame_success) break;
 
-                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, i);
+                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, count);
+                    count ++;
                 }
             }
             #pragma omp section
@@ -110,8 +127,8 @@ int main( int argc, const char** argv ){
                     cascade_dx[i].load(cascadeName);
 
                 cout << "Video dx capturing has been started ..." << endl;
-                for(int i = 0 ; i < 10; i ++) {
                 bool frame_success;
+                int count = 0;
                 while(1) {    
 
                     for(int j = 0; j < farm_size; j ++)
@@ -119,7 +136,8 @@ int main( int argc, const char** argv ){
                     
                     if (!frame_success) break;
 
-                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, i);
+                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, count);
+                    count ++;
                 }
             }
         }
@@ -130,8 +148,6 @@ int main( int argc, const char** argv ){
 
 
 void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
-    //omp_set_num_threads(2);
-    //omp_set_nested(1);
     #pragma omp parallel for
     for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
@@ -140,12 +156,15 @@ void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double sc
             filename_dx << images_destinations << "/img_" << i << "_" << j << "_dx.jpg";
             imwrite(filename_dx.str(), canvas_dx[j]);
         }
+        if(print_time) {
+            clock_t end_time_ = clock();
+            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+            std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+        }
     }
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
-    //omp_set_num_threads(2);
-    //omp_set_nested(1);
     #pragma omp parallel for
     for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
@@ -153,6 +172,11 @@ void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double sc
             stringstream filename_sx;
             filename_sx << images_destinations << "/img_" << i << "_" << j << "_sx.jpg";
             imwrite(filename_sx.str(), canvas_sx[j]);
+        }
+        if(print_time) {
+            clock_t end_time_ = clock();
+            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+            std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
         }
     }
 }

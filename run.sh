@@ -8,6 +8,8 @@ TMP_FILE=${SRC_FILE:0:-4}
 PROFILE_FILE=$TMP_FILE"_profile.cpp"
 TRANSFORMED_FILE=$TMP_FILE"_transformed.cpp"
 XML_FILE=$TMP_FILE"_pragmas.xml"
+SEQ_FILE=$TMP_FILE"_seq.cpp"
+OMP_FILE=$TMP_FILE"_omp.cpp"
 
 PROFILE_LIB="-I./source_exctractor/src/"
 PROFILE_RTS="source_exctractor/src/profile_tracker/profile_tracker.cpp"
@@ -38,10 +40,10 @@ echo "Launching the source manipulation program."
 #./source_exctractor/pragma_exctractor.exec -fopenmp $SRC_FILE > a.out
 
 echo "Compiling sequential"
-#$CXX -std=c++11 $OPENCV_CONFIG $SRC_FILE -o $FILE_PATH/sequential.o
+$CXX -std=c++11 $SEQ_FILE $OPENCV_CONFIG -o $FILE_PATH/sequential.o
 
 echo "Compiling OpenMP"
-#$CXX -std=c++11 $OPENCV_CONFIG $SRC_FILE -fopenmp -o $FILE_PATH/parallel_omp.o
+$CXX -std=c++11 $OMP_FILE $OPENCV_CONFIG -fopenmp -o $FILE_PATH/parallel_omp.o
 
 echo "Compiling the profiler."
 $CXX -std=c++11 $PROFILE_LIB $PROFILE_FILE $PROFILE_RTS $OPENCV_CONFIG  -o $FILE_PATH/$EXECUTABLE_PROFILE
@@ -60,7 +62,10 @@ cd ..
 
 echo "Launching the final program."
 cd $FILE_PATH
-echo ./$EXECUTABLE_FINAL $PARAMETERS
-#time ./sequential.o
-#time ./parallel_omp.o
-time ./$EXECUTABLE_FINAL $PARAMETERS
+rm images/*.jpg
+#echo ./$EXECUTABLE_FINAL $PARAMETERS
+time ./sequential.o $PARAMETERS > ./sequential_time.txt
+rm images/*.jpg
+time ./parallel_omp.o $PARAMETERS > ./omp_time.txt
+rm images/*.jpg
+time ./$EXECUTABLE_FINAL $PARAMETERS > ./bomber_time.txt

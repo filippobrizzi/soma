@@ -11,85 +11,143 @@
 #include <iostream>
 #include <iterator>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 using namespace std;
 using namespace cv;
+
+string cascadeName;
+int write_on_disk;
+int print_time;
+int farm_size; 
+string images_destinations;
 
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale);
 void dx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
 void sx(UMat* img, Mat* canvas, CascadeClassifier* cascade, double scale0, int i);
 
-
-string cascadeName = "/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/haarcascade_frontalface_alt.xml";
-
 #include "profile_tracker/profile_tracker.h"
-int main( int argc, const char** argv ){
-if( ProfileTracker x = ProfileTrackParams(25, 0)) {
-   
-    String inputName;
+int usage (char *exec) {
+if( ProfileTracker x = ProfileTrackParams(30, 0)) {
+    printf("\nUsage : %s\n",exec);
+    printf("\t-s (left video path), -d (right video path)\n"); 
+    printf("\t[-i] (destination path of the annotated immages, if left empty write on disk will be disabled)\n");
+    printf("\t-f (farm size)\n");
+    printf("\t-c (cascade file path\n");
+    printf("\t -t (print images time)\n");
+    return(0);
+}
+};
+
+int parse(string *video_name_sx, 
+          string *video_name_dx,
+          char* argv[], int argc){
+if( ProfileTracker x = ProfileTrackParams(40, 0)) {
+    // set parameters wrt argv and argc
+    if(argc == 1){
+        usage(argv[0]);
+        return(1);
+    }
+
+    write_on_disk = 0;
+    print_time = 0;
+    char ch;
+    extern char* optarg;
+    while ( (ch = getopt(argc, argv, "s:d:i:f:c:?:h:t:"))!=-1 ) {
+        switch(ch) {
+            case 's': *video_name_sx = optarg; break;
+            case 'd': *video_name_dx = optarg; break;
+            case 'i': images_destinations = optarg; write_on_disk = 1; break;
+            case 'f': farm_size = atoi(optarg); break;
+            case 'c': cascadeName = optarg; break;
+            case 't': print_time = 1; break;
+            default: usage(argv[0]); return(1);
+        }
+    }
+    return(0);
+}
+};
+
+clock_t start_time_;
+int main( int argc, char** argv ){
+if( ProfileTracker x = ProfileTrackParams(68, 0)) {
+    start_time_ = clock();
+    string video_name_sx; 
+    string video_name_dx;
+
+    if(parse(&video_name_sx, &video_name_dx, argv, argc) == 1)
+        return 1;
 
     VideoCapture capture_dx;
     VideoCapture capture_sx;
-    capture_dx.open("/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/MyVideo_dx.avi");
-    capture_sx.open("/home/pippo/Documents/Project/soma/source_exctractor/test_cases/ComputerVision/MyVideo_sx.avi");
+    capture_dx.open(video_name_dx);
+    capture_sx.open(video_name_sx);
 
     if(!capture_dx.isOpened() || !capture_sx.isOpened()) {
         cout << "VIDEO NOT OPENED" << endl;
         return -1;
 
     }
-    //omp_set_num_threads(2);
 //    #pragma omp parallel
-    if( ProfileTracker x = ProfileTrackParams(25, 41))
+    if( ProfileTracker x = ProfileTrackParams(68, 87))
     {
 //        #pragma omp sections
-        if( ProfileTracker x = ProfileTrackParams(25, 43))
+        if( ProfileTracker x = ProfileTrackParams(68, 89))
         {
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(25, 45))
+            if( ProfileTracker x = ProfileTrackParams(68, 91))
             {
 
-                UMat *frame_sx = new UMat[4]; 
+                UMat *frame_sx = new UMat[farm_size]; 
                 UMat image_sx;
-                Mat *canvas_sx = new Mat[4];
+                Mat *canvas_sx = new Mat[farm_size];
                 double scale_sx = 1;
 
-                CascadeClassifier *cascade_sx = new CascadeClassifier[4];
+                CascadeClassifier *cascade_sx = new CascadeClassifier[farm_size];
 
-                cout << "Video sx capturing has been started ..." << endl;
-
-                for(int i = 0; i < 4; i ++)
+                for(int i = 0; i < farm_size; i ++)
                     cascade_sx[i].load(cascadeName);
 
-                for(int i = 0 ; i < 10; i ++) {
+                cout << "Video sx capturing has been started ..." << endl;
+                bool frame_success;
+                int count = 0;
+                while(1){
                     
-                    for(int j = 0; j < 4; j ++)
-                        capture_sx >> frame_sx[j];
+                    for(int j = 0; j < farm_size; j ++)
+                        frame_success = capture_sx.read(frame_sx[j]); // read a new frame from video
 
-                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, i);
+                    if (!frame_success) break;
+
+                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, count);
+                    count ++;
                 }
             }
 //            #pragma omp section
-            if( ProfileTracker x = ProfileTrackParams(25, 68))
+            if( ProfileTracker x = ProfileTrackParams(68, 118))
             {
-                UMat *frame_dx = new UMat[4];
+                UMat *frame_dx = new UMat[farm_size];
                 UMat image_dx;
-                Mat *canvas_dx = new Mat[4];
+                Mat *canvas_dx = new Mat[farm_size];
                 double scale_dx = 1;
 
-                CascadeClassifier *cascade_dx = new CascadeClassifier[4];
+                CascadeClassifier *cascade_dx = new CascadeClassifier[farm_size];
 
-                cout << "Video dx capturing has been started ..." << endl;
-
-                for(int i = 0; i < 4; i ++)
+                for(int i = 0; i < farm_size; i ++)
                     cascade_dx[i].load(cascadeName);
 
-                for(int i = 0 ; i < 10; i ++) {
-                    
-                    for(int j = 0; j < 4; j ++)
-                        capture_dx >> frame_dx[j];
+                cout << "Video dx capturing has been started ..." << endl;
+                bool frame_success;
+                int count = 0;
+                while(1) {    
 
-                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, i);
+                    for(int j = 0; j < farm_size; j ++)
+                        frame_success = capture_dx.read(frame_dx[j]);
+                    
+                    if (!frame_success) break;
+
+                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, count);
+                    count ++;
                 }
             }
         }
@@ -101,40 +159,48 @@ if( ProfileTracker x = ProfileTrackParams(25, 0)) {
 
 
 void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
-if( ProfileTracker x = ProfileTrackParams(96, 0)) {
-    //omp_set_num_threads(2);
-    //omp_set_nested(1);
+if( ProfileTracker x = ProfileTrackParams(150, 0)) {
 //    #pragma omp parallel for
-    if( ProfileTracker x = ProfileTrackParams(96, 100, 4 - 0))
-    for(int j = 0; j < 4; j ++){
+    if( ProfileTracker x = ProfileTrackParams(150, 152, farm_size - 0))
+    for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
-        stringstream filename_dx;
-        filename_dx << "images/img_" << i << "_" << j << "_dx.jpg";
-        std::cout << "--------------- " << filename_dx.str() << std::endl;
-        //imwrite(filename_dx.str(), canvas_dx[j]);
+        if(write_on_disk) {
+            stringstream filename_dx;
+            filename_dx << images_destinations << "/img_" << i << "_" << j << "_dx.jpg";
+            imwrite(filename_dx.str(), canvas_dx[j]);
+        }
+        if(print_time) {
+            clock_t end_time_ = clock();
+            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+            std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+        }
     }
-
 }
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
-if( ProfileTracker x = ProfileTrackParams(110, 0)) {
-    //omp_set_num_threads(2);
-    //omp_set_nested(1);
+if( ProfileTracker x = ProfileTrackParams(167, 0)) {
 //    #pragma omp parallel for
-    if( ProfileTracker x = ProfileTrackParams(110, 114, 4 - 0))
-    for(int j = 0; j < 4; j ++){
+    if( ProfileTracker x = ProfileTrackParams(167, 169, farm_size - 0))
+    for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
-        stringstream filename_sx;
-        filename_sx << "images/img_" << i << "_" << j << "_sx.jpg";
-        std::cout << "--------------- " << filename_sx.str() << std::endl;
-        //imwrite(filename_sx.str(), canvas_sx[j]);
+        if(write_on_disk) {
+            stringstream filename_sx;
+            filename_sx << images_destinations << "/img_" << i << "_" << j << "_sx.jpg";
+            imwrite(filename_sx.str(), canvas_sx[j]);
+        }
+        if(print_time) {
+            clock_t end_time_ = clock();
+            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+            std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+        }
     }
 }
 }
 
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale0)
 {
+if( ProfileTracker x = ProfileTrackParams(184, 0)) {
     int i = 0;
     double t = 0, scale=1;
     vector<Rect> faces, faces2;
@@ -198,5 +264,5 @@ void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double s
                        color, 3, 8, 0);
 
     }
-
+}
 }
