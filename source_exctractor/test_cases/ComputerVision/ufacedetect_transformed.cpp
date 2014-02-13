@@ -86,129 +86,129 @@ int main( int argc, char** argv ){
     }
 //    #pragma omp parallel
     {
-      class Nested : public NestedBase {
-      public: 
-        virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-        Nested(int pragma_id,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx)  : NestedBase(pragma_id), capture_sx_(capture_sx) , capture_dx_(capture_dx) {}
-     cv::VideoCapture & capture_sx_;
-     cv::VideoCapture & capture_dx_;
-    
-    void fx(ForParameter for_param,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx){
-//        #pragma omp sections
-        {
-          class Nested : public NestedBase {
-          public: 
+        class Nested : public NestedBase {
+        public: 
             virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
             Nested(int pragma_id,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx)  : NestedBase(pragma_id), capture_sx_(capture_sx) , capture_dx_(capture_dx) {}
-         cv::VideoCapture & capture_sx_;
-         cv::VideoCapture & capture_dx_;
-        
-        void fx(ForParameter for_param,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx){
-//            #pragma omp section
-            {
-              class Nested : public NestedBase {
-              public: 
-                virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-                Nested(int pragma_id,  cv::VideoCapture & capture_sx)  : NestedBase(pragma_id), capture_sx_(capture_sx) {}
-             cv::VideoCapture & capture_sx_;
+            cv::VideoCapture & capture_sx_;
+            cv::VideoCapture & capture_dx_;
+    
+            void fx(ForParameter for_param,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx){
+//        #pragma omp sections
+                {
+                    class Nested : public NestedBase {
+                    public: 
+                        virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+                        Nested(int pragma_id,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx)  : NestedBase(pragma_id), capture_sx_(capture_sx) , capture_dx_(capture_dx) {}
+                        cv::VideoCapture & capture_sx_;
+                        cv::VideoCapture & capture_dx_;
             
-            void fx(ForParameter for_param,  cv::VideoCapture & capture_sx){
+                        void fx(ForParameter for_param,  cv::VideoCapture & capture_sx,  cv::VideoCapture & capture_dx){
+                //            #pragma omp section
+                            {
+                                class Nested : public NestedBase {
+                                public: 
+                                    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+                                    Nested(int pragma_id,  cv::VideoCapture & capture_sx)  : NestedBase(pragma_id), capture_sx_(capture_sx) {}
+                                    cv::VideoCapture & capture_sx_;
+                            
+                                    void fx(ForParameter for_param,  cv::VideoCapture & capture_sx){
 
-                UMat *frame_sx = new UMat[farm_size]; 
-                UMat image_sx;
-                Mat *canvas_sx = new Mat[farm_size];
-                double scale_sx = 1;
+                                        UMat *frame_sx = new UMat[farm_size]; 
+                                        UMat image_sx;
+                                        Mat *canvas_sx = new Mat[farm_size];
+                                        double scale_sx = 1;
 
-                CascadeClassifier *cascade_sx = new CascadeClassifier[farm_size];
+                                        CascadeClassifier *cascade_sx = new CascadeClassifier[farm_size];
 
-                for(int i = 0; i < farm_size; i ++)
-                    cascade_sx[i].load(cascadeName);
+                                        for(int i = 0; i < farm_size; i ++)
+                                            cascade_sx[i].load(cascadeName);
 
-                cout << "Video sx capturing has been started ..." << endl;
-                bool frame_success;
-                int count = 0;
-                while(1){
-                    
-                    for(int j = 0; j < farm_size; j ++)
-                        frame_success = capture_sx.read(frame_sx[j]); // read a new frame from video
+                                        cout << "Video sx capturing has been started ..." << endl;
+                                        bool frame_success;
+                                        int count = 0;
+                                        while(1){
+                                        
+                                            for(int j = 0; j < farm_size; j ++)
+                                                frame_success = capture_sx.read(frame_sx[j]); // read a new frame from video
 
-                    if (!frame_success) break;
+                                            if (!frame_success) break;
 
-                    sx(frame_sx, canvas_sx, cascade_sx, scale_sx, count);
-                    count ++;
-                }
-            launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_sx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(91, capture_sx);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  todo_job_.push(nested_b); 
-}
+                                            sx(frame_sx, canvas_sx, cascade_sx, scale_sx, count);
+                                            count ++;
+                                        }
+                                        launch_todo_job(); 
+                                    }
+                                    void callme(ForParameter for_param) {
+                                        fx(for_param, capture_sx_);
+                                    }
+                                };
+                                std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(91, capture_sx);
+                                if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+                                    todo_job_.push(nested_b); 
+                            }
 //            #pragma omp section
-            {
-              class Nested : public NestedBase {
-              public: 
-                virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-                Nested(int pragma_id,  cv::VideoCapture & capture_dx)  : NestedBase(pragma_id), capture_dx_(capture_dx) {}
-             cv::VideoCapture & capture_dx_;
-            
-            void fx(ForParameter for_param,  cv::VideoCapture & capture_dx){
-                UMat *frame_dx = new UMat[farm_size];
-                UMat image_dx;
-                Mat *canvas_dx = new Mat[farm_size];
-                double scale_dx = 1;
+                            {
+                                class Nested : public NestedBase {
+                                public: 
+                                    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+                                    Nested(int pragma_id,  cv::VideoCapture & capture_dx)  : NestedBase(pragma_id), capture_dx_(capture_dx) {}
+                                    cv::VideoCapture & capture_dx_;
+                            
+                                    void fx(ForParameter for_param,  cv::VideoCapture & capture_dx){
+                                        UMat *frame_dx = new UMat[farm_size];
+                                        UMat image_dx;
+                                        Mat *canvas_dx = new Mat[farm_size];
+                                        double scale_dx = 1;
 
-                CascadeClassifier *cascade_dx = new CascadeClassifier[farm_size];
+                                        CascadeClassifier *cascade_dx = new CascadeClassifier[farm_size];
 
-                for(int i = 0; i < farm_size; i ++)
-                    cascade_dx[i].load(cascadeName);
+                                        for(int i = 0; i < farm_size; i ++)
+                                            cascade_dx[i].load(cascadeName);
 
-                cout << "Video dx capturing has been started ..." << endl;
-                bool frame_success;
-                int count = 0;
-                while(1) {    
+                                        cout << "Video dx capturing has been started ..." << endl;
+                                        bool frame_success;
+                                        int count = 0;
+                                        while(1) {    
 
-                    for(int j = 0; j < farm_size; j ++)
-                        frame_success = capture_dx.read(frame_dx[j]);
-                    
-                    if (!frame_success) break;
+                                            for(int j = 0; j < farm_size; j ++)
+                                                frame_success = capture_dx.read(frame_dx[j]);
+                                            
+                                            if (!frame_success) break;
 
-                    dx(frame_dx, canvas_dx, cascade_dx, scale_dx, count);
-                    count ++;
+                                            dx(frame_dx, canvas_dx, cascade_dx, scale_dx, count);
+                                            count ++;
+                                        }
+                                        launch_todo_job(); 
+                                    }
+                                    void callme(ForParameter for_param) {
+                                      fx(for_param, capture_dx_);
+                                    }
+                                };
+                                std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(118, capture_dx);
+                                if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+                                    todo_job_.push(nested_b); 
+                            }
+                            launch_todo_job(); 
+                        }
+                        void callme(ForParameter for_param) {
+                            fx(for_param, capture_sx_, capture_dx_);
+                        }
+                    };
+                    std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(89, capture_sx, capture_dx);
+                    if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+                        todo_job_.push(nested_b); 
                 }
-            launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_dx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(118, capture_dx);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  todo_job_.push(nested_b); 
-}
-        launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_sx_, capture_dx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(89, capture_sx, capture_dx);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  todo_job_.push(nested_b); 
-}
-    launch_todo_job(); 
-}
-void callme(ForParameter for_param) {
-  fx(for_param, capture_sx_, capture_dx_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(87, capture_sx, capture_dx);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  nested_b->callme(ForParameter(0,1));
-}
+                launch_todo_job(); 
+            }   
+            void callme(ForParameter for_param) {
+                fx(for_param, capture_sx_, capture_dx_);
+            }
+        };
+        std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(87, capture_sx, capture_dx);
+        if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+            nested_b->callme(ForParameter(0,1));
+    }
 
     return 0;
 }
@@ -217,81 +217,81 @@ if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedet
 void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
 //    #pragma omp parallel for
     //for(int j = 0; j < farm_size; j ++){
-{
-  class Nested : public NestedBase {
-  public: 
-    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id,  cv::UMat * frame_dx,  cv::Mat * canvas_dx,  cv::CascadeClassifier * cascade_dx, double & scale_dx, int & i)  : NestedBase(pragma_id), frame_dx_(frame_dx) , canvas_dx_(canvas_dx) , cascade_dx_(cascade_dx) , scale_dx_(scale_dx) , i_(i) {}
- cv::UMat * frame_dx_;
- cv::Mat * canvas_dx_;
- cv::CascadeClassifier * cascade_dx_;
-double & scale_dx_;
-int & i_;
+    {
+        class Nested : public NestedBase {
+        public: 
+            virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+            Nested(int pragma_id,  cv::UMat * frame_dx,  cv::Mat * canvas_dx,  cv::CascadeClassifier * cascade_dx, double & scale_dx, int & i)  : NestedBase(pragma_id), frame_dx_(frame_dx) , canvas_dx_(canvas_dx) , cascade_dx_(cascade_dx) , scale_dx_(scale_dx) , i_(i) {}             
+            cv::UMat * frame_dx_;
+            cv::Mat * canvas_dx_;
+            cv::CascadeClassifier * cascade_dx_;
+            double & scale_dx_;
+            int & i_;
 
-void fx(ForParameter for_param,  cv::UMat * frame_dx,  cv::Mat * canvas_dx,  cv::CascadeClassifier * cascade_dx, double & scale_dx, int & i) {
-for(int j = 0 + for_param.thread_id_*(farm_size - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(farm_size - 0)/for_param.num_threads_; j ++ ) { 
-        detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
-        if(write_on_disk) {
-            stringstream filename_dx;
-            filename_dx << images_destinations << "/img_" << i << "_" << j << "_dx.jpg";
-            imwrite(filename_dx.str(), canvas_dx[j]);
-        }
-        if(print_time) {
-            clock_t end_time_ = clock();
-            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
-            std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
-        }
+            void fx(ForParameter for_param,  cv::UMat * frame_dx,  cv::Mat * canvas_dx,  cv::CascadeClassifier * cascade_dx, double & scale_dx, int & i) {
+                for(int j = 0 + for_param.thread_id_*(farm_size - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(farm_size - 0)/for_param.num_threads_; j ++ ) { 
+                    detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
+                    if(write_on_disk) {
+                        stringstream filename_dx;
+                        filename_dx << images_destinations << "/img_" << i << "_" << j << "_dx.jpg";
+                        imwrite(filename_dx.str(), canvas_dx[j]);
+                    }
+                    if(print_time) {
+                        clock_t end_time_ = clock();
+                        float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+                        std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+                    }
+                }
+                launch_todo_job(); 
+            }
+            void callme(ForParameter for_param) {
+                fx(for_param, frame_dx_, canvas_dx_, cascade_dx_, scale_dx_, i_);
+            }
+        };
+        std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(152, frame_dx, canvas_dx, cascade_dx, scale_dx, i);
+        if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+            nested_b->callme(ForParameter(0,1));
     }
-launch_todo_job(); 
- }
-void callme(ForParameter for_param) {
-  fx(for_param, frame_dx_, canvas_dx_, cascade_dx_, scale_dx_, i_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(152, frame_dx, canvas_dx, cascade_dx, scale_dx, i);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  nested_b->callme(ForParameter(0,1));
-}
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
 //    #pragma omp parallel for
     //for(int j = 0; j < farm_size; j ++){
-{
-  class Nested : public NestedBase {
-  public: 
-    virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
-    Nested(int pragma_id,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i)  : NestedBase(pragma_id), frame_sx_(frame_sx) , canvas_sx_(canvas_sx) , cascade_sx_(cascade_sx) , scale_sx_(scale_sx) , i_(i) {}
- cv::UMat * frame_sx_;
- cv::Mat * canvas_sx_;
- cv::CascadeClassifier * cascade_sx_;
-double & scale_sx_;
-int & i_;
+    {
+        class Nested : public NestedBase {
+        public: 
+            virtual std::shared_ptr<NestedBase> clone() const { return std::make_shared<Nested>(*this); } 
+            Nested(int pragma_id,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i)  : NestedBase(pragma_id), frame_sx_(frame_sx) , canvas_sx_(canvas_sx) , cascade_sx_(cascade_sx) , scale_sx_(scale_sx) , i_(i) {}
+            cv::UMat * frame_sx_;
+            cv::Mat * canvas_sx_;
+            cv::CascadeClassifier * cascade_sx_;
+            double & scale_sx_;
+            int & i_;
 
-void fx(ForParameter for_param,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i) {
-for(int j = 0 + for_param.thread_id_*(farm_size - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(farm_size - 0)/for_param.num_threads_; j ++ ) { 
-        detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
-        if(write_on_disk) {
-            stringstream filename_sx;
-            filename_sx << images_destinations << "/img_" << i << "_" << j << "_sx.jpg";
-            imwrite(filename_sx.str(), canvas_sx[j]);
-        }
-        if(print_time) {
-            clock_t end_time_ = clock();
-            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
-            std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
-        }
+            void fx(ForParameter for_param,  cv::UMat * frame_sx,  cv::Mat * canvas_sx,  cv::CascadeClassifier * cascade_sx, double & scale_sx, int & i) {
+                for(int j = 0 + for_param.thread_id_*(farm_size - 0)/for_param.num_threads_; j < 0 + (for_param.thread_id_ + 1)*(farm_size - 0)/for_param.num_threads_; j ++ ) { 
+                    detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
+                    if(write_on_disk) {
+                        stringstream filename_sx;
+                        filename_sx << images_destinations << "/img_" << i << "_" << j << "_sx.jpg";
+                        imwrite(filename_sx.str(), canvas_sx[j]);
+                    }
+                    if(print_time) {
+                        clock_t end_time_ = clock();
+                        float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
+                        std::cout << std::this_thread::get_id() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+                    }
+                }
+                launch_todo_job(); 
+            }
+            void callme(ForParameter for_param) {
+                fx(for_param, frame_sx_, canvas_sx_, cascade_sx_, scale_sx_, i_);
+            }
+        };
+        std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(169, frame_sx, canvas_sx, cascade_sx, scale_sx, i);
+        if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
+            nested_b->callme(ForParameter(0,1));
     }
-launch_todo_job(); 
- }
-void callme(ForParameter for_param) {
-  fx(for_param, frame_sx_, canvas_sx_, cascade_sx_, scale_sx_, i_);
-}
-};
-std::shared_ptr<NestedBase> nested_b = std::make_shared<Nested>(169, frame_sx, canvas_sx, cascade_sx, scale_sx, i);
-if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedetect.cpp")->call(nested_b)) 
-  nested_b->callme(ForParameter(0,1));
-}
 }
 
 void detectAndDraw( UMat& img, Mat& canvas, CascadeClassifier& cascade, double scale0)
