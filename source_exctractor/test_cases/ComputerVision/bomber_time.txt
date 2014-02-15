@@ -1,9 +1,0 @@
-Video dx capturing has been started ...
-Video sx capturing has been started ...
-140125014259456 img_0_2_dx.jpg 1.65
-140125022652160 img_0_0_dx.jpg 1.71
-140125031044864 img_0_2_dx.jpg 2
-140125005866752 img_0_0_dx.jpg 2.01
-140125014259456 img_0_3_dx.jpg 3.01
-140125022652160 img_0_1_dx.jpg 3.03
-140125031044864 img_0_3_dx.jpg 3.22
