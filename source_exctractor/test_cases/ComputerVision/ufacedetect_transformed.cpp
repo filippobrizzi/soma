@@ -133,7 +133,7 @@ int main( int argc, char** argv ){
                 cout << "Video sx capturing has been started ..." << endl;
                 bool frame_success;
                 int count = 0;
-                while(1){
+                while(count < 220){
                     
                     for(int j = 0; j < farm_size; j ++)
                         frame_success = capture_sx.read(frame_sx[j]); // read a new frame from video
@@ -175,7 +175,7 @@ if(ThreadPool::getInstance("source_exctractor/test_cases/ComputerVision/ufacedet
                 cout << "Video dx capturing has been started ..." << endl;
                 bool frame_success;
                 int count = 0;
-                while(1) {    
+                while(count < 220) {    
 
                     for(int j = 0; j < farm_size; j ++)
                         frame_success = capture_dx.read(frame_dx[j]);
