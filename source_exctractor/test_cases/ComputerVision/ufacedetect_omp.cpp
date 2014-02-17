@@ -17,6 +17,8 @@
 using namespace std;
 using namespace cv;
 
+struct timespec start_time_;
+
 string cascadeName;
 int write_on_disk;
 int print_time;
@@ -67,7 +69,7 @@ int parse(string *video_name_sx,
 
 clock_t start_time_;
 int main( int argc, char** argv ){
-    start_time_ = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start_time_);
 
     string video_name_sx;
     string video_name_dx;
@@ -153,6 +155,7 @@ int main( int argc, char** argv ){
 
 void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double scale_dx, int i) {
     omp_set_nested(1);
+    omp_set_num_threads(3);
     #pragma omp parallel for
     for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_dx[j], canvas_dx[j], cascade_dx[j], scale_dx);
@@ -162,15 +165,18 @@ void dx(UMat* frame_dx, Mat* canvas_dx, CascadeClassifier* cascade_dx, double sc
             imwrite(filename_dx.str(), canvas_dx[j]);
         }
         if(print_time) {
-            clock_t end_time_ = clock();
-            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
-            std::cout << omp_get_thread_num() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+            struct timespec end_time_;
+            clock_gettime(CLOCK_MONOTONIC, &end_time_);
+            double elapsed_time_ = (end_time_.tv_sec - start_time_.tv_sec);
+            elapsed_time_ += (end_time_.tv_nsec - start_time_.tv_nsec) / 1000000000.0;
+            std::cout << omp_get_thread_num() << " img_" << i << "_" << j << "_sx.jpg " << elapsed_time_ << std::endl;
         }
     }
 }
 
 void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double scale_sx, int i) {
     omp_set_nested(1);
+    omp_set_num_threads(3);
     #pragma omp parallel for
     for(int j = 0; j < farm_size; j ++){
         detectAndDraw( frame_sx[j], canvas_sx[j], cascade_sx[j], scale_sx);
@@ -180,9 +186,11 @@ void sx(UMat* frame_sx, Mat* canvas_sx, CascadeClassifier* cascade_sx, double sc
             imwrite(filename_sx.str(), canvas_sx[j]);
         }
         if(print_time) {
-            clock_t end_time_ = clock();
-            float elapsed_time_ = ((double)(end_time_ - start_time_))/CLOCKS_PER_SEC;
-            std::cout << omp_get_thread_num() << " img_" << i << "_" << j << "_dx.jpg " << elapsed_time_ << std::endl;
+            struct timespec end_time_;
+            clock_gettime(CLOCK_MONOTONIC, &end_time_);
+            double elapsed_time_ = (end_time_.tv_sec - start_time_.tv_sec);
+            elapsed_time_ += (end_time_.tv_nsec - start_time_.tv_nsec) / 1000000000.0;
+            std::cout << omp_get_thread_num() << " img_" << i << "_" << j << "_sx.jpg " << elapsed_time_ << std::endl;
         }
     }
 }
